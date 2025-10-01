@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  turbopack: {
+    root: "/Users/wildanniam/development/Project/portofolio-wildan",
+  },
 };
 
 export default nextConfig;
