@@ -6,6 +6,7 @@ import ButtonGreen from "@/components/ui/button-green";
 import Image from "next/image";
 import * as React from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
+import { Particles } from "@/components/hero/particles";
 
 const fadeUp = (delay = 0) => ({
     initial: { opacity: 0, y: 16 },
@@ -71,6 +72,7 @@ export function Hero() {
                 {/* Bottom fade to match page background */}
                 <div className="absolute inset-x-0 bottom-0 h-40" style={{ backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0), var(--background))" }} />
             </div>
+            <Particles />
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     {/* Left: Text */}
@@ -145,14 +147,48 @@ export function Hero() {
                         />
 
                         {/* Profile visual with gradient border + glass + hover scale */}
-                        <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300, damping: 22 }} className="relative rounded-2xl p-[2px] brand-gradient will-change-transform">
+                        <motion.div whileHover={{ scale: 1.03 }} transition={{ type: "spring", stiffness: 280, damping: 24 }} className="relative rounded-2xl p-[2px] brand-gradient will-change-transform">
                             <div className="glass rounded-2xl p-2 md:p-3">
-                                <div className="relative size-56 md:size-80 rounded-2xl overflow-hidden">
-                                    <Image src="/wildan.png" alt="Profile" width={512} height={512} className="w-full h-full object-cover" />
+                                <div className="relative w-56 md:w-80 aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-background/30 to-secondary/30">
+                                    <Image
+                                        src="/wildan-2.png"
+                                        alt="Profile"
+                                        fill
+                                        priority
+                                        className="object-cover"
+                                        sizes="(min-width: 768px) 22rem, 16rem"
+                                        style={{ objectPosition: "center 18%" }}
+                                    />
                                 </div>
                             </div>
-                            {/* Spinning gradient ring */}
-                            <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem]" style={{ background: "conic-gradient(from 0deg, rgba(91,140,255,0.25), rgba(122,92,255,0.25), transparent 70%)", animation: "spin 18s linear infinite" }} />
+                            {/* Aurora + orbital nodes (replaces previous ring) */}
+                            <div className="pointer-events-none absolute -inset-6 -z-10 rounded-[2rem] overflow-hidden">
+                                {/* Aurora mesh gradients */}
+                                <motion.div
+                                    className="absolute -inset-10 blur-2xl"
+                                    style={{
+                                        background:
+                                            "radial-gradient(40%_40%_at_30%_20%, rgba(111,100,255,0.28), transparent 60%), radial-gradient(45%_45%_at_70%_60%, rgba(91,73,232,0.24), transparent 65%), radial-gradient(35%_35%_at_60%_20%, rgba(75,178,85,0.22), transparent 60%)",
+                                    }}
+                                    animate={{ scale: [1, 1.04, 1], rotate: [0, 5, 0] }}
+                                    transition={{ duration: 18, ease: "easeInOut", repeat: Infinity }}
+                                />
+
+                                {/* Orbiting nodes */}
+                                <motion.div
+                                    className="absolute inset-0"
+                                    style={{ transformOrigin: "50% 60%" }}
+                                    animate={{ rotate: 360 }}
+                                    transition={{ repeat: Infinity, duration: 28, ease: "linear" }}
+                                >
+                                    <span className="absolute left-1/2 top-2 size-2.5 -translate-x-1/2 rounded-full bg-[color:var(--accent-secure)] shadow-[0_0_14px_rgba(75,178,85,0.6)]" />
+                                    <span className="absolute right-[14%] top-1/3 size-2 rounded-full bg-blue-400/90 shadow-[0_0_12px_rgba(96,165,250,0.6)]" />
+                                    <span className="absolute left-[16%] bottom-[18%] size-1.5 rounded-full bg-purple-400/90 shadow-[0_0_10px_rgba(167,139,250,0.55)]" />
+                                </motion.div>
+
+                                {/* Soft sweep highlight */}
+
+                            </div>
                             {/* Floating crypto-like nodes */}
                             <motion.span className="absolute -right-6 top-10 size-3 rounded-full bg-[color:var(--accent-secure)] shadow-[0_0_16px_rgba(124,255,163,0.6)]" initial={{ y: -6 }} animate={{ y: [-6, 6, -6] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
                             <motion.span className="absolute -left-4 bottom-6 size-2.5 rounded-full bg-blue-400/80 shadow-[0_0_12px_rgba(96,165,250,0.6)]" initial={{ y: 6 }} animate={{ y: [6, -6, 6] }} transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0.3 }} />
