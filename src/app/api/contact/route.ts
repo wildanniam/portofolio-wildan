@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { Resend } from "resend";
 
 const ContactSchema = z.object({
     name: z.string().min(2),
@@ -12,8 +13,19 @@ export async function POST(request: Request) {
         const body = await request.json();
         const data = ContactSchema.parse(body);
 
-        // TODO: Integrate email/provider here (Resend, SendGrid, etc.)
-        console.log("contact.message", data);
+        const resendKey = process.env.RESEND_API_KEY;
+        if (!resendKey) {
+            return NextResponse.json({ ok: false, error: "Missing RESEND_API_KEY" }, { status: 500 });
+        }
+
+        const resend = new Resend(resendKey);
+        await resend.emails.send({
+            from: "Portfolio Contact <noreply@your-domain.com>",
+            to: ["your-receiver@your-domain.com"],
+            subject: `New contact from ${data.name}`,
+            replyTo: data.email,
+            text: data.message,
+        });
 
         return NextResponse.json({ ok: true });
     } catch (error) {
