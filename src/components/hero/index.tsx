@@ -116,10 +116,10 @@ export function Hero() {
                         </motion.p>
 
                         <motion.div className="mt-8 flex flex-wrap items-center gap-3" {...fadeUp(0.28)}>
-                            <ButtonPurple size="lg" className="button-radius" onClick={() => { window.location.hash = "projects"; }}>
+                            <ButtonPurple size="md" className="button-radius" onClick={() => { window.location.hash = "projects"; }}>
                                 View My Projects
                             </ButtonPurple>
-                            <ButtonGreen size="lg" fontWeight="medium" className="button-radius" onClick={() => { window.location.href = "/contact"; }}>
+                            <ButtonGreen size="md" fontWeight="medium" className="button-radius" onClick={() => { window.location.href = "/contact"; }}>
                                 Collaborate With Me
                             </ButtonGreen>
                         </motion.div>

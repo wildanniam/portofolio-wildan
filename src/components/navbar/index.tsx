@@ -56,7 +56,7 @@ function NavLinks({ orientation = "row", onClick }: { orientation?: "row" | "col
                             <motion.span
                                 layoutId="active-pill"
                                 className="absolute inset-0 rounded-full brand-gradient opacity-90"
-                                transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                                transition={{ type: "spring", stiffness: 220, damping: 35 }}
                             />
                         )}
                         {!isActive && (
@@ -79,10 +79,10 @@ export function Navbar() {
     }, []);
 
     return (
-        <div className={cn("sticky top-0 z-50 flex w-full justify-center ")}>
+        <div className={cn("sticky z-50 flex w-full justify-center transition-all duration-700 ease-in-out", scrolled ? "top-3" : "top-0")}>
             <div
                 className={cn(
-                    "w-full transition-all duration-300",
+                    "w-full transition-all duration-700 ease-in-out",
                     scrolled ? "max-w-5xl" : "max-w-none",
                 )}
             >
@@ -90,7 +90,7 @@ export function Navbar() {
                     className={cn(
                         "glass border border-border/60 shadow-sm mx-auto",
                         "flex items-center justify-between",
-                        "transition-all duration-300",
+                        "transition-all duration-700 ease-in-out",
                         scrolled
                             ? "rounded-full px-4 py-2 backdrop-blur-md"
                             : "rounded-none px-6 py-4 backdrop-blur-lg"
