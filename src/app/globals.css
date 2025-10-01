@@ -48,13 +48,15 @@
   --font-heading: var(--font-geist-sans);
   --font-body: var(--font-geist-sans);
 
-  /* Brand colors */
-  --brand-primary-from: #5B8CFF;
-  /* blue */
-  --brand-primary-to: #7A5CFF;
-  /* purple */
-  --accent-secure: #7CFFA3;
-  /* neon green */
+  /* Brand colors aligned to custom buttons */
+  --brand-primary-from: #6F64FF;
+  /* ButtonPurple from */
+  --brand-primary-to: #5B49E8;
+  /* ButtonPurple to */
+  --accent-secure: #4BB255;
+  /* ButtonGreen primary */
+  --accent-secure-light: #99E39E;
+  /* ButtonGreen light */
 
   /* Light mode backgrounds (modern slate/white) */
   --background: oklch(0.99 0 0);
@@ -66,7 +68,7 @@
   --popover-foreground: oklch(0.18 0 0);
 
   /* Primary: use mid between gradient ends for solid surfaces */
-  --primary: color-mix(in oklch, #5B8CFF 50%, #7A5CFF 50%);
+  --primary: color-mix(in oklch, var(--brand-primary-from) 50%, var(--brand-primary-to) 50%);
   --primary-foreground: oklch(0.99 0 0);
 
   --secondary: oklch(0.96 0 0);
@@ -74,7 +76,8 @@
   --muted: oklch(0.96 0 0);
   --muted-foreground: oklch(0.55 0 0);
   --accent: var(--accent-secure);
-  --accent-foreground: oklch(0.2 0 0);
+  --accent-foreground: #0A4C2A;
+  /* matches ButtonGreen label color */
   --destructive: oklch(0.6 0.25 27.3);
   --border: oklch(0.92 0 0);
   --input: oklch(0.92 0 0);
@@ -112,7 +115,7 @@
   --card-foreground: oklch(0.98 0.02 260);
   --popover: oklch(0.2 0.03 260);
   --popover-foreground: oklch(0.98 0.02 260);
-  --primary: color-mix(in oklch, #5B8CFF 40%, #7A5CFF 60%);
+  --primary: color-mix(in oklch, var(--brand-primary-from) 40%, var(--brand-primary-to) 60%);
   --primary-foreground: oklch(0.98 0 0);
   --secondary: oklch(0.25 0.02 260);
   --secondary-foreground: oklch(0.98 0.02 260);
@@ -212,4 +215,42 @@ html {
   filter: blur(40px);
   opacity: 0.5;
   animation: float-slow 8s ease-in-out infinite;
+}
+
+/* Animated brand gradient pan */
+@keyframes gradient-pan {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.brand-gradient-animate {
+  background-image: linear-gradient(90deg, var(--brand-primary-from), var(--brand-primary-to));
+  background-size: 200% 200%;
+  animation: gradient-pan 12s ease infinite;
+}
+
+/* Neon accent pulse for green glow */
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0px rgba(124, 255, 163, 0.0), 0 0 24px rgba(124, 255, 163, 0.25);
+  }
+
+  50% {
+    box-shadow: 0 0 18px rgba(124, 255, 163, 0.35), 0 0 36px rgba(124, 255, 163, 0.45);
+  }
+}
+
+.accent-pulse {
+  animation: glow-pulse 4s ease-in-out infinite;
 }
