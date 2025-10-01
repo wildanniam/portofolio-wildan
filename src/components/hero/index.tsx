@@ -68,7 +68,7 @@ export function Hero() {
                         <div className="glass card-surface p-2 md:p-3 rounded-2xl">
                             <div className="relative size-48 md:size-64 rounded-2xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-background to-secondary">
                                 {/* Gunakan gambar profil di sini bila tersedia di /public */}
-                                <Image src="/next.svg" alt="Profile" width={180} height={180} className="opacity-80" />
+                                <Image src="/wildan.png" alt="Profile" width={180} height={180} className="opacity-80" />
                             </div>
                         </div>
                     </div>
