@@ -12,13 +12,13 @@ const fadeUp = (delay = 0) => ({
 
 export function Hero() {
     return (
-        <section className="relative section overflow-hidden">
+        <section id="home" className="relative overflow-hidden min-h-dvh md:min-h-[100svh] flex items-center">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                     {/* Left: Text */}
                     <div className="order-2 md:order-1">
                         <motion.h1
-                            className="font-semibold tracking-tight gradient-text text-5xl md:text-6xl lg:text-7xl"
+                            className="font-semibold tracking-tight gradient-text text-5xl md:text-6xl lg:text-7xl leading-tight"
                             {...fadeUp(0)}
                         >
                             Wildan Syukri Niam
@@ -49,7 +49,7 @@ export function Hero() {
                         </motion.p>
 
                         <motion.div className="mt-8 flex flex-wrap items-center gap-3" {...fadeUp(0.28)}>
-                            <Button asChild size="lg" className="button-radius brand-gradient">
+                            <Button asChild size="lg" className="button-radius brand-gradient shadow-md shadow-purple-500/10">
                                 <a href="#projects">View My Projects</a>
                             </Button>
                             <Button asChild size="lg" variant="outline" className="button-radius border-[1.5px] border-[color:var(--accent-secure)] text-[color:var(--accent-secure)] hover:bg-[color:var(--accent-secure)]/10">
@@ -60,19 +60,24 @@ export function Hero() {
 
                     {/* Right: Profile image with gradient background shape */}
                     <div className="relative order-1 md:order-2 flex justify-center">
-                        {/* Animated blurred gradient blob */}
-                        <div className="absolute -top-10 -right-10 w-56 h-56 md:w-72 md:h-72 rounded-full brand-gradient blur-blob -z-10" />
-                        <div className="absolute -bottom-8 -left-6 w-40 h-40 md:w-56 md:h-56 rounded-full" style={{ background: "radial-gradient(circle at 30% 30%, rgba(124,255,163,0.35), transparent 60%)" }} />
+                        {/* Animated blurred gradient blobs */}
+                        <div className="absolute -top-16 right-0 w-72 h-72 md:w-96 md:h-96 rounded-full brand-gradient blur-blob -z-10" />
+                        <div className="absolute bottom-0 -left-10 w-48 h-48 md:w-64 md:h-64 rounded-full" style={{ background: "radial-gradient(circle at 30% 30%, rgba(124,255,163,0.35), transparent 60%)" }} />
 
-                        {/* Profile visual (placeholder) */}
-                        <div className="glass card-surface p-2 md:p-3 rounded-2xl">
-                            <div className="relative size-48 md:size-64 rounded-2xl overflow-hidden flex items-center justify-center bg-gradient-to-br from-background to-secondary">
-                                {/* Gunakan gambar profil di sini bila tersedia di /public */}
-                                <Image src="/wildan.png" alt="Profile" width={180} height={180} className="opacity-80" />
+                        {/* Profile visual with gradient border + glass */}
+                        <div className="relative rounded-2xl p-[2px] brand-gradient">
+                            <div className="glass rounded-2xl p-2 md:p-3">
+                                <div className="relative size-56 md:size-80 rounded-2xl overflow-hidden">
+                                    <Image src="/wildan.png" alt="Profile" width={512} height={512} className="w-full h-full object-cover" />
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            {/* Large vignette fade */}
+            <div className="pointer-events-none absolute inset-0 -z-20 opacity-50 [mask-image:radial-gradient(55%_55%_at_60%_40%,black,transparent)]">
+                <div className="absolute inset-0 bg-[radial-gradient(600px_400px_at_80%_20%,rgba(124,255,163,0.12),transparent),radial-gradient(800px_500px_at_90%_10%,rgba(122,92,255,0.18),transparent)]" />
             </div>
         </section>
     );
