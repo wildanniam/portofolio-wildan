@@ -18,22 +18,46 @@ const items: NavItem[] = [
 
 function useScrollSpy(ids: string[], rootMargin = "-50% 0px -40% 0px") {
     const [active, setActive] = React.useState<string>(ids[0] ?? "home");
+
     React.useEffect(() => {
         const sections = ids
             .map((id) => document.getElementById(id))
             .filter(Boolean) as HTMLElement[];
+
         if (sections.length === 0) return;
+
+        // Throttled intersection observer
+        let timeoutId: NodeJS.Timeout;
+
         const observer = new IntersectionObserver(
             (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) setActive(entry.target.id);
-                });
+                // Clear previous timeout
+                clearTimeout(timeoutId);
+
+                // Throttle updates
+                timeoutId = setTimeout(() => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            setActive(entry.target.id);
+                        }
+                    });
+                }, 16); // ~60fps
             },
-            { root: null, rootMargin, threshold: 0.1 }
+            {
+                root: null,
+                rootMargin,
+                threshold: 0.1
+            }
         );
+
         sections.forEach((el) => observer.observe(el));
-        return () => observer.disconnect();
+
+        return () => {
+            observer.disconnect();
+            clearTimeout(timeoutId);
+        };
     }, [ids, rootMargin]);
+
     return active;
 }
 
@@ -56,7 +80,13 @@ function NavLinks({ orientation = "row", onClick }: { orientation?: "row" | "col
                             <motion.span
                                 layoutId="active-pill"
                                 className="absolute inset-0 rounded-full brand-gradient opacity-90"
-                                transition={{ type: "spring", stiffness: 220, damping: 35 }}
+                                transition={{
+                                    type: "spring",
+                                    stiffness: 300,
+                                    damping: 30,
+                                    mass: 0.5
+                                }}
+                                initial={false}
                             />
                         )}
                         {!isActive && (
@@ -71,18 +101,31 @@ function NavLinks({ orientation = "row", onClick }: { orientation?: "row" | "col
 
 export function Navbar() {
     const [scrolled, setScrolled] = React.useState(false);
+
+    // Optimized scroll handler with throttling
     React.useEffect(() => {
-        const onScroll = () => setScrolled(window.scrollY > 8);
+        let ticking = false;
+
+        const onScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    setScrolled(window.scrollY > 8);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        };
+
         onScroll();
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
     return (
-        <div className={cn("sticky z-50 flex w-full justify-center transition-all duration-700 ease-in-out", scrolled ? "top-3" : "top-0")}>
+        <div className={cn("sticky z-50 flex w-full justify-center transition-all duration-500 ease-out", scrolled ? "top-3" : "top-0")}>
             <div
                 className={cn(
-                    "w-full transition-all duration-700 ease-in-out",
+                    "w-full transition-all duration-500 ease-out",
                     scrolled ? "max-w-5xl" : "max-w-none",
                 )}
             >
@@ -90,7 +133,7 @@ export function Navbar() {
                     className={cn(
                         "glass border border-border/60 shadow-sm mx-auto",
                         "flex items-center justify-between",
-                        "transition-all duration-700 ease-in-out",
+                        "transition-all duration-500 ease-out",
                         scrolled
                             ? "rounded-full px-4 py-2 backdrop-blur-md"
                             : "rounded-none px-6 py-4 backdrop-blur-lg"

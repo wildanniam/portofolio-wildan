@@ -4,7 +4,7 @@ import ButtonPurple from "@/components/ui/button-purple";
 import ButtonGreen from "@/components/ui/button-green";
 import Image from "next/image";
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import { Particles } from "@/components/hero/particles";
 
 const fadeUp = (delay = 0) => ({
@@ -51,25 +51,137 @@ export function Hero() {
         return () => { clearInterval(interval); clearInterval(blink); };
     }, []);
 
-    // tilt interactions for photo (currently unused but kept for future use)
-    // const x = useMotionValue(0);
-    // const y = useMotionValue(0);
-    // const rotateX = useTransform(y, [-60, 60], [10, -10]);
-    // const rotateY = useTransform(x, [-60, 60], [-10, 10]);
-    // function onMove(e: React.MouseEvent<HTMLDivElement>) {
-    //     const rect = e.currentTarget.getBoundingClientRect();
-    //     x.set(e.clientX - rect.left - rect.width / 2);
-    //     y.set(e.clientY - rect.top - rect.height / 2);
-    // }
-    // function onLeave() { x.set(0); y.set(0); }
+    // UX-Optimized 3D Parallax Background Effect
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    const distance = useMotionValue(0);
+    const [isReducedMotion, setIsReducedMotion] = React.useState(false);
+
+    // Check for reduced motion preference
+    React.useEffect(() => {
+        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        setIsReducedMotion(mediaQuery.matches);
+
+        const handleChange = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
+        mediaQuery.addEventListener('change', handleChange);
+        return () => mediaQuery.removeEventListener('change', handleChange);
+    }, []);
+
+    // Calculate distance from center for dynamic scaling
+    React.useEffect(() => {
+        if (isReducedMotion) return;
+
+        const unsubscribeX = mouseX.on("change", (x) => {
+            const unsubscribeY = mouseY.on("change", (y) => {
+                const dist = Math.sqrt(x * x + y * y);
+                distance.set(dist);
+            });
+            return unsubscribeY;
+        });
+        return unsubscribeX;
+    }, [mouseX, mouseY, distance, isReducedMotion]);
+
+    // UX-optimized transforms - much more subtle
+    const rotateX = useTransform(mouseY, [-400, 400], isReducedMotion ? [0, 0] : [2, -2]);
+    const rotateY = useTransform(mouseX, [-400, 400], isReducedMotion ? [0, 0] : [-2, 2]);
+    const scale = useTransform(distance, [0, 500], isReducedMotion ? [1, 1] : [1, 1.03]);
+
+    // Subtle parallax layers for depth
+    const translateX = useTransform(mouseX, [-400, 400], isReducedMotion ? [0, 0] : [-8, 8]);
+    const translateY = useTransform(mouseY, [-400, 400], isReducedMotion ? [0, 0] : [-6, 6]);
+
+    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (isReducedMotion) return;
+
+        const rect = e.currentTarget.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        const x = e.clientX - centerX;
+        const y = e.clientY - centerY;
+
+        mouseX.set(x);
+        mouseY.set(y);
+    };
+
+    const handleMouseLeave = () => {
+        if (isReducedMotion) return;
+
+        mouseX.set(0);
+        mouseY.set(0);
+        distance.set(0);
+    };
 
     return (
-        <section id="home" className="relative overflow-hidden min-h-dvh md:min-h-[100svh] flex items-center">
-            {/* Background image */}
-            <div className="absolute inset-0 -z-40">
-                <Image src="/background-1.webp" alt="" fill priority className="object-cover opacity-20" />
+        <section
+            id="home"
+            className="relative overflow-hidden min-h-dvh md:min-h-[100svh] flex items-center"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ perspective: "1000px" }}
+        >
+            {/* Enhanced 3D Background with Multi-layer Parallax */}
+            <div className="absolute inset-0 -z-40 overflow-hidden">
+                {/* Main background layer with 3D transforms */}
+                <motion.div
+                    className="w-full h-full"
+                    style={{
+                        rotateX,
+                        rotateY,
+                        scale,
+                        translateX,
+                        translateY,
+                        transformStyle: "preserve-3d",
+                    }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 120,
+                        damping: 40,
+                        mass: 0.8,
+                    }}
+                >
+                    <Image
+                        src="/background-1.webp"
+                        alt=""
+                        fill
+                        priority
+                        className="object-cover opacity-20 will-change-transform"
+                        style={{
+                            transform: "translateZ(0)",
+                            transformOrigin: "center center",
+                        }}
+                    />
+                </motion.div>
+
+                {/* Secondary parallax layer for depth */}
+                <motion.div
+                    className="absolute inset-0 w-full h-full"
+                    style={{
+                        rotateX: useTransform(mouseY, [-400, 400], [4, -4]),
+                        rotateY: useTransform(mouseX, [-400, 400], [-4, 4]),
+                        translateX: useTransform(mouseX, [-400, 400], [-10, 10]),
+                        translateY: useTransform(mouseY, [-400, 400], [-8, 8]),
+                        scale: useTransform(distance, [0, 500], [1.02, 1.08]),
+                        transformStyle: "preserve-3d",
+                    }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 35,
+                        mass: 0.9,
+                    }}
+                >
+                    <div
+                        className="w-full h-full opacity-10"
+                        style={{
+                            background: "radial-gradient(circle at 50% 50%, rgba(111,100,255,0.3), transparent 70%)",
+                            transform: "translateZ(-10px)",
+                        }}
+                    />
+                </motion.div>
+
                 {/* Bottom fade to match page background */}
-                <div className="absolute inset-x-0 bottom-0 h-40" style={{ backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0), var(--background))" }} />
+                <div className="absolute inset-x-0 bottom-0 h-40 z-10" style={{ backgroundImage: "linear-gradient(to bottom, rgba(0,0,0,0), var(--background))" }} />
             </div>
             <Particles />
             <div className="container mx-auto px-4">
@@ -146,9 +258,13 @@ export function Hero() {
                         />
 
                         {/* Profile visual with gradient border + glass + hover scale */}
-                        <motion.div whileHover={{ scale: 1.03 }} transition={{ type: "spring", stiffness: 280, damping: 24 }} className="relative rounded-2xl p-[2px] brand-gradient will-change-transform">
+                        <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="relative rounded-2xl p-[2px] brand-gradient will-change-transform shadow-2xl"
+                        >
                             <div className="glass rounded-2xl p-2 md:p-3">
-                                <div className="relative w-56 md:w-80 aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-background/30 to-secondary/30">
+                                <div className="relative w-56 md:w-72 aspect-[4/5] rounded-2xl overflow-hidden bg-gradient-to-br from-background/30 to-secondary/30 shadow-inner">
                                     <Image
                                         src="/wildan-2.png"
                                         alt="Profile"
@@ -156,7 +272,7 @@ export function Hero() {
                                         priority
                                         className="object-cover"
                                         sizes="(min-width: 768px) 22rem, 16rem"
-                                        style={{ objectPosition: "center 18%" }}
+                                        style={{ objectPosition: "center 25%" }}
                                     />
                                 </div>
                             </div>
@@ -194,10 +310,10 @@ export function Hero() {
                         </motion.div>
 
                         {/* Floating badges around photo */}
-                        <motion.div className="absolute -right-2 -bottom-10 hidden md:flex items-center gap-2 rounded-full px-3 py-1 glass text-xs" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+                        <motion.div className="absolute -right-1 -bottom-8 hidden md:flex items-center gap-2 rounded-full px-2.5 py-1 glass text-xs" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
                             <span className="size-1.5 rounded-full bg-[color:var(--accent-secure)]" /> Secure by Design
                         </motion.div>
-                        <motion.div className="absolute -left-6 top-6 hidden md:flex items-center gap-2 rounded-full px-3 py-1 glass text-xs" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+                        <motion.div className="absolute -left-4 top-4 hidden md:flex items-center gap-2 rounded-full px-2.5 py-1 glass text-xs" initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
                             <span className="size-1.5 rounded-full bg-blue-400" /> Multi‑chain Ready
                         </motion.div>
                     </div>
