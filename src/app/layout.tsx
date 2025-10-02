@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,7 @@ export default function RootLayout({
           {children}
           <Toaster richColors position="top-right" />
           <Footer />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

@@ -4,7 +4,7 @@ import ButtonPurple from "@/components/ui/button-purple";
 import ButtonGreen from "@/components/ui/button-green";
 import Image from "next/image";
 import * as React from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { Particles } from "@/components/hero/particles";
 
 const fadeUp = (delay = 0) => ({
