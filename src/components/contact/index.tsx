@@ -49,7 +49,7 @@ export function Contact() {
             if (!res.ok || !data.ok) throw new Error("Failed");
             toast.success("Pesan terkirim! Saya akan menghubungi Anda kembali.");
             form.reset();
-        } catch (e) {
+        } catch {
             toast.error("Gagal mengirim pesan. Coba lagi nanti.");
         }
     }

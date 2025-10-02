@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 type SizeKey = "sm" | "md" | "lg" | "now";
@@ -52,11 +53,12 @@ const ButtonGreen: React.FC<ButtonGreenProps> = ({
 
     const iconNode = icon && (
         typeof icon === "string" ? (
-            <img
+            <Image
                 src={icon}
                 alt="icon"
+                width={typeof iconSize === "number" ? iconSize : 18}
+                height={typeof iconSize === "number" ? iconSize : 18}
                 className={cn("select-none", typeof iconSize === "string" ? iconSize : s.icon, iconClassName)}
-                style={typeof iconSize === "number" ? { width: iconSize, height: iconSize } : undefined}
             />
         ) : (
             icon

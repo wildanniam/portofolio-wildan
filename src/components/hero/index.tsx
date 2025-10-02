@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import ButtonPurple from "@/components/ui/button-purple";
 import ButtonGreen from "@/components/ui/button-green";
 import Image from "next/image";
@@ -52,17 +51,17 @@ export function Hero() {
         return () => { clearInterval(interval); clearInterval(blink); };
     }, []);
 
-    // tilt interactions for photo
-    const x = useMotionValue(0);
-    const y = useMotionValue(0);
-    const rotateX = useTransform(y, [-60, 60], [10, -10]);
-    const rotateY = useTransform(x, [-60, 60], [-10, 10]);
-    function onMove(e: React.MouseEvent<HTMLDivElement>) {
-        const rect = e.currentTarget.getBoundingClientRect();
-        x.set(e.clientX - rect.left - rect.width / 2);
-        y.set(e.clientY - rect.top - rect.height / 2);
-    }
-    function onLeave() { x.set(0); y.set(0); }
+    // tilt interactions for photo (currently unused but kept for future use)
+    // const x = useMotionValue(0);
+    // const y = useMotionValue(0);
+    // const rotateX = useTransform(y, [-60, 60], [10, -10]);
+    // const rotateY = useTransform(x, [-60, 60], [-10, 10]);
+    // function onMove(e: React.MouseEvent<HTMLDivElement>) {
+    //     const rect = e.currentTarget.getBoundingClientRect();
+    //     x.set(e.clientX - rect.left - rect.width / 2);
+    //     y.set(e.clientY - rect.top - rect.height / 2);
+    // }
+    // function onLeave() { x.set(0); y.set(0); }
 
     return (
         <section id="home" className="relative overflow-hidden min-h-dvh md:min-h-[100svh] flex items-center">
@@ -96,7 +95,7 @@ export function Hero() {
                             className="mt-4 text-base md:text-lg max-w-xl text-foreground/80"
                             {...fadeUp(0.12)}
                         >
-                            "Building secure and scalable blockchain & web solutions that empower the future of technology."
+                            &ldquo;Building secure and scalable blockchain & web solutions that empower the future of technology.&rdquo;
                         </motion.p>
 
                         <motion.div className="mt-5 flex flex-wrap gap-2" {...fadeUp(0.18)}>
