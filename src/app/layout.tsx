@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased snap-y snap-mandatory`}>
         <ThemeProvider defaultTheme="dark" enableSystem attribute="class">
           <Navbar />
           {children}
