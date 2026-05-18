@@ -9,6 +9,14 @@ import { projects, type Project } from "@/data/portfolio";
 
 const HERO_PROJECTS = ["fradium", "agentpay", "nova-ai-wallet", "specheal", "paygate-stellar"];
 
+const heroHitTargets: Record<string, string> = {
+  fradium: "right-[16%] top-[42%] h-24 w-32",
+  agentpay: "right-[4%] top-[50%] h-28 w-24",
+  "nova-ai-wallet": "right-[8%] top-[57%] h-24 w-32",
+  specheal: "right-[19%] top-[66%] h-28 w-40",
+  "paygate-stellar": "right-[29%] top-[58%] h-28 w-36",
+};
+
 const projectColors: Record<Project["accent"], string> = {
   mint: "#9effc9",
   cyan: "#73e7ff",
@@ -101,6 +109,44 @@ function DataRibbon({
       opacity={active ? 0.72 : 0.14}
       lineWidth={active ? 2.2 : 0.8}
     />
+  );
+}
+
+function EnergyPacket({
+  from,
+  to,
+  color,
+  active,
+}: {
+  from: THREE.Vector3;
+  to: THREE.Vector3;
+  color: string;
+  active: boolean;
+}) {
+  const packetRef = React.useRef<THREE.Mesh>(null);
+  const curve = React.useMemo(() => {
+    const control = from.clone().add(to).multiplyScalar(0.5);
+    control.y += 0.42;
+    control.z += 0.62;
+    return new THREE.QuadraticBezierCurve3(from, control, to);
+  }, [from, to]);
+
+  useFrame(({ clock }) => {
+    if (!packetRef.current || !active) return;
+    const progress = (clock.elapsedTime * 0.36) % 1;
+    const point = curve.getPoint(progress);
+    packetRef.current.position.copy(point);
+    packetRef.current.scale.setScalar(0.72 + Math.sin(clock.elapsedTime * 9) * 0.16);
+  });
+
+  if (!active) return null;
+
+  return (
+    <mesh ref={packetRef}>
+      <sphereGeometry args={[0.045, 16, 16]} />
+      <meshBasicMaterial color={color} transparent opacity={0.92} />
+      <pointLight color={color} intensity={0.84} distance={0.82} />
+    </mesh>
   );
 }
 
@@ -247,14 +293,18 @@ function ProjectModule({
   project,
   active,
   dimmed,
+  locked,
   onHover,
   onLeave,
+  onLock,
 }: {
   project: ReactorProject;
   active: boolean;
   dimmed: boolean;
+  locked: boolean;
   onHover: (project: ReactorProject) => void;
   onLeave: () => void;
+  onLock: (project: ReactorProject) => void;
 }) {
   const groupRef = React.useRef<THREE.Group>(null);
 
@@ -272,13 +322,23 @@ function ProjectModule({
       rotation={project.rotation}
       onPointerOver={(event) => {
         event.stopPropagation();
+        document.body.style.cursor = "pointer";
         onHover(project);
       }}
       onPointerOut={(event) => {
         event.stopPropagation();
+        document.body.style.cursor = "";
         onLeave();
       }}
+      onClick={(event) => {
+        event.stopPropagation();
+        onLock(project);
+      }}
     >
+      <mesh>
+        <boxGeometry args={[0.82, 0.52, 0.48]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+      </mesh>
       <mesh>
         <boxGeometry args={[0.44, 0.18, 0.16]} />
         <meshStandardMaterial
@@ -307,6 +367,18 @@ function ProjectModule({
         <boxGeometry args={[0.44, 0.18, 0.01]} />
         <meshBasicMaterial color={project.color} transparent opacity={active ? 0.12 : 0.035} />
       </mesh>
+      {locked ? (
+        <group position={[0, -0.16, 0.104]}>
+          <mesh>
+            <boxGeometry args={[0.26, 0.018, 0.024]} />
+            <meshBasicMaterial color={project.color} transparent opacity={0.88} />
+          </mesh>
+          <mesh position={[0, -0.032, 0]}>
+            <boxGeometry args={[0.13, 0.036, 0.018]} />
+            <meshBasicMaterial color="#f8fff9" transparent opacity={0.74} />
+          </mesh>
+        </group>
+      ) : null}
     </group>
   );
 }
@@ -327,13 +399,19 @@ function HeroParticles({ active }: { active: boolean }) {
   );
 }
 
-function HoverTooltip({ activeProject }: { activeProject: ReactorProject | null }) {
+function HoverTooltip({
+  activeProject,
+  locked,
+}: {
+  activeProject: ReactorProject | null;
+  locked: boolean;
+}) {
   if (!activeProject) return null;
 
   return (
     <div className="pointer-events-none absolute right-[7%] top-[21%] z-20 hidden max-w-64 rounded-[8px] border border-white/14 bg-[#07100d]/78 px-4 py-3 shadow-[0_24px_90px_rgba(0,0,0,0.35)] backdrop-blur-xl lg:block">
       <p className="font-mono text-[10px] uppercase tracking-[0.24em]" style={{ color: activeProject.color }}>
-        active satellite
+        {locked ? "pinned satellite" : "active satellite"}
       </p>
       <p className="mt-2 text-sm font-medium text-[color:var(--ink)]">{activeProject.title}</p>
       <p className="mt-1 text-xs leading-5 text-[color:var(--muted-ink)]">{activeProject.focus}</p>
@@ -344,11 +422,15 @@ function HoverTooltip({ activeProject }: { activeProject: ReactorProject | null 
 function ReactorScene({
   activeSlug,
   setActiveSlug,
+  lockedSlug,
+  setLockedSlug,
   isInteracting,
   setInteracting,
 }: {
   activeSlug: string | null;
   setActiveSlug: (slug: string | null) => void;
+  lockedSlug: string | null;
+  setLockedSlug: (slug: string | null) => void;
   isInteracting: boolean;
   setInteracting: (active: boolean) => void;
 }) {
@@ -359,14 +441,14 @@ function ReactorScene({
   const activeProject = projectsForHero.find((project) => project.slug === activeSlug) ?? null;
 
   React.useEffect(() => {
-    if (!coarsePointer || isInteracting || reducedMotion) return;
+    if (!coarsePointer || isInteracting || lockedSlug || reducedMotion) return;
     let index = 0;
     const timer = window.setInterval(() => {
       index = (index + 1) % projectsForHero.length;
       setActiveSlug(projectsForHero[index].slug);
     }, 2600);
     return () => window.clearInterval(timer);
-  }, [coarsePointer, isInteracting, projectsForHero, reducedMotion, setActiveSlug]);
+  }, [coarsePointer, isInteracting, lockedSlug, projectsForHero, reducedMotion, setActiveSlug]);
 
   useFrame(({ clock, camera, pointer }) => {
     const t = clock.elapsedTime;
@@ -393,7 +475,8 @@ function ReactorScene({
         onPointerEnter={() => setInteracting(true)}
         onPointerLeave={() => {
           setInteracting(false);
-          setActiveSlug(null);
+          if (!lockedSlug) setActiveSlug(null);
+          document.body.style.cursor = "";
         }}
       >
         <Float speed={reducedMotion ? 0 : 1.4} rotationIntensity={reducedMotion ? 0 : 0.08} floatIntensity={reducedMotion ? 0 : 0.18}>
@@ -404,6 +487,7 @@ function ReactorScene({
           {projectsForHero.map((project) => {
             const active = project.slug === activeSlug;
             const dimmed = Boolean(activeSlug && !active);
+            const locked = project.slug === lockedSlug;
             return (
               <React.Fragment key={project.slug}>
                 <DataRibbon
@@ -412,17 +496,28 @@ function ReactorScene({
                   color={project.color}
                   active={active}
                 />
+                <EnergyPacket
+                  from={project.position}
+                  to={new THREE.Vector3(0, 0, 0)}
+                  color={project.color}
+                  active={active}
+                />
                 <ProjectModule
                   project={project}
                   active={active}
                   dimmed={dimmed}
+                  locked={locked}
                   onHover={(nextProject) => {
                     setInteracting(true);
-                    setActiveSlug(nextProject.slug);
+                    if (!lockedSlug) setActiveSlug(nextProject.slug);
                   }}
                   onLeave={() => {
                     setInteracting(false);
-                    setActiveSlug(null);
+                    if (!lockedSlug) setActiveSlug(null);
+                  }}
+                  onLock={(nextProject) => {
+                    setLockedSlug(lockedSlug === nextProject.slug ? null : nextProject.slug);
+                    setActiveSlug(nextProject.slug);
                   }}
                 />
               </React.Fragment>
@@ -432,16 +527,24 @@ function ReactorScene({
       </group>
       <HeroParticles active={Boolean(activeProject || isInteracting)} />
       <EffectComposer>
-        <Bloom intensity={0.82} luminanceThreshold={0.12} luminanceSmoothing={0.72} mipmapBlur />
+        <Bloom
+          intensity={activeProject ? 1.05 : isInteracting ? 0.9 : 0.78}
+          luminanceThreshold={0.12}
+          luminanceSmoothing={0.72}
+          mipmapBlur
+        />
       </EffectComposer>
     </>
   );
 }
 
 export function CommandDeckScene() {
-  const [activeSlug, setActiveSlug] = React.useState<string | null>(null);
+  const [hoverSlug, setHoverSlug] = React.useState<string | null>(null);
+  const [lockedSlug, setLockedSlug] = React.useState<string | null>(null);
   const [isInteracting, setInteracting] = React.useState(false);
-  const activeProject = useHeroProjects().find((project) => project.slug === activeSlug) ?? null;
+  const activeSlug = lockedSlug ?? hoverSlug;
+  const projectsForHero = useHeroProjects();
+  const activeProject = projectsForHero.find((project) => project.slug === activeSlug) ?? null;
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -453,15 +556,49 @@ export function CommandDeckScene() {
         camera={{ position: [0, 0.14, 4.65], fov: 38 }}
         dpr={[1, 1.7]}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+        onPointerMissed={() => setLockedSlug(null)}
       >
         <ReactorScene
           activeSlug={activeSlug}
-          setActiveSlug={setActiveSlug}
+          setActiveSlug={setHoverSlug}
+          lockedSlug={lockedSlug}
+          setLockedSlug={setLockedSlug}
           isInteracting={isInteracting}
           setInteracting={setInteracting}
         />
       </Canvas>
-      <HoverTooltip activeProject={activeProject} />
+      <div className="absolute inset-0 z-10 hidden lg:block">
+        {projectsForHero.map((project) => (
+          <button
+            key={project.slug}
+            type="button"
+            tabIndex={-1}
+            aria-label={`Inspect ${project.title}`}
+            className={`pointer-events-auto absolute cursor-pointer appearance-none rounded-full border-0 bg-transparent p-0 outline-none ${heroHitTargets[project.slug] ?? ""}`}
+            onPointerEnter={() => {
+              setInteracting(true);
+              if (!lockedSlug) setHoverSlug(project.slug);
+            }}
+            onPointerLeave={() => {
+              setInteracting(false);
+              if (!lockedSlug) setHoverSlug(null);
+            }}
+            onMouseEnter={() => {
+              setInteracting(true);
+              if (!lockedSlug) setHoverSlug(project.slug);
+            }}
+            onMouseLeave={() => {
+              setInteracting(false);
+              if (!lockedSlug) setHoverSlug(null);
+            }}
+            onClick={() => {
+              setLockedSlug(lockedSlug === project.slug ? null : project.slug);
+              setHoverSlug(project.slug);
+            }}
+          />
+        ))}
+      </div>
+      <HoverTooltip activeProject={activeProject} locked={Boolean(lockedSlug)} />
       <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[color:var(--void)] via-[color:var(--void)]/96 to-transparent max-md:w-full max-md:from-[color:var(--void)]/98 max-md:via-[color:var(--void)]/94 max-md:to-[color:var(--void)]/74" />
       <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[color:var(--void)] via-[color:var(--void)]/76 to-transparent" />
       <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[color:var(--void)]/84 to-transparent" />

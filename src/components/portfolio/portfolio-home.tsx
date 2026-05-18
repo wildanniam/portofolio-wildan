@@ -629,12 +629,12 @@ export function PortfolioHome() {
         className="relative isolate min-h-[calc(100svh-84px)] overflow-hidden px-4 pb-14 pt-10 md:px-8 md:pb-20 md:pt-14"
       >
         <CommandDeckScene />
-        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-150px)] max-w-7xl content-center gap-10 lg:grid-cols-[0.78fr_0.72fr]">
+        <div className="pointer-events-none relative z-10 mx-auto grid min-h-[calc(100svh-150px)] max-w-7xl content-center gap-10 lg:grid-cols-[0.78fr_0.72fr]">
           <motion.div
             initial={false}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, ease: "easeOut" }}
-            className="max-w-5xl"
+            className="pointer-events-auto max-w-5xl"
           >
             <div className="inline-flex items-center gap-2 rounded-[8px] border border-white/14 bg-black/24 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.28em] text-[color:var(--signal-mint)] shadow-[0_0_40px_rgba(158,255,201,0.08)] backdrop-blur-md">
               <span className="size-1.5 rounded-full bg-[color:var(--signal-mint)] shadow-[0_0_18px_var(--signal-mint)]" />
@@ -666,7 +666,7 @@ export function PortfolioHome() {
             </div>
           </motion.div>
 
-          <div aria-hidden="true" className="hidden min-h-[34rem] lg:block" />
+          <div aria-hidden="true" className="pointer-events-none hidden min-h-[34rem] lg:block" />
         </div>
       </section>
 
