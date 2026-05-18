@@ -5,13 +5,20 @@ import { motion } from "framer-motion";
 import {
   ArrowUpRight,
   BadgeCheck,
+  Braces,
+  CircleDollarSign,
+  Cpu,
   ExternalLink,
+  FileCheck2,
   Github,
   Mail,
+  Network,
+  Orbit,
   Radio,
   ShieldCheck,
-  Sparkles,
+  WalletCards,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { CommandDeckScene } from "@/components/observatory/command-deck-scene";
 import {
   achievements,
@@ -37,6 +44,40 @@ const accentClasses: Record<Project["accent"], string> = {
   blue: "border-blue-300/40 bg-blue-300/10 text-blue-100 shadow-[0_0_22px_rgba(143,184,255,0.08)]",
 };
 
+const accentValues: Record<Project["accent"], string> = {
+  cyan: "#73e7ff",
+  mint: "#9effc9",
+  violet: "#9b8cff",
+  amber: "#ffd166",
+  rose: "#ff7a59",
+  blue: "#8fb8ff",
+};
+
+const projectGlyphs: Record<string, LucideIcon> = {
+  fradium: ShieldCheck,
+  agentpay: CircleDollarSign,
+  "nova-ai-wallet": WalletCards,
+  specheal: FileCheck2,
+  crucible: Network,
+  "paygate-stellar": Braces,
+};
+
+const projectMotifs: Record<string, string[]> = {
+  fradium: ["Address intelligence", "Threat verdict", "Community signal"],
+  agentpay: ["402 registry", "Stellar settlement", "Agent-readable APIs"],
+  "nova-ai-wallet": ["Intent parser", "Wallet tools", "User-controlled signing"],
+  specheal: ["Failure evidence", "AI verdict", "Safe patch loop"],
+  crucible: ["Stake", "Verify", "Slash / reward"],
+  "paygate-stellar": ["Middleware", "USDC rails", "Builder dashboard"],
+};
+
+const proofHighlights = [
+  { value: "$5K", label: "SCF Instaward", tone: "amber" },
+  { value: "1st", label: "Global AI / Web3 wins", tone: "cyan" },
+  { value: "2nd", label: "Refactory Hackathon", tone: "rose" },
+  { value: "Lead", label: "Product + architecture owner", tone: "mint" },
+] as const;
+
 const reveal = {
   initial: { opacity: 0, y: 28 },
   whileInView: { opacity: 1, y: 0 },
@@ -52,7 +93,7 @@ function DeckPanel({
   className?: string;
 }) {
   return (
-    <div className={cn("deck-panel scanline overflow-hidden rounded-[10px] p-5 md:p-6", className)}>
+    <div className={cn("deck-panel scanline overflow-hidden rounded-[8px] p-5 md:p-6", className)}>
       {children}
     </div>
   );
@@ -102,7 +143,7 @@ function LinkButton({
       target={href.startsWith("http") ? "_blank" : undefined}
       rel={href.startsWith("http") ? "noreferrer" : undefined}
       className={cn(
-        "group inline-flex h-12 items-center gap-2 rounded-[9px] px-4 text-sm font-medium transition duration-300",
+        "group inline-flex h-12 items-center gap-2 rounded-[8px] px-4 text-sm font-medium transition duration-300",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--signal-cyan)]",
         variant === "primary"
           ? "bg-[color:var(--ink)] text-[#050706] hover:-translate-y-0.5 hover:shadow-[0_18px_70px_rgba(158,255,201,0.26)]"
@@ -117,16 +158,20 @@ function LinkButton({
 
 function HeroTelemetry() {
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="relative grid gap-3 sm:grid-cols-3">
+      <div className="absolute left-6 right-6 top-6 hidden h-px bg-gradient-to-r from-[color:var(--signal-cyan)]/0 via-[color:var(--signal-cyan)]/30 to-[color:var(--signal-cyan)]/0 sm:block" />
       {[
         ["observe", "agent state"],
         ["verify", "risk signal"],
         ["execute", "bounded action"],
-      ].map(([verb, noun]) => (
+      ].map(([verb, noun], index) => (
         <div
           key={verb}
-          className="rounded-[9px] border border-white/10 bg-black/20 px-3 py-3 backdrop-blur-md"
+          className="relative rounded-[8px] border border-white/10 bg-black/22 px-3 py-3 backdrop-blur-md"
         >
+          <span className="absolute -top-1 left-3 grid size-3 place-items-center rounded-full border border-[color:var(--signal-cyan)]/40 bg-[#050706]">
+            <span className={cn("size-1 rounded-full", index === 1 ? "bg-[color:var(--signal-amber)]" : "bg-[color:var(--signal-mint)]")} />
+          </span>
           <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--signal-mint)]">
             {verb}
           </p>
@@ -140,9 +185,10 @@ function HeroTelemetry() {
 function MetricsRail() {
   return (
     <section className="relative z-10 px-4 pb-16 md:px-8">
-      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden rounded-[10px] border border-white/10 bg-white/10 md:grid-cols-4">
+      <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px overflow-hidden rounded-[8px] border border-white/10 bg-white/10 shadow-[0_30px_120px_rgba(0,0,0,0.28)] md:grid-cols-4">
         {metrics.map((metric) => (
-          <div key={metric.label} className="bg-[#060a08]/92 px-5 py-6">
+          <div key={metric.label} className="group relative bg-[#060a08]/92 px-5 py-6">
+            <span className="absolute left-0 top-0 h-px w-full origin-left scale-x-0 bg-[color:var(--signal-cyan)]/55 transition duration-500 group-hover:scale-x-100" />
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/38">
               telemetry
             </p>
@@ -160,52 +206,98 @@ function MetricsRail() {
 function ResearchDeck() {
   return (
     <section id="research" className="relative px-4 py-20 md:px-8 md:py-28">
-      <div className="absolute inset-x-0 top-12 mx-auto h-64 max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(115,231,255,0.14),transparent_62%)] blur-3xl" />
+      <div className="absolute inset-x-0 top-12 mx-auto h-72 max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(115,231,255,0.16),transparent_62%)] blur-3xl" />
       <div className="relative mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Research vectors"
           title="Four command channels for autonomous systems"
           description="Each research vector is connected to shipped work: agents that use tools, wallets that explain risk, on-chain intelligence, and payment rails for autonomous software."
         />
-        <div className="mt-14 grid gap-4 lg:grid-cols-4">
-          {researchVectors.map((vector, index) => (
-            <motion.article
-              key={vector.title}
-              {...reveal}
-              transition={{ ...reveal.transition, delay: index * 0.05 }}
-              className="group relative min-h-[21rem] overflow-hidden rounded-[10px] border border-white/10 bg-[#07100d]/78 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-300 hover:-translate-y-1 hover:border-white/24"
-            >
-              <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 [background:radial-gradient(circle_at_50%_0%,rgba(115,231,255,0.15),transparent_45%)]" />
-              <div className="absolute right-4 top-4 font-mono text-[10px] text-white/25">
-                0{index + 1}
+        <div className="mt-16 grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
+          <motion.div {...reveal} className="relative min-h-[35rem] overflow-hidden rounded-[8px] border border-white/10 bg-[#06100d]/70 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_40px_140px_rgba(0,0,0,0.28)]">
+            <div className="absolute inset-0 [background:radial-gradient(circle_at_50%_45%,rgba(115,231,255,0.18),transparent_34%),radial-gradient(circle_at_62%_58%,rgba(158,255,201,0.1),transparent_28%)]" />
+            <div className="absolute inset-8 rounded-full border border-[color:var(--signal-cyan)]/14" />
+            <div className="absolute inset-20 rounded-full border border-[color:var(--signal-mint)]/12" />
+            <div className="absolute left-1/2 top-14 h-[78%] w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-[color:var(--signal-cyan)]/24 to-transparent" />
+            <div className="absolute left-14 top-1/2 h-px w-[78%] -translate-y-1/2 bg-gradient-to-r from-transparent via-[color:var(--signal-mint)]/22 to-transparent" />
+            <div className="relative flex h-full min-h-[31rem] items-center justify-center">
+              <div className="relative grid size-52 place-items-center rounded-full border border-white/12 bg-black/24 shadow-[0_0_120px_rgba(115,231,255,0.16)]">
+                <div className="absolute inset-5 rounded-full border border-[color:var(--signal-cyan)]/25" />
+                <Cpu className="size-14 text-[color:var(--signal-cyan)]" />
+                <span className="absolute -bottom-8 font-mono text-[10px] uppercase tracking-[0.28em] text-white/40">
+                  research kernel
+                </span>
               </div>
-              <div className="relative">
-                <div className="flex size-12 items-center justify-center rounded-[9px] border border-white/12 bg-white/[0.045]">
-                  <vector.icon className="size-6 text-[color:var(--signal-cyan)]" />
-                </div>
-                <p className="mt-8 font-mono text-[10px] uppercase tracking-[0.24em] text-white/42">
-                  {vector.eyebrow}
-                </p>
-                <h3 className="mt-2 text-2xl font-semibold text-[color:var(--ink)]">
-                  {vector.title}
-                </h3>
-                <p className="mt-4 text-sm leading-6 text-[color:var(--muted-ink)]">
-                  {vector.summary}
-                </p>
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {vector.links.map((link) => (
-                    <span
-                      key={link}
-                      className="rounded-[7px] border border-white/10 bg-white/[0.035] px-2.5 py-1 text-[11px] text-white/58"
-                    >
-                      {link}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="absolute inset-x-4 bottom-4 h-px bg-gradient-to-r from-transparent via-[color:var(--signal-cyan)]/50 to-transparent" />
-            </motion.article>
-          ))}
+              {researchVectors.map((vector, index) => {
+                const tone = accentValues[vector.color as Project["accent"]];
+                const placements = [
+                  "left-[10%] top-[12%]",
+                  "right-[8%] top-[22%]",
+                  "left-[13%] bottom-[18%]",
+                  "right-[10%] bottom-[13%]",
+                ];
+                return (
+                  <div
+                    key={vector.title}
+                    className={cn("absolute w-36 rounded-[8px] border bg-black/22 p-3 backdrop-blur-sm", placements[index])}
+                    style={{ borderColor: `${tone}55`, boxShadow: `0 0 40px ${tone}16` }}
+                  >
+                    <vector.icon className="size-5" style={{ color: tone }} />
+                    <p className="mt-3 text-sm font-medium text-[color:var(--ink)]">{vector.title}</p>
+                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/36">
+                      channel 0{index + 1}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {researchVectors.map((vector, index) => {
+              const tone = accentValues[vector.color as Project["accent"]];
+              return (
+                <motion.article
+                  key={vector.title}
+                  {...reveal}
+                  transition={{ ...reveal.transition, delay: index * 0.05 }}
+                  className="group relative min-h-[17rem] overflow-hidden rounded-[8px] border border-white/10 bg-[#07100d]/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-500 hover:-translate-y-1"
+                  style={{ "--vector-tone": tone, "--vector-glow": `${tone}33` } as React.CSSProperties}
+                >
+                  <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 [background:radial-gradient(circle_at_32%_0%,var(--vector-glow),transparent_46%)]" />
+                  <div className="absolute -right-10 -top-12 size-36 rounded-full border border-[color:var(--vector-tone)]/20" />
+                  <div className="absolute right-4 top-4 font-mono text-[10px] text-white/25">0{index + 1}</div>
+                  <div className="relative flex h-full flex-col">
+                    <div className="flex items-center gap-3">
+                      <div className="grid size-12 place-items-center rounded-[8px] border border-[color:var(--vector-tone)]/35 bg-[color:var(--vector-tone)]/10">
+                        <vector.icon className="size-6 text-[color:var(--vector-tone)]" />
+                      </div>
+                      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/40">
+                        {vector.eyebrow}
+                      </p>
+                    </div>
+                    <h3 className="mt-8 text-2xl font-semibold text-[color:var(--ink)]">
+                      {vector.title}
+                    </h3>
+                    <p className="mt-4 text-sm leading-6 text-[color:var(--muted-ink)]">
+                      {vector.summary}
+                    </p>
+                    <div className="mt-auto flex flex-wrap gap-2 pt-6">
+                      {vector.links.map((link) => (
+                        <span
+                          key={link}
+                          className="rounded-[8px] border border-white/10 bg-white/[0.035] px-2.5 py-1 text-[11px] text-white/58"
+                        >
+                          {link}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="absolute inset-x-5 bottom-4 h-px bg-gradient-to-r from-transparent via-[color:var(--vector-tone)]/60 to-transparent" />
+                </motion.article>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
@@ -227,7 +319,7 @@ function ProjectNodeButton({
       onClick={onSelect}
       onMouseEnter={onSelect}
       className={cn(
-        "group grid w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[9px] border px-3 py-3 text-left transition duration-300",
+        "group grid w-full grid-cols-[auto_1fr_auto] items-center gap-3 rounded-[8px] border px-3 py-3 text-left transition duration-300",
         active
           ? "border-[color:var(--signal-cyan)]/45 bg-[color:var(--signal-cyan)]/10 shadow-[0_0_38px_rgba(115,231,255,0.09)]"
           : "border-white/10 bg-white/[0.035] hover:border-white/22 hover:bg-white/[0.055]"
@@ -242,6 +334,65 @@ function ProjectNodeButton({
         {project.year}
       </span>
     </button>
+  );
+}
+
+function ProjectDossierVisual({ project }: { project: Project }) {
+  const tone = accentValues[project.accent];
+  const Glyph = projectGlyphs[project.slug] ?? Orbit;
+  const motifs = projectMotifs[project.slug] ?? [project.signal, project.focus, project.year];
+
+  return (
+    <div
+      className="relative overflow-hidden rounded-[8px] border border-white/10 bg-black/24 p-5"
+      style={{ "--project-tone": tone, "--project-glow": `${tone}33` } as React.CSSProperties}
+    >
+      <div className="absolute inset-0 [background:radial-gradient(circle_at_50%_35%,var(--project-glow),transparent_42%)]" />
+      <div className="absolute inset-6 rounded-full border border-[color:var(--project-tone)]/18" />
+      <div className="absolute inset-14 rounded-full border border-white/10" />
+      <div className="absolute left-1/2 top-0 h-full w-px bg-gradient-to-b from-transparent via-[color:var(--project-tone)]/30 to-transparent" />
+      <div className="absolute left-0 top-1/2 h-px w-full bg-gradient-to-r from-transparent via-[color:var(--project-tone)]/30 to-transparent" />
+
+      <div className="relative grid aspect-square place-items-center">
+        <motion.div
+          key={`${project.slug}-halo`}
+          initial={{ opacity: 0, scale: 0.86, rotate: -8 }}
+          animate={{ opacity: 1, scale: 1, rotate: 0 }}
+          transition={{ duration: 0.48, ease: "easeOut" }}
+          className="absolute size-[72%] rounded-full border border-[color:var(--project-tone)]/24"
+        />
+        <motion.div
+          key={`${project.slug}-core`}
+          initial={{ opacity: 0, y: 18, scale: 0.92 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.42, ease: "easeOut" }}
+          className="relative grid size-40 place-items-center rounded-full border border-white/14 bg-[#07100d]/88"
+          style={{ boxShadow: `0 0 90px ${tone}2e` }}
+        >
+          <Glyph className="size-11 text-[color:var(--project-tone)]" />
+          <div className="absolute -bottom-10 w-56 text-center font-mono text-[10px] uppercase tracking-[0.28em] text-white/38">
+            {project.signal}
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="relative mt-8 grid gap-2">
+        {motifs.map((item, index) => (
+          <motion.div
+            key={item}
+            initial={{ opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.36, delay: index * 0.04 }}
+            className="flex items-center justify-between rounded-[8px] border border-white/10 bg-white/[0.035] px-3 py-2"
+          >
+            <span className="text-sm text-white/70">{item}</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/30">
+              signal
+            </span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -271,8 +422,9 @@ function MissionControl() {
           </motion.div>
 
           <motion.div {...reveal}>
-            <DeckPanel className="relative min-h-[34rem] p-0">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_24%,rgba(115,231,255,0.16),transparent_34%),radial-gradient(circle_at_20%_80%,rgba(158,255,201,0.1),transparent_36%)]" />
+            <DeckPanel className="relative min-h-[34rem] rounded-[8px] p-0">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_24%,rgba(115,231,255,0.15),transparent_34%),radial-gradient(circle_at_20%_80%,rgba(158,255,201,0.1),transparent_36%)]" />
+              <div className="absolute left-0 top-0 h-full w-px bg-gradient-to-b from-transparent via-[color:var(--signal-cyan)]/34 to-transparent" />
               <div className="relative grid min-h-[34rem] gap-0 lg:grid-cols-[1.08fr_0.92fr]">
                 <div className="flex flex-col justify-between p-6 md:p-8">
                   <div>
@@ -343,19 +495,7 @@ function MissionControl() {
                 </div>
 
                 <div className="border-t border-white/10 p-6 lg:border-l lg:border-t-0 md:p-8">
-                  <div className="relative flex aspect-square items-center justify-center rounded-[10px] border border-white/10 bg-black/20">
-                    <div className="absolute inset-8 rounded-full border border-[color:var(--signal-cyan)]/20" />
-                    <div className="absolute inset-16 rounded-full border border-[color:var(--signal-mint)]/16" />
-                    <div className="absolute h-px w-[82%] bg-gradient-to-r from-transparent via-[color:var(--signal-cyan)]/50 to-transparent" />
-                    <div className="absolute h-[82%] w-px bg-gradient-to-b from-transparent via-[color:var(--signal-mint)]/35 to-transparent" />
-                    <div className="relative grid size-40 place-items-center rounded-full border border-white/14 bg-[#07100d]/86 shadow-[0_0_80px_rgba(115,231,255,0.12)]">
-                      <Sparkles className="size-10 text-[color:var(--signal-cyan)]" />
-                      <div className="absolute -bottom-8 font-mono text-[10px] uppercase tracking-[0.22em] text-white/42">
-                        {activeProject.signal}
-                      </div>
-                    </div>
-                  </div>
-
+                  <ProjectDossierVisual project={activeProject} />
                   <div className="mt-6 grid gap-2">
                     {activeProject.stack.map((item) => (
                       <div
@@ -382,27 +522,57 @@ function MissionControl() {
 function ProofLedger() {
   return (
     <section id="proof" className="relative px-4 py-20 md:px-8 md:py-28">
+      <div className="absolute inset-x-0 top-20 mx-auto h-96 max-w-6xl rounded-full bg-[radial-gradient(circle,rgba(255,209,102,0.1),transparent_64%)] blur-3xl" />
       <div className="relative mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Proof ledger"
           title="External validation, shipped under pressure"
           description="Repeated proof across global hackathons, grant programs, and product-focused build sprints. The ledger makes the signal impossible to miss."
         />
-        <div className="mt-14 grid gap-5 lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="mt-14 grid gap-4 md:grid-cols-4">
+          {proofHighlights.map((item, index) => {
+            const tone = accentValues[item.tone as Project["accent"]];
+            return (
+              <motion.div
+                key={item.label}
+                {...reveal}
+                transition={{ ...reveal.transition, delay: index * 0.04 }}
+                className="relative overflow-hidden rounded-[8px] border border-white/10 bg-[#07100d]/70 p-5"
+                style={{ "--proof-tone": tone } as React.CSSProperties}
+              >
+                <div className="absolute -right-12 -top-12 size-32 rounded-full bg-[color:var(--proof-tone)]/10 blur-2xl" />
+                <p className="text-5xl font-semibold tracking-tight text-[color:var(--ink)]">{item.value}</p>
+                <p className="mt-3 text-sm leading-5 text-[color:var(--muted-ink)]">{item.label}</p>
+                <div className="mt-6 h-px bg-gradient-to-r from-[color:var(--proof-tone)]/70 to-transparent" />
+              </motion.div>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 grid gap-5 lg:grid-cols-[0.9fr_1.1fr]">
           <motion.div {...reveal}>
-            <DeckPanel className="sticky top-24">
-              <ShieldCheck className="size-9 text-[color:var(--signal-mint)]" />
-              <h3 className="mt-6 text-3xl font-semibold tracking-tight text-[color:var(--ink)]">
-                Credibility pattern
-              </h3>
-              <p className="mt-4 text-sm leading-7 text-[color:var(--muted-ink)]">
+            <DeckPanel className="sticky top-24 rounded-[8px]">
+              <div className="flex items-center gap-3">
+                <div className="grid size-12 place-items-center rounded-[8px] border border-[color:var(--signal-mint)]/30 bg-[color:var(--signal-mint)]/10">
+                  <ShieldCheck className="size-6 text-[color:var(--signal-mint)]" />
+                </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/38">
+                    credibility pattern
+                  </p>
+                  <h3 className="mt-1 text-2xl font-semibold tracking-tight text-[color:var(--ink)]">
+                    Lead, architect, ship, defend.
+                  </h3>
+                </div>
+              </div>
+              <p className="mt-6 text-sm leading-7 text-[color:var(--muted-ink)]">
                 Lead the project, shape the architecture, build the fullstack product,
                 integrate the AI or Web3 layer, deploy a usable demo, and explain it
                 clearly enough for judges, mentors, or grant reviewers to trust the work.
               </p>
               <div className="mt-7 grid gap-3">
                 {sourceNotes.map((note) => (
-                  <div key={note.label} className="rounded-[8px] border border-white/10 bg-white/[0.035] p-3">
+                  <div key={note.label} className="group rounded-[8px] border border-white/10 bg-white/[0.035] p-3 transition hover:border-[color:var(--signal-cyan)]/35">
                     <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[color:var(--signal-cyan)]">
                       {note.label}
                     </p>
@@ -412,40 +582,48 @@ function ProofLedger() {
               </div>
             </DeckPanel>
           </motion.div>
-          <div className="relative">
-            <div className="absolute bottom-0 left-5 top-0 w-px bg-gradient-to-b from-transparent via-[color:var(--signal-cyan)]/35 to-transparent" />
-            <div className="space-y-4">
-              {achievements.map((achievement, index) => (
-                <motion.article
-                  key={`${achievement.title}-${achievement.context}`}
-                  {...reveal}
-                  transition={{ ...reveal.transition, delay: index * 0.035 }}
-                  className="relative ml-10 rounded-[10px] border border-white/10 bg-[#07100d]/78 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:border-white/24 hover:bg-white/[0.055]"
-                >
-                  <span className="absolute -left-[2.7rem] top-6 grid size-5 place-items-center rounded-full border border-[color:var(--signal-cyan)]/50 bg-[#050706]">
-                    <span className="size-1.5 rounded-full bg-[color:var(--signal-cyan)]" />
-                  </span>
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <p className="font-mono text-xs text-[color:var(--signal-mint)]">
-                        {achievement.year}
-                      </p>
-                      <h3 className="mt-2 text-xl font-semibold text-[color:var(--ink)]">
-                        {achievement.title}
-                      </h3>
-                      <p className="mt-1 text-sm text-[color:var(--signal-cyan)]">
-                        {achievement.context}
-                      </p>
+          <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-[#06100d]/60 p-4 md:p-6">
+            <div className="absolute inset-y-8 left-1/2 hidden w-px bg-gradient-to-b from-transparent via-[color:var(--signal-cyan)]/34 to-transparent md:block" />
+            <div className="grid gap-4 md:grid-cols-2">
+              {achievements.map((achievement, index) => {
+                const tones = ["amber", "rose", "violet", "mint", "cyan", "blue", "amber"] as const;
+                const tone = accentValues[tones[index % tones.length]];
+                const featured = index < 3;
+                return (
+                  <motion.article
+                    key={`${achievement.title}-${achievement.context}`}
+                    {...reveal}
+                    transition={{ ...reveal.transition, delay: index * 0.035 }}
+                    className={cn(
+                      "group relative overflow-hidden rounded-[8px] border border-white/10 bg-black/18 p-5 transition duration-500 hover:-translate-y-1 hover:border-white/24",
+                      featured ? "md:min-h-56" : "md:min-h-48"
+                    )}
+                    style={{ "--proof-card": tone } as React.CSSProperties}
+                  >
+                    <div className="absolute -right-14 -top-14 size-36 rounded-full bg-[color:var(--proof-card)]/10 blur-2xl transition group-hover:bg-[color:var(--proof-card)]/16" />
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <p className="font-mono text-xs text-[color:var(--proof-card)]">
+                          {achievement.year}
+                        </p>
+                        <h3 className="mt-2 text-xl font-semibold text-[color:var(--ink)]">
+                          {achievement.title}
+                        </h3>
+                      </div>
+                      <span className="rounded-[8px] border border-white/10 bg-white/[0.035] px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/44">
+                        {achievement.type}
+                      </span>
                     </div>
-                    <span className="rounded-[7px] border border-white/10 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-white/44">
-                      {achievement.type}
-                    </span>
-                  </div>
-                  <p className="mt-4 text-sm leading-6 text-[color:var(--muted-ink)]">
-                    {achievement.description}
-                  </p>
-                </motion.article>
-              ))}
+                    <p className="mt-3 text-sm text-[color:var(--signal-cyan)]">
+                      {achievement.context}
+                    </p>
+                    <p className="mt-4 text-sm leading-6 text-[color:var(--muted-ink)]">
+                      {achievement.description}
+                    </p>
+                    <div className="absolute inset-x-5 bottom-4 h-px bg-gradient-to-r from-transparent via-[color:var(--proof-card)]/55 to-transparent" />
+                  </motion.article>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -484,7 +662,7 @@ export function PortfolioHome() {
             transition={{ duration: 0.9, ease: "easeOut" }}
             className="max-w-5xl"
           >
-            <div className="inline-flex items-center gap-2 rounded-[9px] border border-white/14 bg-black/24 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.28em] text-[color:var(--signal-mint)] shadow-[0_0_40px_rgba(158,255,201,0.08)] backdrop-blur-md">
+            <div className="inline-flex items-center gap-2 rounded-[8px] border border-white/14 bg-black/24 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.28em] text-[color:var(--signal-mint)] shadow-[0_0_40px_rgba(158,255,201,0.08)] backdrop-blur-md">
               <span className="size-1.5 rounded-full bg-[color:var(--signal-mint)] shadow-[0_0_18px_var(--signal-mint)]" />
               {profile.title}
             </div>
@@ -521,16 +699,22 @@ export function PortfolioHome() {
             className="self-end lg:self-center"
           >
             <DeckPanel className="hidden lg:block">
-              <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-[color:var(--signal-cyan)]">
-                System protocol
-              </p>
+              <div className="flex items-center justify-between gap-4">
+                <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-[color:var(--signal-cyan)]">
+                  Agent core protocol
+                </p>
+                <span className="rounded-[8px] border border-[color:var(--signal-mint)]/30 bg-[color:var(--signal-mint)]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-[color:var(--signal-mint)]">
+                  live model
+                </span>
+              </div>
               <div className="mt-5 space-y-4">
                 <HeroTelemetry />
-                <div className="rounded-[9px] border border-white/10 bg-white/[0.035] p-4">
+                <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
+                  <div className="absolute right-4 top-4 size-16 rounded-full border border-[color:var(--signal-cyan)]/15" />
                   <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/38">
                     active thesis
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-white/70">
+                  <p className="mt-2 max-w-md text-sm leading-6 text-white/70">
                     Autonomous software becomes useful when it can act with verifiable
                     context, bounded authority, and transparent incentives.
                   </p>
@@ -664,7 +848,7 @@ export function PortfolioHome() {
                   href={social.href}
                   target={social.href.startsWith("http") ? "_blank" : undefined}
                   rel={social.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="inline-flex h-12 items-center gap-2 rounded-[9px] border border-white/14 bg-white/[0.055] px-4 text-sm font-medium text-[color:var(--ink)] transition hover:border-white/28 hover:bg-white/[0.09]"
+                  className="inline-flex h-12 items-center gap-2 rounded-[8px] border border-white/14 bg-white/[0.055] px-4 text-sm font-medium text-[color:var(--ink)] transition hover:border-white/28 hover:bg-white/[0.09]"
                 >
                   <social.icon className="size-4" />
                   {social.label}
