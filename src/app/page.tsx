@@ -1,15 +1,5 @@
-import { Hero } from "@/components/hero";
-import { Projects } from "@/components/projects";
-import { Contact } from "@/components/contact";
-import { About } from "@/components/about";
+import { PortfolioHome } from "@/components/portfolio/portfolio-home";
 
 export default function Home() {
-    return (
-        <main className="min-h-dvh">
-            <Hero />
-            <About />
-            <Projects />
-            <Contact />
-        </main>
-    );
+  return <PortfolioHome />;
 }

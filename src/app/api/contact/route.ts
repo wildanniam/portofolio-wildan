@@ -20,8 +20,8 @@ export async function POST(request: Request) {
 
         const resend = new Resend(resendKey);
         await resend.emails.send({
-            from: "Portfolio Contact <noreply@your-domain.com>",
-            to: ["your-receiver@your-domain.com"],
+            from: process.env.RESEND_FROM ?? "Portfolio Contact <onboarding@resend.dev>",
+            to: [process.env.CONTACT_TO ?? "wildanniam4@gmail.com"],
             subject: `New contact from ${data.name}`,
             replyTo: data.email,
             text: data.message,
@@ -35,6 +35,5 @@ export async function POST(request: Request) {
         return NextResponse.json({ ok: false }, { status: 500 });
     }
 }
-
 
 

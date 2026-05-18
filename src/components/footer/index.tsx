@@ -1,38 +1,27 @@
-import { Badge } from "@/components/ui/badge";
-
-const keywords = [
-    "Blockchain",
-    "Smart Contract",
-    "Internet Computer",
-    "Fullstack",
-    "Flutter",
-    "CI/CD",
-    "Test Automation",
-];
+import { profile, socials } from "@/data/portfolio";
 
 export function Footer() {
-    return (
-        <footer className="mt-16 border-t border-border/60">
-            <div className="container mx-auto px-4 py-8 text-xs text-muted-foreground">
-                <div className="flex flex-wrap gap-2">
-                    {keywords.map((k) => (
-                        <Badge
-                            key={k}
-                            variant="secondary"
-                            className="bg-gradient-to-r from-blue-500/10 to-purple-500/10"
-                        >
-                            {k}
-                        </Badge>
-                    ))}
-                </div>
-                <div className="mt-4 inline-block">
-                    <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-[length:100%_2px] bg-no-repeat bg-left-bottom pb-1">
-                        Available for opportunities
-                    </span>
-                </div>
-            </div>
-        </footer>
-    );
+  return (
+    <footer className="border-t border-white/10 px-4 py-8 md:px-8">
+      <div className="mx-auto flex max-w-7xl flex-col gap-5 text-sm text-white/48 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="font-medium text-[color:var(--ink)]">{profile.name}</p>
+          <p className="mt-1">{profile.statement}</p>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          {socials.map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              target={social.href.startsWith("http") ? "_blank" : undefined}
+              rel={social.href.startsWith("http") ? "noreferrer" : undefined}
+              className="transition hover:text-white"
+            >
+              {social.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
 }
-
-
