@@ -156,32 +156,6 @@ function LinkButton({
   );
 }
 
-function HeroTelemetry() {
-  return (
-    <div className="relative grid gap-3 sm:grid-cols-3">
-      <div className="absolute left-6 right-6 top-6 hidden h-px bg-gradient-to-r from-[color:var(--signal-cyan)]/0 via-[color:var(--signal-cyan)]/30 to-[color:var(--signal-cyan)]/0 sm:block" />
-      {[
-        ["observe", "agent state"],
-        ["verify", "risk signal"],
-        ["execute", "bounded action"],
-      ].map(([verb, noun], index) => (
-        <div
-          key={verb}
-          className="relative rounded-[8px] border border-white/10 bg-black/22 px-3 py-3 backdrop-blur-md"
-        >
-          <span className="absolute -top-1 left-3 grid size-3 place-items-center rounded-full border border-[color:var(--signal-cyan)]/40 bg-[#050706]">
-            <span className={cn("size-1 rounded-full", index === 1 ? "bg-[color:var(--signal-amber)]" : "bg-[color:var(--signal-mint)]")} />
-          </span>
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[color:var(--signal-mint)]">
-            {verb}
-          </p>
-          <p className="mt-1 text-sm text-white/60">{noun}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function MetricsRail() {
   return (
     <section className="relative z-10 px-4 pb-16 md:px-8">
@@ -655,7 +629,7 @@ export function PortfolioHome() {
         className="relative isolate min-h-[calc(100svh-84px)] overflow-hidden px-4 pb-14 pt-10 md:px-8 md:pb-20 md:pt-14"
       >
         <CommandDeckScene />
-        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-150px)] max-w-7xl content-center gap-10 lg:grid-cols-[0.82fr_0.54fr]">
+        <div className="relative z-10 mx-auto grid min-h-[calc(100svh-150px)] max-w-7xl content-center gap-10 lg:grid-cols-[0.78fr_0.72fr]">
           <motion.div
             initial={false}
             animate={{ opacity: 1, y: 0 }}
@@ -692,36 +666,7 @@ export function PortfolioHome() {
             </div>
           </motion.div>
 
-          <motion.aside
-            initial={false}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.9, delay: 0.15, ease: "easeOut" }}
-            className="self-end lg:self-center"
-          >
-            <DeckPanel className="hidden lg:block">
-              <div className="flex items-center justify-between gap-4">
-                <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-[color:var(--signal-cyan)]">
-                  Agent core protocol
-                </p>
-                <span className="rounded-[8px] border border-[color:var(--signal-mint)]/30 bg-[color:var(--signal-mint)]/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-[color:var(--signal-mint)]">
-                  live model
-                </span>
-              </div>
-              <div className="mt-5 space-y-4">
-                <HeroTelemetry />
-                <div className="relative overflow-hidden rounded-[8px] border border-white/10 bg-white/[0.035] p-4">
-                  <div className="absolute right-4 top-4 size-16 rounded-full border border-[color:var(--signal-cyan)]/15" />
-                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/38">
-                    active thesis
-                  </p>
-                  <p className="mt-2 max-w-md text-sm leading-6 text-white/70">
-                    Autonomous software becomes useful when it can act with verifiable
-                    context, bounded authority, and transparent incentives.
-                  </p>
-                </div>
-              </div>
-            </DeckPanel>
-          </motion.aside>
+          <div aria-hidden="true" className="hidden min-h-[34rem] lg:block" />
         </div>
       </section>
 
