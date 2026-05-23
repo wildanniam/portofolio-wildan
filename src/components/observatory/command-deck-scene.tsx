@@ -2,6 +2,8 @@
 
 import * as React from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
+import { Float, Line, Sparkles } from "@react-three/drei";
+import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { projects, type Project } from "@/data/portfolio";
 
@@ -56,61 +58,6 @@ function useHeroProjects() {
   }, []);
 }
 
-function CurveLine({
-  points,
-  color,
-  targetOpacity,
-  interaction,
-  baseOpacity = 0,
-  boostOpacity = 0,
-}: {
-  points: THREE.Vector3[];
-  color: string;
-  targetOpacity?: number;
-  interaction?: InteractionRef;
-  baseOpacity?: number;
-  boostOpacity?: number;
-}) {
-  const materialRef = React.useRef<THREE.LineBasicMaterial | null>(null);
-  const geometry = React.useMemo(() => new THREE.BufferGeometry().setFromPoints(points), [points]);
-  const line = React.useMemo(
-    () =>
-      new THREE.Line(
-        geometry,
-        new THREE.LineBasicMaterial({
-          color,
-          transparent: true,
-          opacity: 0,
-        })
-      ),
-    [color, geometry]
-  );
-
-  React.useEffect(() => {
-    materialRef.current = line.material as THREE.LineBasicMaterial;
-  }, [line]);
-
-  useFrame((_, delta) => {
-    if (!materialRef.current) return;
-    const target = targetOpacity ?? baseOpacity + (interaction?.current ?? 0) * boostOpacity;
-    materialRef.current.opacity = THREE.MathUtils.damp(materialRef.current.opacity, target, 7, delta);
-  });
-
-  React.useEffect(() => {
-    return () => {
-      line.geometry.dispose();
-      const material = line.material;
-      if (Array.isArray(material)) {
-        material.forEach((item) => item.dispose());
-      } else {
-        material.dispose();
-      }
-    };
-  }, [line]);
-
-  return <primitive object={line} />;
-}
-
 function DataRibbon({
   from,
   to,
@@ -126,44 +73,17 @@ function DataRibbon({
     const control = from.clone().add(to).multiplyScalar(0.5);
     control.y += 0.34;
     control.z += 0.54;
-    return new THREE.QuadraticBezierCurve3(from, control, to).getPoints(30);
+    return new THREE.QuadraticBezierCurve3(from, control, to).getPoints(52);
   }, [from, to]);
-
-  return <CurveLine points={points} color={color} targetOpacity={active ? 0.62 : 0.12} />;
-}
-
-function ActiveDataTube({
-  from,
-  to,
-  color,
-  active,
-}: {
-  from: THREE.Vector3;
-  to: THREE.Vector3;
-  color: string;
-  active: boolean;
-}) {
-  const materialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const curve = React.useMemo(() => {
-    const control = from.clone().add(to).multiplyScalar(0.5);
-    control.y += 0.42;
-    control.z += 0.62;
-    return new THREE.QuadraticBezierCurve3(from, control, to);
-  }, [from, to]);
-  const geometry = React.useMemo(() => new THREE.TubeGeometry(curve, 34, 0.007, 6, false), [curve]);
-
-  useFrame(({ clock }, delta) => {
-    if (!materialRef.current) return;
-    const target = active ? 0.38 + Math.sin(clock.elapsedTime * 2.6) * 0.05 : 0;
-    materialRef.current.opacity = THREE.MathUtils.damp(materialRef.current.opacity, Math.max(0, target), 8, delta);
-  });
-
-  React.useEffect(() => () => geometry.dispose(), [geometry]);
 
   return (
-    <mesh geometry={geometry}>
-      <meshBasicMaterial ref={materialRef} color={color} transparent opacity={0} depthWrite={false} />
-    </mesh>
+    <Line
+      points={points}
+      color={color}
+      transparent
+      opacity={active ? 0.72 : 0.14}
+      lineWidth={active ? 2.2 : 0.8}
+    />
   );
 }
 
@@ -199,35 +119,38 @@ function EnergyPacket({
   return (
     <mesh ref={packetRef}>
       <sphereGeometry args={[0.045, 16, 16]} />
-      <meshBasicMaterial color={color} transparent opacity={0.92} />
+      <meshBasicMaterial color={color} transparent opacity={0.92} depthWrite={false} />
       <pointLight color={color} intensity={0.84} distance={0.82} />
     </mesh>
   );
 }
 
-function LightStreaks({ interaction }: { interaction: InteractionRef }) {
-  const streaks = React.useMemo(() => {
-    return Array.from({ length: 11 }).map((_, index) => {
-      const y = -1.22 + index * 0.23;
-      const z = -0.48 + (index % 5) * 0.16;
-      return {
-        start: new THREE.Vector3(-0.82, y, z),
-        end: new THREE.Vector3(2.45, y + Math.sin(index) * 0.12, z + 0.08),
-        color: index % 3 === 0 ? "#ffd166" : "#73e7ff",
-      };
-    });
-  }, []);
+function LightStreaks({ active }: { active: boolean }) {
+  const streaks = React.useMemo(
+    () =>
+      Array.from({ length: 16 }).map((_, index) => {
+        const y = -1.35 + index * 0.18;
+        const z = -0.48 + (index % 5) * 0.16;
+        return {
+          start: new THREE.Vector3(-0.82, y, z),
+          end: new THREE.Vector3(2.45, y + Math.sin(index) * 0.12, z + 0.08),
+          color: index % 3 === 0 ? "#ffd166" : "#73e7ff",
+          width: index % 4 === 0 ? 1.5 : 0.7,
+        };
+      }),
+    []
+  );
 
   return (
     <group>
       {streaks.map((streak, index) => (
-        <CurveLine
+        <Line
           key={index}
           points={[streak.start, streak.end]}
           color={streak.color}
-          interaction={interaction}
-          baseOpacity={0.065}
-          boostOpacity={0.085}
+          transparent
+          opacity={active ? 0.12 : 0.055}
+          lineWidth={streak.width}
         />
       ))}
     </group>
@@ -237,76 +160,80 @@ function LightStreaks({ interaction }: { interaction: InteractionRef }) {
 function ReactorShell({ interaction }: { interaction: InteractionRef }) {
   const shellRef = React.useRef<THREE.Mesh>(null);
   const shellTwoRef = React.useRef<THREE.Mesh>(null);
-  const shellMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const shellTwoMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const shellSpeedRef = React.useRef(0.12);
-  const shellTwoSpeedRef = React.useRef(0.08);
+  const matRef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const matTwoRef = React.useRef<THREE.MeshBasicMaterial>(null);
 
   useFrame(({ clock }, delta) => {
     const t = clock.elapsedTime;
-    const strength = interaction.current;
-    shellSpeedRef.current = THREE.MathUtils.damp(shellSpeedRef.current, 0.12 + strength * 0.12, 5, delta);
-    shellTwoSpeedRef.current = THREE.MathUtils.damp(shellTwoSpeedRef.current, 0.08 + strength * 0.1, 5, delta);
+    const s = interaction.current;
     if (shellRef.current) {
-      shellRef.current.rotation.y += shellSpeedRef.current * delta;
+      shellRef.current.rotation.y = t * (0.12 + s * 0.10);
       shellRef.current.rotation.z = -t * 0.045;
-      shellRef.current.scale.set(
-        1.18 + strength * 0.035,
-        0.82 + strength * 0.025,
-        1.18 + strength * 0.035
-      );
     }
     if (shellTwoRef.current) {
       shellTwoRef.current.rotation.x = 0.35 + t * 0.055;
-      shellTwoRef.current.rotation.y -= shellTwoSpeedRef.current * delta;
+      shellTwoRef.current.rotation.y = -t * (0.08 + s * 0.10);
     }
-    if (shellMaterialRef.current) {
-      shellMaterialRef.current.opacity = THREE.MathUtils.damp(shellMaterialRef.current.opacity, 0.06 + strength * 0.045, 6, delta);
+    if (matRef.current) {
+      matRef.current.opacity = THREE.MathUtils.damp(matRef.current.opacity, 0.062 + s * 0.028, 5, delta);
     }
-    if (shellTwoMaterialRef.current) {
-      shellTwoMaterialRef.current.opacity = THREE.MathUtils.damp(shellTwoMaterialRef.current.opacity, 0.034 + strength * 0.035, 6, delta);
+    if (matTwoRef.current) {
+      matTwoRef.current.opacity = THREE.MathUtils.damp(matTwoRef.current.opacity, 0.034 + s * 0.022, 5, delta);
     }
   });
 
   return (
     <group>
       <mesh ref={shellRef} scale={[1.18, 0.82, 1.18]}>
-        <sphereGeometry args={[1, 32, 16]} />
-        <meshBasicMaterial ref={shellMaterialRef} color="#73e7ff" transparent opacity={0.06} wireframe />
+        <sphereGeometry args={[1, 48, 24]} />
+        <meshBasicMaterial ref={matRef} color="#73e7ff" transparent opacity={0.062} wireframe depthWrite={false} />
       </mesh>
       <mesh ref={shellTwoRef} scale={[0.86, 1.08, 0.86]}>
-        <sphereGeometry args={[1, 24, 12]} />
-        <meshBasicMaterial ref={shellTwoMaterialRef} color="#9effc9" transparent opacity={0.034} wireframe />
+        <sphereGeometry args={[1, 32, 18]} />
+        <meshBasicMaterial ref={matTwoRef} color="#9effc9" transparent opacity={0.034} wireframe depthWrite={false} />
       </mesh>
     </group>
   );
 }
 
 function OrbitalRings({ interaction }: { interaction: InteractionRef }) {
-  const ringRef = React.useRef<THREE.Group>(null);
-  const ringSpeedRef = React.useRef(0.11);
+  const ringGroupRef = React.useRef<THREE.Group>(null);
+  const matARef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const matBRef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const matCRef = React.useRef<THREE.MeshBasicMaterial>(null);
 
   useFrame(({ clock }, delta) => {
-    if (!ringRef.current) return;
     const t = clock.elapsedTime;
-    ringSpeedRef.current = THREE.MathUtils.damp(ringSpeedRef.current, 0.11 + interaction.current * 0.15, 4.6, delta);
-    ringRef.current.rotation.y += ringSpeedRef.current * delta;
-    ringRef.current.rotation.x = -0.25 + Math.sin(t * 0.4) * 0.035;
-    ringRef.current.scale.setScalar(THREE.MathUtils.damp(ringRef.current.scale.x, 1 + interaction.current * 0.018, 5, delta));
+    const s = interaction.current;
+    if (ringGroupRef.current) {
+      ringGroupRef.current.rotation.y = t * (0.12 + s * 0.12);
+      ringGroupRef.current.rotation.x = -0.25 + Math.sin(t * 0.4) * 0.035;
+    }
+    if (matARef.current) {
+      matARef.current.opacity = THREE.MathUtils.damp(matARef.current.opacity, 0.36 + s * 0.14, 5, delta);
+    }
+    if (matBRef.current) {
+      matBRef.current.opacity = THREE.MathUtils.damp(matBRef.current.opacity, 0.22 + s * 0.10, 5, delta);
+    }
+    if (matCRef.current) {
+      matCRef.current.opacity = THREE.MathUtils.damp(matCRef.current.opacity, 0.16 + s * 0.08, 5, delta);
+    }
   });
 
   return (
-    <group ref={ringRef}>
-      {[
-        { radius: 1.05, tube: 0.006, color: "#73e7ff", opacity: 0.36, rotation: [1.1, 0.14, -0.44] },
-        { radius: 1.38, tube: 0.004, color: "#9effc9", opacity: 0.22, rotation: [1.52, -0.28, 0.18] },
-        { radius: 1.72, tube: 0.003, color: "#ffd166", opacity: 0.16, rotation: [1.22, 0.38, 0.7] },
-      ].map((ring) => (
-        <mesh key={`${ring.radius}-${ring.color}`} rotation={ring.rotation as [number, number, number]}>
-          <torusGeometry args={[ring.radius, ring.tube, 8, 128]} />
-          <meshBasicMaterial color={ring.color} transparent opacity={ring.opacity} />
-        </mesh>
-      ))}
+    <group ref={ringGroupRef}>
+      <mesh rotation={[1.1, 0.14, -0.44] as [number, number, number]}>
+        <torusGeometry args={[1.05, 0.006, 12, 220]} />
+        <meshBasicMaterial ref={matARef} color="#73e7ff" transparent opacity={0.36} depthWrite={false} />
+      </mesh>
+      <mesh rotation={[1.52, -0.28, 0.18] as [number, number, number]}>
+        <torusGeometry args={[1.38, 0.004, 12, 220]} />
+        <meshBasicMaterial ref={matBRef} color="#9effc9" transparent opacity={0.22} depthWrite={false} />
+      </mesh>
+      <mesh rotation={[1.22, 0.38, 0.7] as [number, number, number]}>
+        <torusGeometry args={[1.72, 0.003, 12, 220]} />
+        <meshBasicMaterial ref={matCRef} color="#ffd166" transparent opacity={0.16} depthWrite={false} />
+      </mesh>
     </group>
   );
 }
@@ -315,34 +242,28 @@ function ReactorSweep({ interaction }: { interaction: InteractionRef }) {
   const groupRef = React.useRef<THREE.Group>(null);
   const materialRef = React.useRef<THREE.MeshBasicMaterial>(null);
 
-  useFrame(({ clock }, delta) => {
-    const strength = interaction.current;
+  useFrame((_, delta) => {
+    const s = interaction.current;
     if (groupRef.current) {
-      groupRef.current.rotation.y += (0.18 + strength * 0.32) * delta;
-      groupRef.current.rotation.z = -0.58 + Math.sin(clock.elapsedTime * 0.45) * 0.08;
-      groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, 1 + strength * 0.045, 5, delta));
+      groupRef.current.rotation.y += (0.14 + s * 0.24) * delta;
     }
     if (materialRef.current) {
-      materialRef.current.opacity = THREE.MathUtils.damp(materialRef.current.opacity, 0.035 + strength * 0.11, 6, delta);
+      materialRef.current.opacity = THREE.MathUtils.damp(materialRef.current.opacity, 0.022 + s * 0.052, 6, delta);
     }
   });
 
   return (
-    <group ref={groupRef} rotation={[1.18, -0.15, -0.58]}>
+    <group ref={groupRef} rotation={[1.18, -0.15, -0.52]}>
       <mesh>
-        <torusGeometry args={[1.92, 0.012, 8, 96, Math.PI * 1.22]} />
+        <torusGeometry args={[3.3, 0.007, 8, 96, Math.PI * 1.18]} />
         <meshBasicMaterial
           ref={materialRef}
           color="#73e7ff"
           transparent
-          opacity={0.035}
+          opacity={0.022}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
-      </mesh>
-      <mesh rotation={[0, 0, Math.PI * 0.55]}>
-        <torusGeometry args={[1.28, 0.006, 8, 96, Math.PI * 0.72]} />
-        <meshBasicMaterial color="#ffd166" transparent opacity={0.08} depthWrite={false} />
       </mesh>
     </group>
   );
@@ -352,103 +273,137 @@ function AutonomousCore({ interaction }: { interaction: InteractionRef }) {
   const groupRef = React.useRef<THREE.Group>(null);
   const coreRef = React.useRef<THREE.Mesh>(null);
   const innerRef = React.useRef<THREE.Mesh>(null);
+  const glassRef = React.useRef<THREE.Mesh>(null);
+  const lensRef = React.useRef<THREE.Mesh>(null);
   const coreMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
   const innerMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
-  const warmGlowRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const cyanGlowRef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const glassMaterialRef = React.useRef<THREE.MeshPhysicalMaterial>(null);
+  const lensMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
 
   useFrame(({ clock, pointer }, delta) => {
     const t = clock.elapsedTime;
-    const strength = interaction.current;
+    const s = interaction.current;
+
     if (groupRef.current) {
-      groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, pointer.y * (0.14 + strength * 0.05), 4.2, delta);
-      groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, pointer.x * (0.18 + strength * 0.07), 4.2, delta);
+      groupRef.current.rotation.x = THREE.MathUtils.damp(groupRef.current.rotation.x, pointer.y * 0.18, 4.5, delta);
+      groupRef.current.rotation.y = THREE.MathUtils.damp(groupRef.current.rotation.y, pointer.x * 0.22, 4.5, delta);
     }
+
     if (coreRef.current) {
-      coreRef.current.rotation.x += (0.28 + strength * 0.14) * delta;
-      coreRef.current.rotation.y += (0.48 + strength * 0.24) * delta;
-      const targetScale = 1 + Math.sin(t * 2.3) * (0.032 + strength * 0.026) + strength * 0.025;
-      coreRef.current.scale.setScalar(THREE.MathUtils.damp(coreRef.current.scale.x, targetScale, 7, delta));
+      coreRef.current.rotation.x = t * (0.28 + s * 0.14);
+      coreRef.current.rotation.y = t * (0.48 + s * 0.24);
+      coreRef.current.scale.setScalar(1 + Math.sin(t * 2.3) * (0.032 + s * 0.022));
     }
+
     if (innerRef.current) {
-      innerRef.current.rotation.y = -t * 0.68;
+      innerRef.current.rotation.y = -t * 0.58;
       innerRef.current.rotation.z = t * 0.18;
     }
+
+    if (glassRef.current) {
+      glassRef.current.rotation.y = t * 0.032;
+      glassRef.current.rotation.x = -0.18 + Math.sin(t * 0.24) * 0.02;
+    }
+
+    if (lensRef.current) {
+      lensRef.current.rotation.z = -t * (0.22 + s * 0.08);
+    }
+
     if (coreMaterialRef.current) {
       coreMaterialRef.current.emissiveIntensity = THREE.MathUtils.damp(
         coreMaterialRef.current.emissiveIntensity,
-        1.92 + strength * 1.28,
+        1.7 + s * 1.1,
         7,
         delta
       );
     }
+
     if (innerMaterialRef.current) {
       innerMaterialRef.current.emissiveIntensity = THREE.MathUtils.damp(
         innerMaterialRef.current.emissiveIntensity,
-        0.9 + strength * 0.95,
+        0.85 + s * 0.85,
         7,
         delta
       );
     }
-    if (warmGlowRef.current) {
-      warmGlowRef.current.opacity = THREE.MathUtils.damp(warmGlowRef.current.opacity, 0.13 + strength * 0.08, 6, delta);
+
+    if (glassMaterialRef.current) {
+      glassMaterialRef.current.opacity = THREE.MathUtils.damp(glassMaterialRef.current.opacity, 0.08 + s * 0.06, 7, delta);
     }
-    if (cyanGlowRef.current) {
-      cyanGlowRef.current.opacity = THREE.MathUtils.damp(cyanGlowRef.current.opacity, 0.07 + strength * 0.065, 6, delta);
+
+    if (lensMaterialRef.current) {
+      lensMaterialRef.current.opacity = THREE.MathUtils.damp(
+        lensMaterialRef.current.opacity,
+        0.38 + s * 0.28 + Math.sin(t * 2.1) * 0.02,
+        7,
+        delta
+      );
     }
+
   });
 
   return (
     <group ref={groupRef}>
-      <mesh scale={1.95}>
-        <sphereGeometry args={[0.52, 24, 12]} />
-        <meshBasicMaterial
-          ref={warmGlowRef}
-          color="#ffd166"
-          transparent
-          opacity={0.13}
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-      <mesh scale={[2.55, 2.1, 2.55]}>
-        <sphereGeometry args={[0.52, 24, 12]} />
-        <meshBasicMaterial
-          ref={cyanGlowRef}
+      {/* Glass envelope */}
+      <mesh ref={glassRef} rotation={[-0.18, 0, 0.08]}>
+        <sphereGeometry args={[0.78, 28, 14]} />
+        <meshPhysicalMaterial
+          ref={glassMaterialRef}
           color="#73e7ff"
+          emissive="#73e7ff"
+          emissiveIntensity={0.06}
+          metalness={0.12}
+          roughness={0.04}
           transparent
-          opacity={0.07}
+          opacity={0.08}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
+          side={THREE.DoubleSide}
+          clearcoat={1}
+          clearcoatRoughness={0.06}
         />
       </mesh>
+      {/* Cyan dodecahedron inner shell */}
       <mesh ref={innerRef} scale={0.74}>
         <dodecahedronGeometry args={[0.55, 1]} />
         <meshStandardMaterial
           ref={innerMaterialRef}
           color="#9effc9"
           emissive="#73e7ff"
-          emissiveIntensity={0.9}
+          emissiveIntensity={0.85}
           metalness={0.46}
           roughness={0.2}
           transparent
           opacity={0.38}
         />
       </mesh>
+      {/* Rose/orange icosahedron nucleus */}
       <mesh ref={coreRef}>
         <icosahedronGeometry args={[0.48, 2]} />
         <meshStandardMaterial
           ref={coreMaterialRef}
-          color="#ffd166"
+          color="#f6c29b"
           emissive="#ff7a59"
-          emissiveIntensity={1.92}
+          emissiveIntensity={1.7}
           metalness={0.56}
           roughness={0.13}
         />
       </mesh>
+      {/* Wireframe outer shell */}
       <mesh scale={1.18}>
         <icosahedronGeometry args={[0.5, 1]} />
-        <meshBasicMaterial color="#73e7ff" transparent opacity={0.095} wireframe />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={0.08} wireframe depthWrite={false} />
+      </mesh>
+      {/* Rose lens ring */}
+      <mesh ref={lensRef} position={[0, 0, 0.38]}>
+        <ringGeometry args={[0.14, 0.23, 48]} />
+        <meshBasicMaterial
+          ref={lensMaterialRef}
+          color="#ff7a59"
+          transparent
+          opacity={0.38}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
       </mesh>
     </group>
   );
@@ -459,7 +414,6 @@ function ProjectModule({
   active,
   dimmed,
   locked,
-  previewing,
   onHover,
   onLeave,
   onLock,
@@ -468,59 +422,33 @@ function ProjectModule({
   active: boolean;
   dimmed: boolean;
   locked: boolean;
-  previewing: boolean;
   onHover: (project: ReactorProject) => void;
   onLeave: () => void;
   onLock: (project: ReactorProject) => void;
 }) {
   const groupRef = React.useRef<THREE.Group>(null);
-  const bodyMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
-  const railMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const sideMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const lensMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const auraMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
-  const beaconMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const bodyRef = React.useRef<THREE.MeshStandardMaterial>(null);
 
   useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     const t = clock.elapsedTime;
     groupRef.current.position.y = project.position.y + Math.sin(t * 1.4 + project.position.x) * 0.035;
-    groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.14 : locked ? 1.06 : 1, 8, delta));
-    groupRef.current.rotation.z = THREE.MathUtils.damp(
-      groupRef.current.rotation.z,
-      project.rotation[2] + (active ? Math.sin(t * 2.4) * 0.035 : locked ? 0.018 : 0),
-      7,
-      delta
+    groupRef.current.scale.setScalar(
+      THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.12 : locked ? 1.05 : 1, 8, delta)
     );
-
-    if (bodyMaterialRef.current) {
-      bodyMaterialRef.current.opacity = THREE.MathUtils.damp(bodyMaterialRef.current.opacity, dimmed ? 0.32 : locked ? 1 : 0.92, 7, delta);
-      bodyMaterialRef.current.emissiveIntensity = THREE.MathUtils.damp(
-        bodyMaterialRef.current.emissiveIntensity,
-        active ? 1.55 : locked ? 0.92 : 0.28,
+    if (bodyRef.current) {
+      bodyRef.current.emissiveIntensity = THREE.MathUtils.damp(
+        bodyRef.current.emissiveIntensity,
+        dimmed ? 0.04 : active ? 1.25 : locked ? 0.65 : 0.22,
         8,
         delta
       );
-    }
-    if (railMaterialRef.current) {
-      railMaterialRef.current.opacity = THREE.MathUtils.damp(railMaterialRef.current.opacity, active ? 0.88 : 0.36, 8, delta);
-    }
-    if (sideMaterialRef.current) {
-      sideMaterialRef.current.opacity = THREE.MathUtils.damp(sideMaterialRef.current.opacity, active ? 0.72 : 0.3, 8, delta);
-    }
-    if (lensMaterialRef.current) {
-      lensMaterialRef.current.opacity = THREE.MathUtils.damp(lensMaterialRef.current.opacity, active ? 1 : 0.58, 8, delta);
-    }
-    if (auraMaterialRef.current) {
-      auraMaterialRef.current.opacity = THREE.MathUtils.damp(auraMaterialRef.current.opacity, active ? 0.18 : 0.04, 8, delta);
-    }
-    if (beaconMaterialRef.current) {
-      const pulse = active
-        ? 0.72 + Math.sin(t * 8) * 0.18
-        : locked
-          ? 0.58 + Math.sin(t * 4.2) * 0.12
-          : 0.28;
-      beaconMaterialRef.current.opacity = THREE.MathUtils.damp(beaconMaterialRef.current.opacity, pulse, 8, delta);
+      bodyRef.current.opacity = THREE.MathUtils.damp(
+        bodyRef.current.opacity,
+        dimmed ? 0.35 : active ? 0.95 : 0.88,
+        7,
+        delta
+      );
     }
   });
 
@@ -529,83 +457,78 @@ function ProjectModule({
       ref={groupRef}
       position={project.position}
       rotation={project.rotation}
-      onPointerOver={(event) => {
-        event.stopPropagation();
+      onPointerOver={(e) => {
+        e.stopPropagation();
         document.body.style.cursor = "pointer";
         onHover(project);
       }}
-      onPointerMove={(event) => {
-        event.stopPropagation();
-      }}
-      onPointerOut={(event) => {
-        event.stopPropagation();
+      onPointerMove={(e) => e.stopPropagation()}
+      onPointerOut={(e) => {
+        e.stopPropagation();
         document.body.style.cursor = "";
         onLeave();
       }}
-      onClick={(event) => {
-        event.stopPropagation();
+      onClick={(e) => {
+        e.stopPropagation();
         onLock(project);
       }}
     >
+      {/* Invisible hitbox */}
       <mesh>
-        <boxGeometry args={[1.48, 1.04, 0.82]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0.001} depthWrite={false} />
+        <boxGeometry args={[0.82, 0.52, 0.48]} />
+        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
+      {/* Main body */}
       <mesh>
         <boxGeometry args={[0.44, 0.18, 0.16]} />
         <meshStandardMaterial
-          ref={bodyMaterialRef}
+          ref={bodyRef}
           color="#09120f"
           emissive={project.color}
-          emissiveIntensity={0.28}
+          emissiveIntensity={0.22}
           metalness={0.48}
           roughness={0.28}
           transparent
-          opacity={dimmed ? 0.34 : 0.92}
+          opacity={0.88}
         />
       </mesh>
+      {/* Top accent strip */}
       <mesh position={[0, 0.102, 0.006]}>
         <boxGeometry args={[0.34, 0.012, 0.17]} />
-        <meshBasicMaterial ref={railMaterialRef} color={project.color} transparent opacity={0.36} />
-      </mesh>
-      <mesh position={[0, -0.104, 0.006]}>
-        <boxGeometry args={[0.28, 0.01, 0.17]} />
-        <meshBasicMaterial ref={sideMaterialRef} color="#f8fff9" transparent opacity={0.3} />
-      </mesh>
-      <mesh position={[-0.16, 0, 0.095]}>
-        <boxGeometry args={[0.075, 0.22, 0.018]} />
-        <meshBasicMaterial color={project.color} transparent opacity={active ? 0.9 : 0.46} />
-      </mesh>
-      <mesh position={[0.28, 0.068, 0.083]} rotation={[0, 0, 0.35]}>
-        <boxGeometry args={[0.12, 0.035, 0.025]} />
-        <meshBasicMaterial color={project.color} transparent opacity={active ? 0.84 : 0.34} />
-      </mesh>
-      <mesh position={[-0.28, -0.062, 0.083]} rotation={[0, 0, 0.35]}>
-        <boxGeometry args={[0.12, 0.035, 0.025]} />
-        <meshBasicMaterial color={project.color} transparent opacity={active ? 0.84 : 0.34} />
-      </mesh>
-      <mesh position={[0.18, -0.002, 0.097]}>
-        <circleGeometry args={[0.032, 18]} />
-        <meshBasicMaterial ref={lensMaterialRef} color={project.color} transparent opacity={0.58} />
-      </mesh>
-      <mesh position={[0.28, 0.002, 0.11]}>
-        <sphereGeometry args={[0.018, 10, 10]} />
         <meshBasicMaterial
-          ref={beaconMaterialRef}
-          color="#f8fff9"
+          color={project.color}
           transparent
-          opacity={0.28}
+          opacity={active ? 0.88 : locked ? 0.55 : 0.38}
           depthWrite={false}
-          blending={THREE.AdditiveBlending}
         />
       </mesh>
+      {/* Left side panel */}
+      <mesh position={[-0.16, 0, 0.095]}>
+        <boxGeometry args={[0.075, 0.22, 0.018]} />
+        <meshBasicMaterial
+          color={project.color}
+          transparent
+          opacity={active ? 0.92 : locked ? 0.58 : 0.44}
+          depthWrite={false}
+        />
+      </mesh>
+      {/* Circle aperture */}
+      <mesh position={[0.18, -0.002, 0.097]}>
+        <circleGeometry args={[0.032, 18]} />
+        <meshBasicMaterial
+          color={project.color}
+          transparent
+          opacity={active ? 1 : locked ? 0.65 : 0.52}
+          depthWrite={false}
+        />
+      </mesh>
+      {/* Glow backing */}
       <mesh scale={[1.18, 1.42, 1]} position={[0, 0, -0.004]}>
         <boxGeometry args={[0.44, 0.18, 0.01]} />
         <meshBasicMaterial
-          ref={auraMaterialRef}
           color={project.color}
           transparent
-          opacity={0.04}
+          opacity={active ? 0.14 : 0.038}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
@@ -614,19 +537,11 @@ function ProjectModule({
         <group position={[0, -0.16, 0.104]}>
           <mesh>
             <boxGeometry args={[0.26, 0.018, 0.024]} />
-            <meshBasicMaterial color={project.color} transparent opacity={0.88} />
+            <meshBasicMaterial color={project.color} transparent opacity={0.88} depthWrite={false} />
           </mesh>
           <mesh position={[0, -0.032, 0]}>
             <boxGeometry args={[0.13, 0.036, 0.018]} />
-            <meshBasicMaterial color="#f8fff9" transparent opacity={0.74} />
-          </mesh>
-        </group>
-      ) : null}
-      {previewing && !locked ? (
-        <group position={[0, -0.17, 0.106]}>
-          <mesh>
-            <boxGeometry args={[0.18, 0.014, 0.02]} />
-            <meshBasicMaterial color={project.color} transparent opacity={0.72} />
+            <meshBasicMaterial color="#f8fff9" transparent opacity={0.72} depthWrite={false} />
           </mesh>
         </group>
       ) : null}
@@ -634,79 +549,12 @@ function ProjectModule({
   );
 }
 
-function HeroParticles({ interaction }: { interaction: InteractionRef }) {
-  const farRef = React.useRef<THREE.Points>(null);
-  const nearRef = React.useRef<THREE.Points>(null);
-  const farPositions = React.useMemo(() => {
-    let seed = 11;
-    const random = () => {
-      seed = (seed * 16807) % 2147483647;
-      return (seed - 1) / 2147483646;
-    };
-    const values = new Float32Array(132 * 3);
-    for (let index = 0; index < 132; index += 1) {
-      values[index * 3] = (random() - 0.5) * 5.2;
-      values[index * 3 + 1] = (random() - 0.5) * 3.4;
-      values[index * 3 + 2] = (random() - 0.5) * 3.8;
-    }
-    return values;
-  }, []);
-  const nearPositions = React.useMemo(() => {
-    let seed = 31;
-    const random = () => {
-      seed = (seed * 48271) % 2147483647;
-      return (seed - 1) / 2147483646;
-    };
-    const values = new Float32Array(26 * 3);
-    for (let index = 0; index < 26; index += 1) {
-      values[index * 3] = (random() - 0.5) * 1.4 + 0.25;
-      values[index * 3 + 1] = (random() - 0.5) * 1.1;
-      values[index * 3 + 2] = (random() - 0.5) * 1.2;
-    }
-    return values;
-  }, []);
-
-  useFrame(({ clock }) => {
-    const strength = interaction.current;
-    if (farRef.current) {
-      farRef.current.rotation.y = clock.elapsedTime * (0.016 + strength * 0.018);
-      farRef.current.rotation.x = Math.sin(clock.elapsedTime * 0.18) * 0.02;
-    }
-    if (nearRef.current) {
-      nearRef.current.rotation.z = -clock.elapsedTime * 0.06;
-      nearRef.current.rotation.y = clock.elapsedTime * 0.04;
-    }
-  });
-
+function HeroParticles() {
   return (
-    <group>
-      <points ref={farRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[farPositions, 3]} />
-        </bufferGeometry>
-        <pointsMaterial
-          color="#9fefff"
-          size={0.016}
-          transparent
-          opacity={0.42}
-          sizeAttenuation
-          depthWrite={false}
-        />
-      </points>
-      <points ref={nearRef}>
-        <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[nearPositions, 3]} />
-        </bufferGeometry>
-        <pointsMaterial
-          color="#ffd166"
-          size={0.022}
-          transparent
-          opacity={0.32}
-          sizeAttenuation
-          depthWrite={false}
-        />
-      </points>
-    </group>
+    <>
+      <Sparkles count={112} scale={[4.8, 3.1, 3.6]} size={1.2} speed={0.28} color="#73e7ff" opacity={0.48} />
+      <Sparkles count={28} scale={[2.6, 1.8, 2.4]} size={2.4} speed={0.16} color="#ffd166" opacity={0.18} />
+    </>
   );
 }
 
@@ -727,7 +575,7 @@ function HoverTooltip({
     mode === "pinned"
       ? "pinned evidence"
       : mode === "preview"
-        ? "hover preview"
+        ? "active satellite"
         : mode === "clearing"
           ? "signal fading"
           : "reactor idle";
@@ -735,64 +583,61 @@ function HoverTooltip({
 
   return (
     <div
-      className={`pointer-events-none absolute right-[6%] top-[18%] z-20 hidden w-[19rem] rounded-[8px] border border-white/14 bg-[#07100d]/82 p-4 shadow-[0_24px_90px_rgba(0,0,0,0.38)] backdrop-blur-xl transition duration-300 lg:block ${
+      className={`pointer-events-none absolute right-[6%] top-[18%] z-20 hidden w-[17.5rem] rounded-[10px] border border-white/12 bg-[#060e0b]/82 p-4 shadow-[0_20px_80px_rgba(0,0,0,0.44)] backdrop-blur-xl transition duration-300 lg:block ${
         activeProject ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
       }`}
     >
       <div className="flex items-center justify-between gap-3">
         <p
-          className="font-mono text-[10px] uppercase tracking-[0.24em]"
+          className="font-mono text-[9px] uppercase tracking-[0.24em]"
           style={{ color: activeProject?.color ?? "#73e7ff" }}
         >
           {label}
         </p>
-        <span className="rounded-full border border-white/12 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+        <span className="rounded-full border border-white/10 px-2 py-0.5 font-mono text-[8px] uppercase tracking-[0.16em] text-white/38">
           {activeProject?.status ?? "ready"}
         </span>
       </div>
-      <p className="mt-4 text-lg font-semibold tracking-tight text-[color:var(--ink)]">
+      <p className="mt-3 text-[15px] font-semibold tracking-tight text-[color:var(--ink)]">
         {activeProject?.title ?? "Project"}
       </p>
-      <p className="mt-1 text-sm leading-6 text-[color:var(--muted-ink)]">
+      <p className="mt-1 text-xs leading-5 text-[color:var(--muted-ink)]">
         {activeProject?.focus ?? "Hover a satellite"}
       </p>
-      <div className="mt-4 space-y-2 border-t border-white/10 pt-4">
-        <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/34">Signal</p>
-          <p className="mt-1 text-sm text-[color:var(--ink)]">{activeProject?.signal ?? "System proof"}</p>
+      {activeProject?.signal ? (
+        <p className="mt-3 border-t border-white/8 pt-3 text-xs leading-5 text-[color:var(--ink)]">
+          {activeProject.signal}
+        </p>
+      ) : null}
+      {activeProject?.achievement ? (
+        <div
+          className="mt-2 rounded-[6px] border px-2.5 py-1.5 text-[11px] font-medium"
+          style={{
+            borderColor: `${activeProject.color}55`,
+            backgroundColor: `${activeProject.color}12`,
+            color: activeProject.color,
+          }}
+        >
+          {activeProject.achievement}
         </div>
-        <div>
-          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/34">Role</p>
-          <p className="mt-1 text-xs leading-5 text-[color:var(--muted-ink)]">
-            {activeProject?.role ?? "Builder"}
-          </p>
-        </div>
-        {activeProject?.achievement ? (
-          <div
-            className="rounded-[7px] border px-3 py-2 text-xs font-medium"
-            style={{
-              borderColor: `${activeProject.color}66`,
-              backgroundColor: `${activeProject.color}14`,
-              color: activeProject.color,
-            }}
+      ) : null}
+      <div className="mt-3 flex items-center justify-between border-t border-white/8 pt-3">
+        <p className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/28">
+          {previewLabel
+            ? `scanning ${previewProject.title}`
+            : locked
+              ? "click stage to clear"
+              : "click satellite to pin"}
+        </p>
+        {locked ? (
+          <button
+            type="button"
+            className="pointer-events-auto rounded-[5px] border border-white/12 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.16em] text-white/52 transition hover:border-white/28 hover:text-white"
+            onClick={onClear}
           >
-            {activeProject.achievement}
-          </div>
+            Clear
+          </button>
         ) : null}
-        <div className="flex items-center justify-between border-t border-white/10 pt-3">
-          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/32">
-            {previewLabel ? `scanning ${previewProject.title}` : locked ? "click stage to clear" : "click satellite to pin"}
-          </p>
-          {locked ? (
-            <button
-              type="button"
-              className="pointer-events-auto rounded-[6px] border border-white/12 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-white/58 transition hover:border-white/28 hover:text-white"
-              onClick={onClear}
-            >
-              Clear
-            </button>
-          ) : null}
-        </div>
       </div>
     </div>
   );
@@ -825,7 +670,7 @@ function ReactorScene({
   const interactionRef = React.useRef(0);
   const hoverLeaveTimerRef = React.useRef<number | null>(null);
   const projectsForHero = useHeroProjects();
-  const activeProject = projectsForHero.find((project) => project.slug === activeSlug) ?? null;
+  const activeProject = projectsForHero.find((p) => p.slug === activeSlug) ?? null;
   const activeSignal = Boolean(activeProject || isInteracting || mode === "clearing");
 
   const cancelHoverLeave = React.useCallback(() => {
@@ -897,55 +742,36 @@ function ReactorScene({
           document.body.style.cursor = "";
         }}
       >
-        <group>
+        <Float speed={1.4} rotationIntensity={0.08} floatIntensity={0.18}>
           <ReactorShell interaction={interactionRef} />
           <OrbitalRings interaction={interactionRef} />
           <ReactorSweep interaction={interactionRef} />
           <AutonomousCore interaction={interactionRef} />
-          <LightStreaks interaction={interactionRef} />
+          <LightStreaks active={activeSignal} />
           {projectsForHero.map((project) => {
             const active = project.slug === activeSlug;
-            const pinned = project.slug === lockedSlug;
-            const previewing = project.slug === previewSlug;
-            const dimmed = Boolean(activeSlug && !active && !pinned);
+            const dimmed = Boolean(activeSlug && !active && project.slug !== lockedSlug);
             const locked = project.slug === lockedSlug;
             return (
               <React.Fragment key={project.slug}>
-                <DataRibbon
-                  from={CORE_ORIGIN}
-                  to={project.position}
-                  color={project.color}
-                  active={active}
-                />
-                <ActiveDataTube
-                  from={CORE_ORIGIN}
-                  to={project.position}
-                  color={project.color}
-                  active={active}
-                />
-                <EnergyPacket
-                  from={project.position}
-                  to={CORE_ORIGIN}
-                  color={project.color}
-                  active={active}
-                />
+                <DataRibbon from={CORE_ORIGIN} to={project.position} color={project.color} active={active} />
+                <EnergyPacket from={project.position} to={CORE_ORIGIN} color={project.color} active={active} />
                 <ProjectModule
                   project={project}
                   active={active}
                   dimmed={dimmed}
                   locked={locked}
-                  previewing={previewing}
-                  onHover={(nextProject) => {
+                  onHover={(next) => {
                     cancelHoverLeave();
                     setInteracting(true);
                     setClearing(false);
-                    setActiveSlug(nextProject.slug);
+                    setActiveSlug(next.slug);
                   }}
                   onLeave={() => {
                     clearHoverWithGrace();
                   }}
-                  onLock={(nextProject) => {
-                    setLockedSlug(lockedSlug === nextProject.slug ? null : nextProject.slug);
+                  onLock={(next) => {
+                    setLockedSlug(lockedSlug === next.slug ? null : next.slug);
                     setActiveSlug(null);
                     setClearing(false);
                   }}
@@ -953,9 +779,17 @@ function ReactorScene({
               </React.Fragment>
             );
           })}
-        </group>
+        </Float>
       </group>
-      <HeroParticles interaction={interactionRef} />
+      <HeroParticles />
+      <EffectComposer>
+        <Bloom
+          intensity={activeProject ? 1.05 : isInteracting ? 0.9 : 0.72}
+          luminanceThreshold={0.14}
+          luminanceSmoothing={0.78}
+          mipmapBlur
+        />
+      </EffectComposer>
     </>
   );
 }
@@ -976,8 +810,8 @@ export function CommandDeckScene({
   const evidenceSlug = pinnedSlug ?? previewSlug;
   const mode: HeroInteractionMode = pinnedSlug ? "pinned" : previewSlug ? "preview" : isClearing ? "clearing" : "idle";
   const projectsForHero = useHeroProjects();
-  const activeProject = projectsForHero.find((project) => project.slug === evidenceSlug) ?? null;
-  const previewProject = projectsForHero.find((project) => project.slug === previewSlug) ?? null;
+  const activeProject = projectsForHero.find((p) => p.slug === evidenceSlug) ?? null;
+  const previewProject = projectsForHero.find((p) => p.slug === previewSlug) ?? null;
 
   const clearStage = React.useCallback(() => {
     if (clearTimerRef.current) window.clearTimeout(clearTimerRef.current);
@@ -999,17 +833,20 @@ export function CommandDeckScene({
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_66%_42%,rgba(115,231,255,0.3),transparent_29%),radial-gradient(circle_at_76%_54%,rgba(255,209,102,0.12),transparent_22%),radial-gradient(circle_at_84%_58%,rgba(158,255,201,0.12),transparent_26%),radial-gradient(circle_at_19%_24%,rgba(255,122,89,0.07),transparent_24%)]" />
-      <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle,rgba(159,239,255,0.52)_1px,transparent_1.7px),radial-gradient(circle,rgba(255,209,102,0.32)_1px,transparent_1.7px)] [background-position:18px_42px,90px_24px] [background-size:170px_150px,260px_220px]" />
-      <div className="absolute inset-0 opacity-32 [background:linear-gradient(90deg,rgba(115,231,255,0.03)_1px,transparent_1px),linear-gradient(rgba(158,255,201,0.02)_1px,transparent_1px)] [background-size:128px_128px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_44%,rgba(115,231,255,0.14),transparent_28%),radial-gradient(circle_at_82%_58%,rgba(158,255,201,0.07),transparent_25%)]" />
+      <div className="absolute inset-0 opacity-45 [background:radial-gradient(circle,rgba(159,239,255,0.48)_1px,transparent_1.7px),radial-gradient(circle,rgba(255,209,102,0.28)_1px,transparent_1.7px)] [background-position:18px_42px,90px_24px] [background-size:170px_150px,260px_220px]" />
+      <div className="absolute inset-0 opacity-38 [background:linear-gradient(90deg,rgba(115,231,255,0.03)_1px,transparent_1px),linear-gradient(rgba(158,255,201,0.02)_1px,transparent_1px)] [background-size:128px_128px]" />
       <div className="absolute right-[7%] top-[19%] hidden h-[58%] w-[46%] rounded-full border border-[color:var(--signal-cyan)]/10 lg:block" />
       <Canvas
         className="pointer-events-auto absolute inset-0 h-full w-full"
         camera={{ position: [0, 0.14, 4.65], fov: 38 }}
-        dpr={[1, 1.35]}
+        dpr={[1, 1.7]}
         frameloop={active ? "always" : "demand"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        onCreated={() => {
+        onCreated={({ gl }) => {
+          gl.toneMapping = THREE.ACESFilmicToneMapping;
+          gl.toneMappingExposure = 0.88;
+          gl.outputColorSpace = THREE.SRGBColorSpace;
           window.requestAnimationFrame(() => onReady?.());
         }}
         onPointerMissed={clearStage}
