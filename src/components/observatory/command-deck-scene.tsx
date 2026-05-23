@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Line, Sparkles } from "@react-three/drei";
+import { Line, Sparkles } from "@react-three/drei";
 import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { projects, type Project } from "@/data/portfolio";
@@ -126,33 +126,50 @@ function EnergyPacket({
 }
 
 function LightStreaks({ active }: { active: boolean }) {
-  const streaks = React.useMemo(
-    () =>
-      Array.from({ length: 16 }).map((_, index) => {
-        const y = -1.35 + index * 0.18;
-        const z = -0.48 + (index % 5) * 0.16;
-        return {
-          start: new THREE.Vector3(-0.82, y, z),
-          end: new THREE.Vector3(2.45, y + Math.sin(index) * 0.12, z + 0.08),
-          color: index % 3 === 0 ? "#ffd166" : "#73e7ff",
-          width: index % 4 === 0 ? 1.5 : 0.7,
-        };
-      }),
-    []
-  );
+  const { cyanGeo, amberGeo } = React.useMemo(() => {
+    const cyan: number[] = [];
+    const amber: number[] = [];
+    for (let i = 0; i < 16; i++) {
+      const y = -1.35 + i * 0.18;
+      const z = -0.48 + (i % 5) * 0.16;
+      const pts = i % 3 === 0 ? amber : cyan;
+      pts.push(-0.82, y, z, 2.45, y + Math.sin(i) * 0.12, z + 0.08);
+    }
+    const cyanGeo = new THREE.BufferGeometry();
+    cyanGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(cyan), 3));
+    const amberGeo = new THREE.BufferGeometry();
+    amberGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(amber), 3));
+    return { cyanGeo, amberGeo };
+  }, []);
+
+  const cyanMatRef = React.useRef<THREE.LineBasicMaterial>(null);
+  const amberMatRef = React.useRef<THREE.LineBasicMaterial>(null);
+
+  useFrame((_, delta) => {
+    const target = active ? 0.10 : 0.048;
+    if (cyanMatRef.current) {
+      cyanMatRef.current.opacity = THREE.MathUtils.damp(cyanMatRef.current.opacity, target, 5, delta);
+    }
+    if (amberMatRef.current) {
+      amberMatRef.current.opacity = THREE.MathUtils.damp(amberMatRef.current.opacity, target * 0.9, 5, delta);
+    }
+  });
+
+  React.useEffect(() => {
+    return () => {
+      cyanGeo.dispose();
+      amberGeo.dispose();
+    };
+  }, [cyanGeo, amberGeo]);
 
   return (
     <group>
-      {streaks.map((streak, index) => (
-        <Line
-          key={index}
-          points={[streak.start, streak.end]}
-          color={streak.color}
-          transparent
-          opacity={active ? 0.12 : 0.055}
-          lineWidth={streak.width}
-        />
-      ))}
+      <lineSegments geometry={cyanGeo}>
+        <lineBasicMaterial ref={cyanMatRef} color="#73e7ff" transparent opacity={0.048} depthWrite={false} />
+      </lineSegments>
+      <lineSegments geometry={amberGeo}>
+        <lineBasicMaterial ref={amberMatRef} color="#ffd166" transparent opacity={0.048} depthWrite={false} />
+      </lineSegments>
     </group>
   );
 }
@@ -185,11 +202,11 @@ function ReactorShell({ interaction }: { interaction: InteractionRef }) {
   return (
     <group>
       <mesh ref={shellRef} scale={[1.18, 0.82, 1.18]}>
-        <sphereGeometry args={[1, 48, 24]} />
+        <sphereGeometry args={[1, 24, 12]} />
         <meshBasicMaterial ref={matRef} color="#73e7ff" transparent opacity={0.062} wireframe depthWrite={false} />
       </mesh>
       <mesh ref={shellTwoRef} scale={[0.86, 1.08, 0.86]}>
-        <sphereGeometry args={[1, 32, 18]} />
+        <sphereGeometry args={[1, 16, 9]} />
         <meshBasicMaterial ref={matTwoRef} color="#9effc9" transparent opacity={0.034} wireframe depthWrite={false} />
       </mesh>
     </group>
@@ -223,15 +240,15 @@ function OrbitalRings({ interaction }: { interaction: InteractionRef }) {
   return (
     <group ref={ringGroupRef}>
       <mesh rotation={[1.1, 0.14, -0.44] as [number, number, number]}>
-        <torusGeometry args={[1.05, 0.006, 12, 220]} />
+        <torusGeometry args={[1.05, 0.006, 8, 96]} />
         <meshBasicMaterial ref={matARef} color="#73e7ff" transparent opacity={0.36} depthWrite={false} />
       </mesh>
       <mesh rotation={[1.52, -0.28, 0.18] as [number, number, number]}>
-        <torusGeometry args={[1.38, 0.004, 12, 220]} />
+        <torusGeometry args={[1.38, 0.004, 8, 96]} />
         <meshBasicMaterial ref={matBRef} color="#9effc9" transparent opacity={0.22} depthWrite={false} />
       </mesh>
       <mesh rotation={[1.22, 0.38, 0.7] as [number, number, number]}>
-        <torusGeometry args={[1.72, 0.003, 12, 220]} />
+        <torusGeometry args={[1.72, 0.003, 8, 96]} />
         <meshBasicMaterial ref={matCRef} color="#ffd166" transparent opacity={0.16} depthWrite={false} />
       </mesh>
     </group>
@@ -277,7 +294,7 @@ function AutonomousCore({ interaction }: { interaction: InteractionRef }) {
   const lensRef = React.useRef<THREE.Mesh>(null);
   const coreMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
   const innerMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
-  const glassMaterialRef = React.useRef<THREE.MeshPhysicalMaterial>(null);
+  const glassMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
   const lensMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
 
   useFrame(({ clock, pointer }, delta) => {
@@ -346,20 +363,18 @@ function AutonomousCore({ interaction }: { interaction: InteractionRef }) {
     <group ref={groupRef}>
       {/* Glass envelope */}
       <mesh ref={glassRef} rotation={[-0.18, 0, 0.08]}>
-        <sphereGeometry args={[0.78, 28, 14]} />
-        <meshPhysicalMaterial
+        <sphereGeometry args={[0.78, 22, 11]} />
+        <meshStandardMaterial
           ref={glassMaterialRef}
           color="#73e7ff"
           emissive="#73e7ff"
           emissiveIntensity={0.06}
-          metalness={0.12}
-          roughness={0.04}
+          metalness={0.18}
+          roughness={0.06}
           transparent
           opacity={0.08}
           depthWrite={false}
           side={THREE.DoubleSide}
-          clearcoat={1}
-          clearcoatRoughness={0.06}
         />
       </mesh>
       {/* Cyan dodecahedron inner shell */}
@@ -461,7 +476,6 @@ function ProjectModule({
     }
   });
 
-  const cornerOpacity = active ? 0.62 : locked ? 0.28 : 0.07;
   const stripOpacity = active ? 0.88 : locked ? 0.42 : 0.07;
 
   return (
@@ -509,19 +523,14 @@ function ProjectModule({
         <boxGeometry args={[0.54, 0.008, 0.002]} />
         <meshBasicMaterial color={project.color} transparent opacity={stripOpacity} depthWrite={false} />
       </mesh>
-      {/* Left structural edge */}
-      <mesh position={[-0.271, 0, 0]}>
-        <boxGeometry args={[0.008, 0.20, 0.034]} />
-        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.22 : 0.06} depthWrite={false} />
-      </mesh>
       {/* Sensor housing — protruding cylinder */}
       <mesh position={[0.16, 0, 0.020]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[0.026, 0.026, 0.008, 20]} />
+        <cylinderGeometry args={[0.026, 0.026, 0.008, 16]} />
         <meshStandardMaterial color="#080f0d" metalness={0.92} roughness={0.08} />
       </mesh>
       {/* Sensor lens — glowing face */}
       <mesh position={[0.16, 0, 0.025]}>
-        <circleGeometry args={[0.018, 18]} />
+        <circleGeometry args={[0.018, 14]} />
         <meshStandardMaterial
           ref={sensorRef}
           color={project.color}
@@ -530,43 +539,10 @@ function ProjectModule({
           depthWrite={false}
         />
       </mesh>
-      {/* Sensor ring */}
-      <mesh position={[0.16, 0, 0.018]}>
-        <ringGeometry args={[0.022, 0.028, 20]} />
-        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.28 : 0.08} depthWrite={false} />
-      </mesh>
-      {/* Scan lines — center data area */}
-      <mesh position={[-0.06, 0.042, 0.017]}>
+      {/* Single scan line */}
+      <mesh position={[-0.06, 0.018, 0.017]}>
         <boxGeometry args={[0.26, 0.0015, 0.001]} />
-        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.18 : 0.07} depthWrite={false} />
-      </mesh>
-      <mesh position={[-0.06, 0.010, 0.017]}>
-        <boxGeometry args={[0.26, 0.0015, 0.001]} />
-        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.14 : 0.06} depthWrite={false} />
-      </mesh>
-      <mesh position={[-0.06, -0.022, 0.017]}>
-        <boxGeometry args={[0.22, 0.0015, 0.001]} />
-        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.10 : 0.05} depthWrite={false} />
-      </mesh>
-      {/* Corner bracket TL — horizontal */}
-      <mesh position={[-0.248, 0.088, 0.017]}>
-        <boxGeometry args={[0.044, 0.007, 0.001]} />
-        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
-      </mesh>
-      {/* Corner bracket TL — vertical */}
-      <mesh position={[-0.265, 0.071, 0.017]}>
-        <boxGeometry args={[0.007, 0.042, 0.001]} />
-        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
-      </mesh>
-      {/* Corner bracket TR — horizontal */}
-      <mesh position={[0.248, 0.088, 0.017]}>
-        <boxGeometry args={[0.044, 0.007, 0.001]} />
-        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
-      </mesh>
-      {/* Corner bracket TR — vertical */}
-      <mesh position={[0.265, 0.071, 0.017]}>
-        <boxGeometry args={[0.007, 0.042, 0.001]} />
-        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.16 : 0.06} depthWrite={false} />
       </mesh>
       {/* Status beacon */}
       <mesh position={[-0.18, -0.072, 0.017]}>
@@ -769,7 +745,7 @@ function ReactorScene({
         delta
       );
       groupRef.current.position.x = THREE.MathUtils.damp(groupRef.current.position.x, 2.85, 5, delta);
-      groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, -0.02, 5, delta);
+      groupRef.current.position.y = THREE.MathUtils.damp(groupRef.current.position.y, -0.02 + Math.sin(t * 0.72) * 0.036, 3.5, delta);
     }
     camera.position.x = THREE.MathUtils.damp(camera.position.x, pointer.x * 0.22, 3.7, delta);
     camera.position.y = THREE.MathUtils.damp(camera.position.y, 0.14 + pointer.y * 0.1, 3.7, delta);
@@ -794,7 +770,7 @@ function ReactorScene({
           document.body.style.cursor = "";
         }}
       >
-        <Float speed={1.4} rotationIntensity={0.08} floatIntensity={0.18}>
+        <group>
           <ReactorShell interaction={interactionRef} />
           <OrbitalRings interaction={interactionRef} />
           <ReactorSweep interaction={interactionRef} />
@@ -831,15 +807,14 @@ function ReactorScene({
               </React.Fragment>
             );
           })}
-        </Float>
+        </group>
       </group>
       <HeroParticles />
       <EffectComposer>
         <Bloom
-          intensity={activeProject ? 1.05 : isInteracting ? 0.9 : 0.72}
-          luminanceThreshold={0.14}
-          luminanceSmoothing={0.78}
-          mipmapBlur
+          intensity={activeProject ? 0.92 : isInteracting ? 0.78 : 0.62}
+          luminanceThreshold={0.22}
+          luminanceSmoothing={0.82}
         />
       </EffectComposer>
     </>
@@ -892,7 +867,7 @@ export function CommandDeckScene({
       <Canvas
         className="pointer-events-auto absolute inset-0 h-full w-full"
         camera={{ position: [0, 0.14, 4.65], fov: 38 }}
-        dpr={[1, 1.7]}
+        dpr={[1, 1.35]}
         frameloop={active ? "always" : "demand"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
