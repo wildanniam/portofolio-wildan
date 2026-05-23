@@ -19,7 +19,7 @@ import {
   WalletCards,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { CommandDeckScene } from "@/components/observatory/command-deck-scene";
+import { HeroSceneLoader } from "@/components/observatory/hero-scene-loader";
 import {
   achievements,
   buildLog,
@@ -626,9 +626,9 @@ export function PortfolioHome() {
 
       <section
         id="home"
-        className="relative isolate min-h-[calc(100svh-84px)] overflow-hidden px-4 pb-14 pt-10 md:px-8 md:pb-20 md:pt-14"
+        className="relative isolate min-h-[calc(100svh-84px)] overflow-hidden px-4 pb-14 pt-10 md:px-8 md:pb-20 md:pt-14 [@media_(max-height:760px)]:pb-8 [@media_(max-height:760px)]:pt-8"
       >
-        <CommandDeckScene />
+        <HeroSceneLoader />
         <div className="pointer-events-none relative z-10 mx-auto grid min-h-[calc(100svh-150px)] max-w-7xl content-center gap-10 lg:grid-cols-[0.78fr_0.72fr]">
           <motion.div
             initial={false}
@@ -640,15 +640,15 @@ export function PortfolioHome() {
               <span className="size-1.5 rounded-full bg-[color:var(--signal-mint)] shadow-[0_0_18px_var(--signal-mint)]" />
               {profile.title}
             </div>
-            <h1 className="mt-7 max-w-5xl text-balance text-5xl font-semibold leading-[0.94] tracking-tight text-[color:var(--ink)] md:text-6xl xl:text-7xl">
+            <h1 className="mt-7 max-w-5xl text-balance text-5xl font-semibold leading-[0.94] tracking-tight text-[color:var(--ink)] md:text-6xl xl:text-7xl [@media_(max-height:760px)]:mt-5 [@media_(max-height:760px)]:text-6xl">
               Building trustworthy AI agents for Web3 systems.
             </h1>
-            <p className="mt-7 max-w-2xl text-pretty text-lg leading-8 text-[color:var(--muted-ink)] md:text-xl">
+            <p className="mt-7 max-w-2xl text-pretty text-lg leading-8 text-[color:var(--muted-ink)] md:text-xl [@media_(max-height:760px)]:mt-5 [@media_(max-height:760px)]:text-lg [@media_(max-height:760px)]:leading-7">
               I am <span className="text-[color:var(--ink)]">{profile.name}</span>, an AI
               Researcher & Web3 Builder designing autonomous software that can reason,
               transact, verify risk, and coordinate with evidence.
             </p>
-            <div className="mt-7 flex flex-wrap gap-2">
+            <div className="mt-7 flex flex-wrap gap-2 [@media_(max-height:760px)]:mt-5">
               {proofChips.map((chip) => (
                 <span
                   key={chip}
@@ -658,7 +658,7 @@ export function PortfolioHome() {
                 </span>
               ))}
             </div>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap-3 [@media_(max-height:760px)]:mt-5">
               <LinkButton href="#work">Explore work</LinkButton>
               <LinkButton href={`mailto:${profile.email}`} variant="ghost">
                 Contact
