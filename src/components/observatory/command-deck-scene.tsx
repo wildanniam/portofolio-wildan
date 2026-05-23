@@ -27,6 +27,7 @@ type ReactorProject = Pick<
 };
 
 type InteractionRef = React.MutableRefObject<number>;
+type HeroInteractionMode = "idle" | "preview" | "pinned" | "clearing";
 
 function useHeroProjects() {
   return React.useMemo<ReactorProject[]>(() => {
@@ -458,6 +459,7 @@ function ProjectModule({
   active,
   dimmed,
   locked,
+  previewing,
   onHover,
   onLeave,
   onLock,
@@ -466,6 +468,7 @@ function ProjectModule({
   active: boolean;
   dimmed: boolean;
   locked: boolean;
+  previewing: boolean;
   onHover: (project: ReactorProject) => void;
   onLeave: () => void;
   onLock: (project: ReactorProject) => void;
@@ -482,19 +485,19 @@ function ProjectModule({
     if (!groupRef.current) return;
     const t = clock.elapsedTime;
     groupRef.current.position.y = project.position.y + Math.sin(t * 1.4 + project.position.x) * 0.035;
-    groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.14 : 1, 8, delta));
+    groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.14 : locked ? 1.06 : 1, 8, delta));
     groupRef.current.rotation.z = THREE.MathUtils.damp(
       groupRef.current.rotation.z,
-      project.rotation[2] + (active ? Math.sin(t * 2.4) * 0.035 : 0),
+      project.rotation[2] + (active ? Math.sin(t * 2.4) * 0.035 : locked ? 0.018 : 0),
       7,
       delta
     );
 
     if (bodyMaterialRef.current) {
-      bodyMaterialRef.current.opacity = THREE.MathUtils.damp(bodyMaterialRef.current.opacity, dimmed ? 0.34 : 0.92, 7, delta);
+      bodyMaterialRef.current.opacity = THREE.MathUtils.damp(bodyMaterialRef.current.opacity, dimmed ? 0.32 : locked ? 1 : 0.92, 7, delta);
       bodyMaterialRef.current.emissiveIntensity = THREE.MathUtils.damp(
         bodyMaterialRef.current.emissiveIntensity,
-        active ? 1.55 : 0.28,
+        active ? 1.55 : locked ? 0.92 : 0.28,
         8,
         delta
       );
@@ -512,7 +515,11 @@ function ProjectModule({
       auraMaterialRef.current.opacity = THREE.MathUtils.damp(auraMaterialRef.current.opacity, active ? 0.18 : 0.04, 8, delta);
     }
     if (beaconMaterialRef.current) {
-      const pulse = active ? 0.72 + Math.sin(t * 8) * 0.18 : 0.28;
+      const pulse = active
+        ? 0.72 + Math.sin(t * 8) * 0.18
+        : locked
+          ? 0.58 + Math.sin(t * 4.2) * 0.12
+          : 0.28;
       beaconMaterialRef.current.opacity = THREE.MathUtils.damp(beaconMaterialRef.current.opacity, pulse, 8, delta);
     }
   });
@@ -615,6 +622,14 @@ function ProjectModule({
           </mesh>
         </group>
       ) : null}
+      {previewing && !locked ? (
+        <group position={[0, -0.17, 0.106]}>
+          <mesh>
+            <boxGeometry args={[0.18, 0.014, 0.02]} />
+            <meshBasicMaterial color={project.color} transparent opacity={0.72} />
+          </mesh>
+        </group>
+      ) : null}
     </group>
   );
 }
@@ -697,11 +712,27 @@ function HeroParticles({ interaction }: { interaction: InteractionRef }) {
 
 function HoverTooltip({
   activeProject,
+  previewProject,
   locked,
+  mode,
+  onClear,
 }: {
   activeProject: ReactorProject | null;
+  previewProject: ReactorProject | null;
   locked: boolean;
+  mode: HeroInteractionMode;
+  onClear: () => void;
 }) {
+  const label =
+    mode === "pinned"
+      ? "pinned evidence"
+      : mode === "preview"
+        ? "hover preview"
+        : mode === "clearing"
+          ? "signal fading"
+          : "reactor idle";
+  const previewLabel = locked && previewProject && previewProject.slug !== activeProject?.slug;
+
   return (
     <div
       className={`pointer-events-none absolute right-[6%] top-[18%] z-20 hidden w-[19rem] rounded-[8px] border border-white/14 bg-[#07100d]/82 p-4 shadow-[0_24px_90px_rgba(0,0,0,0.38)] backdrop-blur-xl transition duration-300 lg:block ${
@@ -713,7 +744,7 @@ function HoverTooltip({
           className="font-mono text-[10px] uppercase tracking-[0.24em]"
           style={{ color: activeProject?.color ?? "#73e7ff" }}
         >
-          {locked ? "pinned evidence" : "active satellite"}
+          {label}
         </p>
         <span className="rounded-full border border-white/12 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
           {activeProject?.status ?? "ready"}
@@ -748,6 +779,20 @@ function HoverTooltip({
             {activeProject.achievement}
           </div>
         ) : null}
+        <div className="flex items-center justify-between border-t border-white/10 pt-3">
+          <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/32">
+            {previewLabel ? `scanning ${previewProject.title}` : locked ? "click stage to clear" : "click satellite to pin"}
+          </p>
+          {locked ? (
+            <button
+              type="button"
+              className="pointer-events-auto rounded-[6px] border border-white/12 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-white/58 transition hover:border-white/28 hover:text-white"
+              onClick={onClear}
+            >
+              Clear
+            </button>
+          ) : null}
+        </div>
       </div>
     </div>
   );
@@ -755,19 +800,25 @@ function HoverTooltip({
 
 function ReactorScene({
   activeSlug,
+  previewSlug,
   setActiveSlug,
   lockedSlug,
   setLockedSlug,
   isInteracting,
   setInteracting,
+  mode,
+  setClearing,
   sceneActive,
 }: {
   activeSlug: string | null;
+  previewSlug: string | null;
   setActiveSlug: (slug: string | null) => void;
   lockedSlug: string | null;
   setLockedSlug: (slug: string | null) => void;
   isInteracting: boolean;
   setInteracting: (active: boolean) => void;
+  mode: HeroInteractionMode;
+  setClearing: (active: boolean) => void;
   sceneActive: boolean;
 }) {
   const groupRef = React.useRef<THREE.Group>(null);
@@ -775,7 +826,7 @@ function ReactorScene({
   const hoverLeaveTimerRef = React.useRef<number | null>(null);
   const projectsForHero = useHeroProjects();
   const activeProject = projectsForHero.find((project) => project.slug === activeSlug) ?? null;
-  const activeSignal = Boolean(activeProject || isInteracting);
+  const activeSignal = Boolean(activeProject || isInteracting || mode === "clearing");
 
   const cancelHoverLeave = React.useCallback(() => {
     if (hoverLeaveTimerRef.current) {
@@ -788,9 +839,13 @@ function ReactorScene({
     cancelHoverLeave();
     hoverLeaveTimerRef.current = window.setTimeout(() => {
       setInteracting(false);
-      if (!lockedSlug) setActiveSlug(null);
+      setActiveSlug(null);
+      if (!lockedSlug) {
+        setClearing(true);
+        window.setTimeout(() => setClearing(false), 220);
+      }
     }, 150);
-  }, [cancelHoverLeave, lockedSlug, setActiveSlug, setInteracting]);
+  }, [cancelHoverLeave, lockedSlug, setActiveSlug, setClearing, setInteracting]);
 
   React.useEffect(() => {
     return () => {
@@ -850,7 +905,9 @@ function ReactorScene({
           <LightStreaks interaction={interactionRef} />
           {projectsForHero.map((project) => {
             const active = project.slug === activeSlug;
-            const dimmed = Boolean(activeSlug && !active);
+            const pinned = project.slug === lockedSlug;
+            const previewing = project.slug === previewSlug;
+            const dimmed = Boolean(activeSlug && !active && !pinned);
             const locked = project.slug === lockedSlug;
             return (
               <React.Fragment key={project.slug}>
@@ -877,17 +934,20 @@ function ReactorScene({
                   active={active}
                   dimmed={dimmed}
                   locked={locked}
+                  previewing={previewing}
                   onHover={(nextProject) => {
                     cancelHoverLeave();
                     setInteracting(true);
-                    if (!lockedSlug) setActiveSlug(nextProject.slug);
+                    setClearing(false);
+                    setActiveSlug(nextProject.slug);
                   }}
                   onLeave={() => {
                     clearHoverWithGrace();
                   }}
                   onLock={(nextProject) => {
                     setLockedSlug(lockedSlug === nextProject.slug ? null : nextProject.slug);
-                    setActiveSlug(nextProject.slug);
+                    setActiveSlug(null);
+                    setClearing(false);
                   }}
                 />
               </React.Fragment>
@@ -907,12 +967,35 @@ export function CommandDeckScene({
   active?: boolean;
   onReady?: () => void;
 }) {
-  const [hoverSlug, setHoverSlug] = React.useState<string | null>(null);
-  const [lockedSlug, setLockedSlug] = React.useState<string | null>(null);
+  const [previewSlug, setPreviewSlug] = React.useState<string | null>(null);
+  const [pinnedSlug, setPinnedSlug] = React.useState<string | null>(null);
   const [isInteracting, setInteracting] = React.useState(false);
-  const activeSlug = lockedSlug ?? hoverSlug;
+  const [isClearing, setClearing] = React.useState(false);
+  const clearTimerRef = React.useRef<number | null>(null);
+  const activeSlug = previewSlug ?? pinnedSlug;
+  const evidenceSlug = pinnedSlug ?? previewSlug;
+  const mode: HeroInteractionMode = pinnedSlug ? "pinned" : previewSlug ? "preview" : isClearing ? "clearing" : "idle";
   const projectsForHero = useHeroProjects();
-  const activeProject = projectsForHero.find((project) => project.slug === activeSlug) ?? null;
+  const activeProject = projectsForHero.find((project) => project.slug === evidenceSlug) ?? null;
+  const previewProject = projectsForHero.find((project) => project.slug === previewSlug) ?? null;
+
+  const clearStage = React.useCallback(() => {
+    if (clearTimerRef.current) window.clearTimeout(clearTimerRef.current);
+    setPreviewSlug(null);
+    setPinnedSlug(null);
+    setInteracting(false);
+    setClearing(true);
+    clearTimerRef.current = window.setTimeout(() => {
+      setClearing(false);
+      clearTimerRef.current = null;
+    }, 260);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (clearTimerRef.current) window.clearTimeout(clearTimerRef.current);
+    };
+  }, []);
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -929,23 +1012,28 @@ export function CommandDeckScene({
         onCreated={() => {
           window.requestAnimationFrame(() => onReady?.());
         }}
-        onPointerMissed={() => {
-          setLockedSlug(null);
-          setHoverSlug(null);
-          setInteracting(false);
-        }}
+        onPointerMissed={clearStage}
       >
         <ReactorScene
           activeSlug={activeSlug}
-          setActiveSlug={setHoverSlug}
-          lockedSlug={lockedSlug}
-          setLockedSlug={setLockedSlug}
-          isInteracting={isInteracting}
+          previewSlug={previewSlug}
+          setActiveSlug={setPreviewSlug}
+          lockedSlug={pinnedSlug}
+          setLockedSlug={setPinnedSlug}
+          isInteracting={isInteracting || isClearing}
           setInteracting={setInteracting}
+          mode={mode}
+          setClearing={setClearing}
           sceneActive={active}
         />
       </Canvas>
-      <HoverTooltip activeProject={activeProject} locked={Boolean(lockedSlug)} />
+      <HoverTooltip
+        activeProject={activeProject}
+        previewProject={previewProject}
+        locked={Boolean(pinnedSlug)}
+        mode={mode}
+        onClear={clearStage}
+      />
       <div className="absolute inset-y-0 left-0 w-[68%] bg-gradient-to-r from-[color:var(--void)] via-[color:var(--void)]/96 to-transparent max-md:w-full max-md:from-[color:var(--void)]/98 max-md:via-[color:var(--void)]/94 max-md:to-[color:var(--void)]/74" />
       <div className="absolute inset-x-0 bottom-0 h-52 bg-gradient-to-t from-[color:var(--void)] via-[color:var(--void)]/76 to-transparent" />
       <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[color:var(--void)]/84 to-transparent" />

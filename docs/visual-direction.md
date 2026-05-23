@@ -1,5 +1,9 @@
 # Portfolio Visual Direction
 
+## Working Gates
+
+- [V5 Phase 1 - Global Audit and Acceptance Gate](./v5-phase-1-audit.md)
+
 ## Core Brief
 
 - **Positioning:** Wildan Syukri Niam, AI Researcher & Web3 Builder.
@@ -51,6 +55,7 @@
 - **Idle:** Core breathes slowly, shell rotates, project modules stay quiet.
 - **Hover:** Active satellite brightens, other satellites dim, connection line warms, energy packet travels into the core, compact evidence panel appears.
 - **Pinned:** Evidence panel stays open until another project is clicked or the stage is cleared.
+- **Clearing:** Hover leaves the stage but the system fades out with a short grace delay instead of snapping off.
 - **Mobile:** No WebGL. Use atmospheric fallback and keep text readable.
 
 ## Implementation Checks
