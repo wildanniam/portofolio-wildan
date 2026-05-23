@@ -428,29 +428,41 @@ function ProjectModule({
 }) {
   const groupRef = React.useRef<THREE.Group>(null);
   const bodyRef = React.useRef<THREE.MeshStandardMaterial>(null);
+  const sensorRef = React.useRef<THREE.MeshStandardMaterial>(null);
 
   useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     const t = clock.elapsedTime;
     groupRef.current.position.y = project.position.y + Math.sin(t * 1.4 + project.position.x) * 0.035;
     groupRef.current.scale.setScalar(
-      THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.12 : locked ? 1.05 : 1, 8, delta)
+      THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.10 : locked ? 1.04 : 1, 8, delta)
     );
     if (bodyRef.current) {
       bodyRef.current.emissiveIntensity = THREE.MathUtils.damp(
         bodyRef.current.emissiveIntensity,
-        dimmed ? 0.04 : active ? 1.25 : locked ? 0.65 : 0.22,
+        dimmed ? 0.01 : active ? 1.25 : locked ? 0.55 : 0.03,
         8,
         delta
       );
       bodyRef.current.opacity = THREE.MathUtils.damp(
         bodyRef.current.opacity,
-        dimmed ? 0.35 : active ? 0.95 : 0.88,
+        dimmed ? 0.28 : 0.94,
         7,
         delta
       );
     }
+    if (sensorRef.current) {
+      sensorRef.current.emissiveIntensity = THREE.MathUtils.damp(
+        sensorRef.current.emissiveIntensity,
+        dimmed ? 0.04 : active ? 1.8 : locked ? 0.9 : 0.18,
+        8,
+        delta
+      );
+    }
   });
+
+  const cornerOpacity = active ? 0.62 : locked ? 0.28 : 0.07;
+  const stripOpacity = active ? 0.88 : locked ? 0.42 : 0.07;
 
   return (
     <group
@@ -473,77 +485,117 @@ function ProjectModule({
         onLock(project);
       }}
     >
-      {/* Invisible hitbox */}
+      {/* Hitbox */}
       <mesh>
-        <boxGeometry args={[0.82, 0.52, 0.48]} />
+        <boxGeometry args={[0.72, 0.38, 0.22]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
-      {/* Main body */}
+      {/* Main panel body — flat, wide instrument panel */}
       <mesh>
-        <boxGeometry args={[0.44, 0.18, 0.16]} />
+        <boxGeometry args={[0.54, 0.20, 0.032]} />
         <meshStandardMaterial
           ref={bodyRef}
-          color="#09120f"
+          color="#060d0b"
           emissive={project.color}
-          emissiveIntensity={0.22}
-          metalness={0.48}
-          roughness={0.28}
+          emissiveIntensity={0.03}
+          metalness={0.84}
+          roughness={0.16}
           transparent
-          opacity={0.88}
+          opacity={0.94}
         />
       </mesh>
-      {/* Top accent strip */}
-      <mesh position={[0, 0.102, 0.006]}>
-        <boxGeometry args={[0.34, 0.012, 0.17]} />
-        <meshBasicMaterial
+      {/* Top border strip — project color */}
+      <mesh position={[0, 0.106, 0.017]}>
+        <boxGeometry args={[0.54, 0.008, 0.002]} />
+        <meshBasicMaterial color={project.color} transparent opacity={stripOpacity} depthWrite={false} />
+      </mesh>
+      {/* Left structural edge */}
+      <mesh position={[-0.271, 0, 0]}>
+        <boxGeometry args={[0.008, 0.20, 0.034]} />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.22 : 0.06} depthWrite={false} />
+      </mesh>
+      {/* Sensor housing — protruding cylinder */}
+      <mesh position={[0.16, 0, 0.020]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.026, 0.026, 0.008, 20]} />
+        <meshStandardMaterial color="#080f0d" metalness={0.92} roughness={0.08} />
+      </mesh>
+      {/* Sensor lens — glowing face */}
+      <mesh position={[0.16, 0, 0.025]}>
+        <circleGeometry args={[0.018, 18]} />
+        <meshStandardMaterial
+          ref={sensorRef}
           color={project.color}
-          transparent
-          opacity={active ? 0.88 : locked ? 0.55 : 0.38}
+          emissive={project.color}
+          emissiveIntensity={0.18}
           depthWrite={false}
         />
       </mesh>
-      {/* Left side panel */}
-      <mesh position={[-0.16, 0, 0.095]}>
-        <boxGeometry args={[0.075, 0.22, 0.018]} />
-        <meshBasicMaterial
-          color={project.color}
-          transparent
-          opacity={active ? 0.92 : locked ? 0.58 : 0.44}
-          depthWrite={false}
-        />
+      {/* Sensor ring */}
+      <mesh position={[0.16, 0, 0.018]}>
+        <ringGeometry args={[0.022, 0.028, 20]} />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.28 : 0.08} depthWrite={false} />
       </mesh>
-      {/* Circle aperture */}
-      <mesh position={[0.18, -0.002, 0.097]}>
-        <circleGeometry args={[0.032, 18]} />
-        <meshBasicMaterial
-          color={project.color}
-          transparent
-          opacity={active ? 1 : locked ? 0.65 : 0.52}
-          depthWrite={false}
-        />
+      {/* Scan lines — center data area */}
+      <mesh position={[-0.06, 0.042, 0.017]}>
+        <boxGeometry args={[0.26, 0.0015, 0.001]} />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.18 : 0.07} depthWrite={false} />
       </mesh>
-      {/* Glow backing */}
-      <mesh scale={[1.18, 1.42, 1]} position={[0, 0, -0.004]}>
-        <boxGeometry args={[0.44, 0.18, 0.01]} />
+      <mesh position={[-0.06, 0.010, 0.017]}>
+        <boxGeometry args={[0.26, 0.0015, 0.001]} />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.14 : 0.06} depthWrite={false} />
+      </mesh>
+      <mesh position={[-0.06, -0.022, 0.017]}>
+        <boxGeometry args={[0.22, 0.0015, 0.001]} />
+        <meshBasicMaterial color="#73e7ff" transparent opacity={active ? 0.10 : 0.05} depthWrite={false} />
+      </mesh>
+      {/* Corner bracket TL — horizontal */}
+      <mesh position={[-0.248, 0.088, 0.017]}>
+        <boxGeometry args={[0.044, 0.007, 0.001]} />
+        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
+      </mesh>
+      {/* Corner bracket TL — vertical */}
+      <mesh position={[-0.265, 0.071, 0.017]}>
+        <boxGeometry args={[0.007, 0.042, 0.001]} />
+        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
+      </mesh>
+      {/* Corner bracket TR — horizontal */}
+      <mesh position={[0.248, 0.088, 0.017]}>
+        <boxGeometry args={[0.044, 0.007, 0.001]} />
+        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
+      </mesh>
+      {/* Corner bracket TR — vertical */}
+      <mesh position={[0.265, 0.071, 0.017]}>
+        <boxGeometry args={[0.007, 0.042, 0.001]} />
+        <meshBasicMaterial color={project.color} transparent opacity={cornerOpacity} depthWrite={false} />
+      </mesh>
+      {/* Status beacon */}
+      <mesh position={[-0.18, -0.072, 0.017]}>
+        <sphereGeometry args={[0.007, 8, 8]} />
         <meshBasicMaterial
           color={project.color}
           transparent
-          opacity={active ? 0.14 : 0.038}
+          opacity={active ? 1 : locked ? 0.62 : 0.12}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
         />
       </mesh>
+      {/* Glow plane — additive behind panel */}
+      <mesh position={[0, 0, -0.002]}>
+        <boxGeometry args={[0.56, 0.22, 0.001]} />
+        <meshBasicMaterial
+          color={project.color}
+          transparent
+          opacity={active ? 0.12 : locked ? 0.04 : 0}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      {/* Lock indicator bar */}
       {locked ? (
-        <group position={[0, -0.16, 0.104]}>
-          <mesh>
-            <boxGeometry args={[0.26, 0.018, 0.024]} />
-            <meshBasicMaterial color={project.color} transparent opacity={0.88} depthWrite={false} />
-          </mesh>
-          <mesh position={[0, -0.032, 0]}>
-            <boxGeometry args={[0.13, 0.036, 0.018]} />
-            <meshBasicMaterial color="#f8fff9" transparent opacity={0.72} depthWrite={false} />
-          </mesh>
-        </group>
+        <mesh position={[0, -0.126, 0.017]}>
+          <boxGeometry args={[0.30, 0.006, 0.001]} />
+          <meshBasicMaterial color={project.color} transparent opacity={0.72} depthWrite={false} />
+        </mesh>
       ) : null}
     </group>
   );
