@@ -17,7 +17,10 @@ const projectColors: Record<Project["accent"], string> = {
   blue: "#8fb8ff",
 };
 
-type ReactorProject = Pick<Project, "slug" | "title" | "focus" | "accent"> & {
+type ReactorProject = Pick<
+  Project,
+  "slug" | "title" | "focus" | "accent" | "role" | "signal" | "status" | "achievement"
+> & {
   color: string;
   position: THREE.Vector3;
   rotation: [number, number, number];
@@ -36,6 +39,10 @@ function useHeroProjects() {
         title: project.title,
         focus: project.focus,
         accent: project.accent,
+        role: project.role,
+        signal: project.signal,
+        status: project.status,
+        achievement: project.achievement,
         color: projectColors[project.accent],
         position: new THREE.Vector3(
           Math.cos(angle) * radius,
@@ -303,6 +310,43 @@ function OrbitalRings({ interaction }: { interaction: InteractionRef }) {
   );
 }
 
+function ReactorSweep({ interaction }: { interaction: InteractionRef }) {
+  const groupRef = React.useRef<THREE.Group>(null);
+  const materialRef = React.useRef<THREE.MeshBasicMaterial>(null);
+
+  useFrame(({ clock }, delta) => {
+    const strength = interaction.current;
+    if (groupRef.current) {
+      groupRef.current.rotation.y += (0.18 + strength * 0.32) * delta;
+      groupRef.current.rotation.z = -0.58 + Math.sin(clock.elapsedTime * 0.45) * 0.08;
+      groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, 1 + strength * 0.045, 5, delta));
+    }
+    if (materialRef.current) {
+      materialRef.current.opacity = THREE.MathUtils.damp(materialRef.current.opacity, 0.035 + strength * 0.11, 6, delta);
+    }
+  });
+
+  return (
+    <group ref={groupRef} rotation={[1.18, -0.15, -0.58]}>
+      <mesh>
+        <torusGeometry args={[1.92, 0.012, 8, 96, Math.PI * 1.22]} />
+        <meshBasicMaterial
+          ref={materialRef}
+          color="#73e7ff"
+          transparent
+          opacity={0.035}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      <mesh rotation={[0, 0, Math.PI * 0.55]}>
+        <torusGeometry args={[1.28, 0.006, 8, 96, Math.PI * 0.72]} />
+        <meshBasicMaterial color="#ffd166" transparent opacity={0.08} depthWrite={false} />
+      </mesh>
+    </group>
+  );
+}
+
 function AutonomousCore({ interaction }: { interaction: InteractionRef }) {
   const groupRef = React.useRef<THREE.Group>(null);
   const coreRef = React.useRef<THREE.Mesh>(null);
@@ -429,14 +473,22 @@ function ProjectModule({
   const groupRef = React.useRef<THREE.Group>(null);
   const bodyMaterialRef = React.useRef<THREE.MeshStandardMaterial>(null);
   const railMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const sideMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
   const lensMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
   const auraMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
+  const beaconMaterialRef = React.useRef<THREE.MeshBasicMaterial>(null);
 
   useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     const t = clock.elapsedTime;
     groupRef.current.position.y = project.position.y + Math.sin(t * 1.4 + project.position.x) * 0.035;
     groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, active ? 1.14 : 1, 8, delta));
+    groupRef.current.rotation.z = THREE.MathUtils.damp(
+      groupRef.current.rotation.z,
+      project.rotation[2] + (active ? Math.sin(t * 2.4) * 0.035 : 0),
+      7,
+      delta
+    );
 
     if (bodyMaterialRef.current) {
       bodyMaterialRef.current.opacity = THREE.MathUtils.damp(bodyMaterialRef.current.opacity, dimmed ? 0.34 : 0.92, 7, delta);
@@ -450,35 +502,45 @@ function ProjectModule({
     if (railMaterialRef.current) {
       railMaterialRef.current.opacity = THREE.MathUtils.damp(railMaterialRef.current.opacity, active ? 0.88 : 0.36, 8, delta);
     }
+    if (sideMaterialRef.current) {
+      sideMaterialRef.current.opacity = THREE.MathUtils.damp(sideMaterialRef.current.opacity, active ? 0.72 : 0.3, 8, delta);
+    }
     if (lensMaterialRef.current) {
       lensMaterialRef.current.opacity = THREE.MathUtils.damp(lensMaterialRef.current.opacity, active ? 1 : 0.58, 8, delta);
     }
     if (auraMaterialRef.current) {
       auraMaterialRef.current.opacity = THREE.MathUtils.damp(auraMaterialRef.current.opacity, active ? 0.18 : 0.04, 8, delta);
     }
+    if (beaconMaterialRef.current) {
+      const pulse = active ? 0.72 + Math.sin(t * 8) * 0.18 : 0.28;
+      beaconMaterialRef.current.opacity = THREE.MathUtils.damp(beaconMaterialRef.current.opacity, pulse, 8, delta);
+    }
   });
 
   return (
-    <group ref={groupRef} position={project.position} rotation={project.rotation}>
-      <mesh
-        onPointerOver={(event) => {
-          event.stopPropagation();
-          document.body.style.cursor = "pointer";
-          onHover(project);
-        }}
-        onPointerMove={(event) => {
-          event.stopPropagation();
-        }}
-        onPointerOut={(event) => {
-          event.stopPropagation();
-          document.body.style.cursor = "";
-          onLeave();
-        }}
-        onClick={(event) => {
-          event.stopPropagation();
-          onLock(project);
-        }}
-      >
+    <group
+      ref={groupRef}
+      position={project.position}
+      rotation={project.rotation}
+      onPointerOver={(event) => {
+        event.stopPropagation();
+        document.body.style.cursor = "pointer";
+        onHover(project);
+      }}
+      onPointerMove={(event) => {
+        event.stopPropagation();
+      }}
+      onPointerOut={(event) => {
+        event.stopPropagation();
+        document.body.style.cursor = "";
+        onLeave();
+      }}
+      onClick={(event) => {
+        event.stopPropagation();
+        onLock(project);
+      }}
+    >
+      <mesh>
         <boxGeometry args={[1.48, 1.04, 0.82]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0.001} depthWrite={false} />
       </mesh>
@@ -499,13 +561,36 @@ function ProjectModule({
         <boxGeometry args={[0.34, 0.012, 0.17]} />
         <meshBasicMaterial ref={railMaterialRef} color={project.color} transparent opacity={0.36} />
       </mesh>
+      <mesh position={[0, -0.104, 0.006]}>
+        <boxGeometry args={[0.28, 0.01, 0.17]} />
+        <meshBasicMaterial ref={sideMaterialRef} color="#f8fff9" transparent opacity={0.3} />
+      </mesh>
       <mesh position={[-0.16, 0, 0.095]}>
         <boxGeometry args={[0.075, 0.22, 0.018]} />
         <meshBasicMaterial color={project.color} transparent opacity={active ? 0.9 : 0.46} />
       </mesh>
+      <mesh position={[0.28, 0.068, 0.083]} rotation={[0, 0, 0.35]}>
+        <boxGeometry args={[0.12, 0.035, 0.025]} />
+        <meshBasicMaterial color={project.color} transparent opacity={active ? 0.84 : 0.34} />
+      </mesh>
+      <mesh position={[-0.28, -0.062, 0.083]} rotation={[0, 0, 0.35]}>
+        <boxGeometry args={[0.12, 0.035, 0.025]} />
+        <meshBasicMaterial color={project.color} transparent opacity={active ? 0.84 : 0.34} />
+      </mesh>
       <mesh position={[0.18, -0.002, 0.097]}>
         <circleGeometry args={[0.032, 18]} />
         <meshBasicMaterial ref={lensMaterialRef} color={project.color} transparent opacity={0.58} />
+      </mesh>
+      <mesh position={[0.28, 0.002, 0.11]}>
+        <sphereGeometry args={[0.018, 10, 10]} />
+        <meshBasicMaterial
+          ref={beaconMaterialRef}
+          color="#f8fff9"
+          transparent
+          opacity={0.28}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
       </mesh>
       <mesh scale={[1.18, 1.42, 1]} position={[0, 0, -0.004]}>
         <boxGeometry args={[0.44, 0.18, 0.01]} />
@@ -619,15 +704,51 @@ function HoverTooltip({
 }) {
   return (
     <div
-      className={`pointer-events-none absolute right-[7%] top-[21%] z-20 hidden max-w-64 rounded-[8px] border border-white/14 bg-[#07100d]/78 px-4 py-3 shadow-[0_24px_90px_rgba(0,0,0,0.35)] backdrop-blur-xl transition duration-200 lg:block ${
-        activeProject ? "translate-y-0 opacity-100" : "-translate-y-1 opacity-0"
+      className={`pointer-events-none absolute right-[6%] top-[18%] z-20 hidden w-[19rem] rounded-[8px] border border-white/14 bg-[#07100d]/82 p-4 shadow-[0_24px_90px_rgba(0,0,0,0.38)] backdrop-blur-xl transition duration-300 lg:block ${
+        activeProject ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
       }`}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.24em]" style={{ color: activeProject?.color ?? "#73e7ff" }}>
-        {locked ? "pinned satellite" : "active satellite"}
+      <div className="flex items-center justify-between gap-3">
+        <p
+          className="font-mono text-[10px] uppercase tracking-[0.24em]"
+          style={{ color: activeProject?.color ?? "#73e7ff" }}
+        >
+          {locked ? "pinned evidence" : "active satellite"}
+        </p>
+        <span className="rounded-full border border-white/12 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+          {activeProject?.status ?? "ready"}
+        </span>
+      </div>
+      <p className="mt-4 text-lg font-semibold tracking-tight text-[color:var(--ink)]">
+        {activeProject?.title ?? "Project"}
       </p>
-      <p className="mt-2 text-sm font-medium text-[color:var(--ink)]">{activeProject?.title ?? "Project"}</p>
-      <p className="mt-1 text-xs leading-5 text-[color:var(--muted-ink)]">{activeProject?.focus ?? "Hover a satellite"}</p>
+      <p className="mt-1 text-sm leading-6 text-[color:var(--muted-ink)]">
+        {activeProject?.focus ?? "Hover a satellite"}
+      </p>
+      <div className="mt-4 space-y-2 border-t border-white/10 pt-4">
+        <div>
+          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/34">Signal</p>
+          <p className="mt-1 text-sm text-[color:var(--ink)]">{activeProject?.signal ?? "System proof"}</p>
+        </div>
+        <div>
+          <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-white/34">Role</p>
+          <p className="mt-1 text-xs leading-5 text-[color:var(--muted-ink)]">
+            {activeProject?.role ?? "Builder"}
+          </p>
+        </div>
+        {activeProject?.achievement ? (
+          <div
+            className="rounded-[7px] border px-3 py-2 text-xs font-medium"
+            style={{
+              borderColor: `${activeProject.color}66`,
+              backgroundColor: `${activeProject.color}14`,
+              color: activeProject.color,
+            }}
+          >
+            {activeProject.achievement}
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -724,6 +845,7 @@ function ReactorScene({
         <group>
           <ReactorShell interaction={interactionRef} />
           <OrbitalRings interaction={interactionRef} />
+          <ReactorSweep interaction={interactionRef} />
           <AutonomousCore interaction={interactionRef} />
           <LightStreaks interaction={interactionRef} />
           {projectsForHero.map((project) => {
@@ -792,11 +914,6 @@ export function CommandDeckScene({
   const projectsForHero = useHeroProjects();
   const activeProject = projectsForHero.find((project) => project.slug === activeSlug) ?? null;
 
-  React.useEffect(() => {
-    const frame = window.requestAnimationFrame(() => onReady?.());
-    return () => window.cancelAnimationFrame(frame);
-  }, [onReady]);
-
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_66%_42%,rgba(115,231,255,0.3),transparent_29%),radial-gradient(circle_at_76%_54%,rgba(255,209,102,0.12),transparent_22%),radial-gradient(circle_at_84%_58%,rgba(158,255,201,0.12),transparent_26%),radial-gradient(circle_at_19%_24%,rgba(255,122,89,0.07),transparent_24%)]" />
@@ -809,7 +926,14 @@ export function CommandDeckScene({
         dpr={[1, 1.35]}
         frameloop={active ? "always" : "demand"}
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-        onPointerMissed={() => setLockedSlug(null)}
+        onCreated={() => {
+          window.requestAnimationFrame(() => onReady?.());
+        }}
+        onPointerMissed={() => {
+          setLockedSlug(null);
+          setHoverSlug(null);
+          setInteracting(false);
+        }}
       >
         <ReactorScene
           activeSlug={activeSlug}

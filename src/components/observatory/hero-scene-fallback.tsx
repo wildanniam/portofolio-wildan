@@ -3,8 +3,8 @@ import * as React from "react";
 export function HeroSceneFallback() {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_66%_42%,rgba(115,231,255,0.27),transparent_30%),radial-gradient(circle_at_76%_54%,rgba(255,209,102,0.12),transparent_23%),radial-gradient(circle_at_84%_58%,rgba(158,255,201,0.1),transparent_29%),radial-gradient(circle_at_18%_22%,rgba(255,122,89,0.06),transparent_24%)]" />
-      <div className="absolute inset-0 opacity-55 [background:radial-gradient(circle,rgba(159,239,255,0.5)_1px,transparent_1.7px),radial-gradient(circle,rgba(255,209,102,0.3)_1px,transparent_1.7px)] [background-position:18px_42px,90px_24px] [background-size:170px_150px,260px_220px]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_66%_42%,rgba(115,231,255,0.23),transparent_31%),radial-gradient(circle_at_76%_54%,rgba(255,209,102,0.1),transparent_24%),radial-gradient(circle_at_84%_58%,rgba(158,255,201,0.08),transparent_30%),radial-gradient(circle_at_18%_22%,rgba(255,122,89,0.045),transparent_24%)]" />
+      <div className="absolute inset-0 opacity-50 [background:radial-gradient(circle,rgba(159,239,255,0.44)_1px,transparent_1.7px),radial-gradient(circle,rgba(255,209,102,0.24)_1px,transparent_1.7px)] [background-position:18px_42px,90px_24px] [background-size:170px_150px,260px_220px]" />
       <div className="absolute inset-0 opacity-30 [background:linear-gradient(90deg,rgba(115,231,255,0.028)_1px,transparent_1px),linear-gradient(rgba(158,255,201,0.018)_1px,transparent_1px)] [background-size:128px_128px]" />
 
       <div className="absolute right-[-18%] top-[30%] h-[30rem] w-[30rem] rounded-full border border-[color:var(--signal-cyan)]/14 shadow-[0_0_90px_rgba(115,231,255,0.12)] max-lg:right-[-72%] max-lg:top-[37%] max-lg:h-[24rem] max-lg:w-[24rem]" />
@@ -12,11 +12,16 @@ export function HeroSceneFallback() {
       <div className="absolute right-[7%] top-[36%] h-[23rem] w-[40rem] rotate-[13deg] rounded-full border border-[color:var(--signal-mint)]/16 max-lg:right-[-72%] max-lg:top-[42%] max-lg:h-[17rem] max-lg:w-[28rem]" />
       <div className="absolute right-[15%] top-[43%] h-[15rem] w-[27rem] rotate-[-31deg] rounded-full border border-[color:var(--signal-amber)]/14 max-lg:right-[-55%] max-lg:top-[47%] max-lg:h-[13rem] max-lg:w-[22rem]" />
 
-      <div className="absolute right-[25%] top-[39%] grid size-72 place-items-center rounded-full border border-[color:var(--signal-cyan)]/12 bg-[radial-gradient(circle,rgba(255,209,102,0.24),rgba(255,122,89,0.12)_34%,rgba(115,231,255,0.08)_56%,transparent_70%)] shadow-[0_0_120px_rgba(255,209,102,0.14),0_0_160px_rgba(115,231,255,0.12)] max-lg:right-[-18%] max-lg:top-[44%] max-lg:size-56">
-        <div className="absolute size-[18rem] animate-pulse rounded-full border border-[color:var(--signal-cyan)]/10 max-lg:size-[14rem]" />
-        <div className="size-40 rounded-full border border-white/10 bg-[radial-gradient(circle_at_42%_38%,rgba(255,255,255,0.38),rgba(255,209,102,0.3)_24%,rgba(255,122,89,0.12)_55%,transparent_72%)] shadow-[0_0_70px_rgba(255,209,102,0.18)] max-lg:size-32" />
+      <div className="absolute right-[25%] top-[39%] grid size-72 place-items-center rounded-full border border-[color:var(--signal-cyan)]/10 bg-[radial-gradient(circle,rgba(255,209,102,0.18),rgba(255,122,89,0.09)_34%,rgba(115,231,255,0.07)_56%,transparent_70%)] shadow-[0_0_120px_rgba(255,209,102,0.12),0_0_160px_rgba(115,231,255,0.1)] max-lg:right-[-18%] max-lg:top-[44%] max-lg:size-56">
+        <div className="absolute size-[18rem] animate-pulse rounded-full border border-[color:var(--signal-cyan)]/10 opacity-70 max-lg:size-[14rem]" />
+        <div className="absolute size-[13rem] rounded-full border border-[color:var(--signal-mint)]/10 opacity-60 max-lg:size-[10rem]" />
+        <div className="size-32 rounded-full border border-white/8 bg-[radial-gradient(circle_at_42%_38%,rgba(255,255,255,0.32),rgba(255,209,102,0.24)_24%,rgba(255,122,89,0.1)_55%,transparent_72%)] shadow-[0_0_70px_rgba(255,209,102,0.16)] max-lg:size-28" />
         <span className="absolute h-px w-56 rotate-[-12deg] rounded-full bg-gradient-to-r from-transparent via-[color:var(--signal-cyan)]/32 to-transparent max-lg:w-44" />
         <span className="absolute h-px w-48 rotate-[38deg] rounded-full bg-gradient-to-r from-transparent via-[color:var(--signal-amber)]/22 to-transparent max-lg:w-36" />
+      </div>
+
+      <div className="absolute right-[19%] top-[41%] hidden h-[18rem] w-[38rem] rotate-[-7deg] overflow-hidden rounded-full opacity-35 lg:block">
+        <span className="absolute left-[8%] top-1/2 h-px w-[65%] -translate-y-1/2 animate-pulse bg-gradient-to-r from-transparent via-white/40 to-transparent" />
       </div>
 
       <div className="absolute right-[4%] top-[34%] h-[27rem] w-[42rem] opacity-55 max-lg:right-[-78%] max-lg:top-[43%] max-lg:h-[19rem] max-lg:w-[30rem]">
