@@ -55,6 +55,7 @@ bounded flagship evidence transition. WebGL and Three.js are outside V1.
 ## Delivery contracts
 
 - [Development package index](./development/README.md)
+- [Current release-candidate packet](./development/RELEASE_CANDIDATE.md)
 - [Migration map](./development/MIGRATION_MAP.md)
 - [Issue breakdown](./development/ISSUE_BREAKDOWN.md)
 - [QA matrix](./development/QA_MATRIX.md)

@@ -26,6 +26,9 @@ npm run typecheck
 npm run test
 npm run test:e2e
 npm run test:a11y
+npm run test:release
+npm run audit:release-routes
+npm run audit:links
 npm run build
 npm run analyze:bundle
 npm run lighthouse
@@ -38,7 +41,7 @@ Expected tiers:
 | Local iteration   | affected tests, content validation, typecheck                                   |
 | Before PR update  | lint, typecheck, tests, affected screenshots, build when routing/config changes |
 | CI                | clean install, content, lint, typecheck, unit, E2E smoke, build                 |
-| Release candidate | every command plus full browser/mode matrix and manual review                   |
+| Release candidate | every command plus `test:release`, the full mode matrix, and manual review      |
 
 ## 3. Viewports
 

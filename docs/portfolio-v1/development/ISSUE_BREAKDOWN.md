@@ -397,6 +397,13 @@ Verification:
 
 Dependency: issue 09.
 
+Pre-cutover implementation note: GitHub Issue #21 prepares the approval packet
+without changing the public root. It adds Chromium/Firefox/WebKit release smoke,
+owned-server route and metadata profiles, source-traced external-link probing,
+and generated desktop/mobile approval sheets. The pre-cutover profile records
+legacy root debt explicitly; the exception-free post-cutover profile becomes
+mandatory inside the separate root-switch diff.
+
 Scope:
 
 - run the full visual, accessibility, performance, SEO, content, link, and browser QA matrix on the environment-gated preview;
@@ -427,6 +434,9 @@ npm run typecheck
 npm run test
 npm run test:e2e
 npm run test:a11y
+npm run test:release
+npm run audit:release-routes -- --profile post-cutover
+npm run audit:links
 npm run build
 npm run analyze:bundle
 npm run lighthouse

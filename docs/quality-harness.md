@@ -31,7 +31,7 @@ only the exact native/runtime packages reviewed during this toolchain change.
 nvm install
 nvm use
 npm ci
-npx playwright install chromium
+npx playwright install chromium firefox webkit
 ```
 
 The Lighthouse lab uses an installed stable Google Chrome so its current
@@ -43,24 +43,29 @@ valid `CHROME_PATH` for Lighthouse.
 On Linux CI, install the browser and operating-system dependencies together:
 
 ```bash
-npx playwright install --with-deps chromium
+npx playwright install --with-deps chromium firefox webkit
 ```
 
 ## Commands
 
-| Command | Contract |
-|---|---|
-| `npm run lint` | Official Next.js flat ESLint config, zero warnings allowed. |
-| `npm run typecheck` | Generate Next route types, then run strict no-emit TypeScript. |
-| `npm run test:run` | Run deterministic Vitest unit and content-adjacent tests once. |
-| `npm run test:watch` | Run the same Vitest suite in local watch mode. |
-| `npm run test:e2e` | Build and own a production server, then run desktop and mobile Chromium smoke tests. |
-| `npm run test:a11y` | Build and own a production server, run axe, attach full findings, and reject new serious/critical regressions. |
-| `npm run test:foundation` | Build the private V1 checkpoint with its gate enabled, then run the exact light/dark, responsive, focus, no-JavaScript, reflow, axe, and zero-runtime-error matrix. |
-| `npm run analyze:runtime` | Build the server-only fixture and report the pinned Next runtime floor. |
-| `npm run analyze:bundle` | Build the app, probe every active-profile route sample in a cold browser, classify runtime/shared/route/lazy/pre-intent cost, report fonts/media/WebGL/non-build scripts, and reject unexpected request or page failures. A targeted explorer trigger remains opt-in. |
-| `npm run analyze:bundle:explorer` | Build the protected V1 preview with an ephemeral process-only credential, then enforce both real `near` and `intent` explorer enhancement probes, including chunk bytes, final state, and post-trigger failures. |
-| `npm run lighthouse` | Build and own a production server, collect three cold mobile Lighthouse runs, enforce medians, and always stop the server. |
+| Command                           | Contract                                                                                                                                                                                                                                                              |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run lint`                    | Official Next.js flat ESLint config, zero warnings allowed.                                                                                                                                                                                                           |
+| `npm run typecheck`               | Generate Next route types, then run strict no-emit TypeScript.                                                                                                                                                                                                        |
+| `npm run test:run`                | Run deterministic Vitest unit and content-adjacent tests once.                                                                                                                                                                                                        |
+| `npm run test:watch`              | Run the same Vitest suite in local watch mode.                                                                                                                                                                                                                        |
+| `npm run test:e2e`                | Build and own a production server, then run desktop and mobile Chromium smoke tests.                                                                                                                                                                                  |
+| `npm run test:a11y`               | Build and own a production server, run axe, attach full findings, and reject new serious/critical regressions.                                                                                                                                                        |
+| `npm run test:foundation`         | Build the private V1 checkpoint with its gate enabled, then run the exact light/dark, responsive, focus, no-JavaScript, reflow, axe, and zero-runtime-error matrix.                                                                                                   |
+| `npm run test:release`            | Build the protected V1 release candidate once, then run a focused route, semantics, interaction, responsive, and runtime-error smoke across Chromium, Firefox, and WebKit.                                                                                            |
+| `npm run audit:release-routes`    | Build and own a preview-enabled production server, then enforce route, metadata, Open Graph image response, direct internal-link, exact sitemap, robots, cache, and indexing contracts.                                                                               |
+| `npm run audit:links`             | Retry every unique external URL referenced by YAML/MDX content, fail real link errors, and isolate known bot-protected sources for explicit manual review.                                                                                                            |
+| `npm run review:release`          | Compose the latest generated homepage, flagship, and Moments first-fold screenshots into desktop and mobile approval sheets without publishing them.                                                                                                                  |
+| `npm run generate:social-image`   | Regenerate the deterministic 1200×630 V1 editorial social card committed under `public/media/site`.                                                                                                                                                                   |
+| `npm run analyze:runtime`         | Build the server-only fixture and report the pinned Next runtime floor.                                                                                                                                                                                               |
+| `npm run analyze:bundle`          | Build the app, probe every active-profile route sample in a cold browser, classify runtime/shared/route/lazy/pre-intent cost, report fonts/media/WebGL/non-build scripts, and reject unexpected request or page failures. A targeted explorer trigger remains opt-in. |
+| `npm run analyze:bundle:explorer` | Build the protected V1 preview with an ephemeral process-only credential, then enforce both real `near` and `intent` explorer enhancement probes, including chunk bytes, final state, and post-trigger failures.                                                      |
+| `npm run lighthouse`              | Build and own a production server, collect three cold mobile Lighthouse runs, enforce medians, and always stop the server.                                                                                                                                            |
 
 The Lighthouse runner is pinned to `13.4.0` in
 `tools/lighthouse/package-lock.json` and installed with scripts disabled before
@@ -71,7 +76,9 @@ two recorded retries for the known `NO_FCP` lab-capture condition, and never
 retries other runtime errors.
 
 Legacy Playwright uses deterministic port 3100. Lighthouse uses port 3101, the
-bundle probe uses port 3102, and the isolated foundation matrix uses port 3104.
+bundle probe uses port 3102, the isolated foundation matrix uses port 3104, the
+owned route/metadata audit uses port 3105, and the cross-browser release smoke
+uses port 3107.
 For a protected Lighthouse checkpoint only, port 3101 is the loopback proxy and
 the owned Next.js upstream defaults to port 3106. Their server owners require both the spawned
 process's readiness marker and a successful local response, then terminate the
@@ -84,6 +91,25 @@ The foundation matrix treats the browser's exact `csp` rejection of local
 `/_next/static/chunks/*.js` requests as an intentional no-JavaScript condition
 only in its two `javaScriptEnabled: false` projects. Every other failed request,
 HTTP error response, console error, and page error remains blocking.
+
+The release smoke intentionally does not repeat the full content matrix. It
+checks the protected homepage, Fradium, and Moments document contracts once per
+browser engine, then exercises primary navigation, explorer selection, and the
+1120×760-to-390×844 responsive boundary. Content provenance, every project
+record, detailed motion interruption, no-JavaScript, and the larger viewport
+matrix remain owned by their existing focused suites.
+
+The route audit defaults to the `pre-cutover` profile. It deliberately treats
+the preserved V5 root as an internal-link reachability target rather than a V1
+metadata surface; its missing canonical and two legacy `#` social links are
+recorded as deferred replacement debt. After the approved root switch,
+`npm run audit:release-routes -- --profile post-cutover` makes `/`, all four
+flagship routes, and `/moments` public requirements while requiring the preview
+namespace to return 404. The post-cutover profile has no legacy exception.
+
+External link probing is a release-time network check rather than a per-commit
+CI dependency. Its JSON report keeps source file/line references and distinguishes
+reachable, manual-review, and failed URLs; strict mode fails only the last class.
 
 ### Protected V1 preview probes
 

@@ -21,13 +21,22 @@ export const metadata: Metadata = {
   openGraph: {
     title,
     description: siteConfig.description,
+    images: [
+      {
+        alt: siteConfig.socialImage.alt,
+        height: siteConfig.socialImage.height,
+        url: siteConfig.socialImage.pathname,
+        width: siteConfig.socialImage.width,
+      },
+    ],
     type: "website",
     siteName: siteConfig.name,
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title,
     description: siteConfig.description,
+    images: [siteConfig.socialImage.pathname],
   },
 };
 

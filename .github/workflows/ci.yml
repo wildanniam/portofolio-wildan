@@ -88,8 +88,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Chromium and system dependencies
-        run: npx playwright install --with-deps chromium
+      - name: Install browser engines and system dependencies
+        run: npx playwright install --with-deps chromium firefox webkit
 
       - name: Build and enforce bundle budgets
         run: npm run analyze:bundle
@@ -108,6 +108,12 @@ jobs:
 
       - name: Run content compatibility matrix
         run: npm run test:content:e2e
+
+      - name: Run cross-browser release smoke
+        run: npm run test:release
+
+      - name: Audit pre-cutover routes and metadata
+        run: npm run audit:release-routes
 
       - name: Upload Playwright diagnostics
         if: ${{ !cancelled() }}

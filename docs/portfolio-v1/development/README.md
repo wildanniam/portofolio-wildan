@@ -18,6 +18,7 @@ This package turns the approved portfolio concept, scope, content contract, medi
 7. [MIGRATION_MAP.md](./MIGRATION_MAP.md) — exact keep/rewrite/retire map for current routes, components, data, dependencies, assets, and documentation.
 8. [ISSUE_BREAKDOWN.md](./ISSUE_BREAKDOWN.md) — twelve proposed high-signal GitHub issues with dependencies, acceptance criteria, and verification.
 9. [QA_MATRIX.md](./QA_MATRIX.md) — browser, viewport, no-JavaScript, reduced-motion, accessibility, performance, visual, content, and release checks.
+10. [RELEASE_CANDIDATE.md](./RELEASE_CANDIDATE.md) — current verification ledger, deferred manual checks, approval packet, and cutover boundary.
 
 ## Locked implementation decisions
 

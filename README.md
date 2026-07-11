@@ -56,6 +56,9 @@ npm run build
 npm run test:e2e
 npm run test:a11y
 npm run test:foundation
+npm run test:release
+npm run audit:release-routes
+npm run audit:links
 npm run analyze:bundle
 npm run lighthouse
 ```

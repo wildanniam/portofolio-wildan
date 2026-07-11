@@ -8,6 +8,12 @@ export const siteConfig = {
   positioning: "Software Engineer building AI agents and Web3 systems.",
   description:
     "Evidence-backed case studies from Wildan Syukri Niam, a software engineer building AI agents and Web3 systems.",
+  socialImage: {
+    alt: "Wildan Syukri Niam — The Open Proving Ground",
+    height: 630,
+    pathname: "/media/site/open-proving-ground-social.png",
+    width: 1200,
+  },
 } as const;
 
 export function absoluteSiteUrl(pathname = "/"): string {
@@ -36,13 +42,22 @@ export function createPublicPageMetadata({
     openGraph: {
       title: socialTitle,
       description,
+      images: [
+        {
+          alt: siteConfig.socialImage.alt,
+          height: siteConfig.socialImage.height,
+          url: absoluteSiteUrl(siteConfig.socialImage.pathname),
+          width: siteConfig.socialImage.width,
+        },
+      ],
       type: "website",
       url: absoluteSiteUrl(pathname),
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: socialTitle,
       description,
+      images: [absoluteSiteUrl(siteConfig.socialImage.pathname)],
     },
   };
 }
