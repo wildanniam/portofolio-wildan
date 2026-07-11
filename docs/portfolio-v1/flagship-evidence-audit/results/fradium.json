@@ -1,0 +1,347 @@
+{
+  "project_name": "Fradium",
+  "repository_url": "https://github.com/fradiumofficial/fradium",
+  "live_urls": [
+    {
+      "label": "Public web application",
+      "url": "https://fradium.io",
+      "verification": "Returned HTTP 200 on 2026-07-11 and is served by the Internet Computer asset canister t4sse-tyaaa-aaaae-qfduq-cai."
+    },
+    {
+      "label": "Documentation",
+      "url": "https://fradium.gitbook.io/docs",
+      "verification": "Returned HTTP 200 on 2026-07-11."
+    },
+    {
+      "label": "Two-minute product demo",
+      "url": "https://youtu.be/4Twnw54thms",
+      "verification": "Public YouTube URL linked by the canonical repository README."
+    },
+    {
+      "label": "Three-minute pitch",
+      "url": "https://youtu.be/OrjROVReH6o",
+      "verification": "Public YouTube URL linked by the canonical repository README."
+    },
+    {
+      "label": "Beta-testing recap",
+      "url": "https://youtu.be/9H5q75SkUJg",
+      "verification": "Public YouTube URL linked beside the repository's SUS survey material."
+    },
+    {
+      "label": "Chrome Web Store extension",
+      "url": "https://chromewebstore.google.com/detail/fradium-the-trust-layer-f/bkkhicfomfaagfhnlechfapddmdfabdp",
+      "verification": "Public listing available on 2026-07-11; the listing showed version 1.1.10, an October 23, 2025 update, and four ratings."
+    },
+    {
+      "label": "DoraHacks build entry",
+      "url": "https://dorahacks.io/buidl/28746",
+      "verification": "Canonical competition entry linked by the repository README; direct automated access is CAPTCHA-protected."
+    }
+  ],
+  "repository_state": {
+    "visibility": "Public and not archived.",
+    "default_branch": "main",
+    "license": "MIT",
+    "history": "The repository contains 625 commits across four publicly credited code contributors. GitHub credits Wildan with 162 contributions. The repository has 16 public tags and one formal GitHub release, v1.0.0, published on September 2, 2025.",
+    "latest_update": "The latest push to main was December 24, 2025, a homepage styling fix. The last concentrated feature work was in October 2025; no 2026 repository activity was visible at the audit date.",
+    "maturity_signals": "The source includes a web product, browser extension, multiple ICP canisters, Candid interfaces, model artifacts, tests, architecture material, deployment IDs, release tags, and a tag-triggered extension build workflow.",
+    "process_gaps": "There are no open or historical pull requests visible in the canonical repository, no issue history, no monorepo-wide build/test CI, and the latest v1.0.9-production extension workflow run failed. Several earlier extension tag builds succeeded."
+  },
+  "product_maturity": "An award-winning hackathon project that grew into a publicly accessible beta: the web app is hosted on an ICP asset canister and the extension is published in the Chrome Web Store. It is a strong student-team artifact with a real distribution footprint. The case study should simply contextualize that Bitcoin uses testnet, Ethereum uses Sepolia, Solana uses devnet, only parts of the ICP/SNS surface use mainnet assets, and the visible sprint concluded in December 2025.",
+  "problem": "Web3 users often decide whether to send funds with little context about the destination address. Wallets and explorers expose balances and transactions, but risk signals, community reports, and chain-specific behavior are fragmented. Fradium attempts to move that intelligence into the transaction path so a user can inspect an address and see a risk verdict before explicitly confirming a send.",
+  "intended_users": {
+    "primary": "Retail crypto users who need a pre-transaction risk check inside a wallet or browser extension.",
+    "secondary": [
+      "Community reporters and validators who submit evidence, stake tokens, and vote on suspicious addresses.",
+      "Wallet, dApp, or exchange developers who want address-analysis access through an API surface."
+    ],
+    "aspirational_only": "The PRD also names regulators and financial institutions, but the repository contains no verified deployment, partnership, or workflow for those users."
+  },
+  "value_proposition": "Fradium places a combined AI-and-community risk verdict directly before a Web3 transaction. The live implementation connects multi-chain feature extraction to ONNX inference in an Internet Computer canister, checks the result against community reports, and presents the outcome in a web wallet and browser extension before the user proceeds.",
+  "canonical_product_flow": [
+    "The user signs in with Internet Identity and opens the wallet, extension, or address-analysis screen.",
+    "The user enters a Bitcoin, Ethereum, Solana, or ICP address, or begins a send flow that supplies a destination address.",
+    "The client detects the chain and, in the currently wired web flow, gathers chain data and prepares features through chain-specific JavaScript services.",
+    "The client invokes the Rust AI canister, where an embedded ONNX model produces a chain-specific risk result.",
+    "If the AI result is unsafe, Fradium returns that verdict immediately. If the AI result is safe, the client also queries the Motoko community-report backend; an unsafe community result overrides the AI-safe result.",
+    "Fradium renders the verdict, confidence, analysis source, and scan history. In the send flow, the user can cancel or explicitly confirm the test-network transaction through the wallet canister.",
+    "In a separate community path, authenticated users create evidence-backed reports, stake FRADIUM tokens, vote, and later recover stakes or rewards according to the report outcome."
+  ],
+  "verified_role": "Wildan confirms that he led Fradium and worked across the full stack; the portfolio role is `Leader & Full-Stack Developer` with owner-attestation provenance. The canonical repository README publicly credits him as Frontend Developer, while commit history visibly captures sustained frontend and product-integration work. That public record is a partial view of his contribution, not a reason to erase leadership, coordination, private work, or responsibilities that were not encoded in Git history.",
+  "contribution_evidence": {
+    "summary": "Wildan is Fradium's owner-attested leader and full-stack developer. The public repository additionally credits him with 162 contributions, with especially visible implementation across the React web client, extension, wallet/product surfaces, and integrations.",
+    "inspectable_commits": [
+      "f4f40a94 — created the landing-page hero and supporting layout/UI components.",
+      "4c5bff4c — implemented the address-analysis result experience.",
+      "744f2767 — added the extension AI Analyzer surface and navigation integration.",
+      "190dabba — implemented report-creation interaction work.",
+      "4708e41c — integrated Transak in the frontend and added integration documentation.",
+      "979d4791 — refactored the homepage/product integration and wallet provider wiring.",
+      "a64a34be — implemented the Fradium Escrow product page.",
+      "5b7e82f1 — added the homepage Magic Bento interaction."
+    ],
+    "broader_scope": "The history also shows sustained work on wallet pages, send/receive modals, transaction and scan history, community reports, product pages, responsive behavior, authentication integration, and extension screens from July through October 2025.",
+    "attribution_boundary": "The reviewed public commits do not fully reconstruct how Motoko, Rust wallet, model, planning, coordination, and private work were divided. The case study therefore uses Wildan's owner-attested full-stack/leader role, pairs it with the implementation that is publicly inspectable, and credits the team without pretending Git history is a complete timesheet."
+  },
+  "collaborators": {
+    "repository_readme_team": [
+      "Wildan Syukri Niam — Frontend Developer",
+      "Bintang Al-Fath — Product Developer",
+      "Ghina Rosvita Maharani — UI/UX Designer",
+      "Arga Adolf Lumunon — AI Engineer",
+      "Yazid Al Ghozali — Extension Developer"
+    ],
+    "official_award_team": "Telkom University's award notice lists Wildan Syukri Niam, Indra Mahesa, Muhammad Bintang Al-Fath, Yazid Alghozali, Arga Adolf Lumunon, and Ghina Rosvita Maharanisa as the six-person WCHL Global Finale team: https://bse.telkomuniversity.ac.id/tim-fradium-berhasil-meraih-global-finale-winner-fully-on-chain-track-pada-world-computer-hacker-league-2025/",
+    "github_contributors": "The public contributor list credits Gavin Alinski (237), Yazid Al Ghozali (192), Wildan (162), and ArgaAAL (34). Do not infer an identity mapping between Gavin Alinski and a named competition teammate without confirmation."
+  },
+  "architecture": {
+    "client_surfaces": "A React 19 and Vite single-page web application plus a React 18 and Plasmo browser extension. Internet Identity provides user authentication; DFINITY agents call Candid canister interfaces.",
+    "decision_path": "Chain-specific client services fetch and transform address data, then call a Rust AI canister. The current web flow uses client-prepared features for Bitcoin, Ethereum, Solana, and ICP, even though some documentation describes more fully on-chain extraction paths. The AI result is composed with a community-report lookup in the Motoko backend.",
+    "ai_boundary": "The Rust AI canister embeds ONNX artifacts into its Wasm build and runs tract-onnx inference. Repository metadata defines 66 Bitcoin features, 65 Ethereum features, 120 Solana features, and 41 ICP features.",
+    "wallet_boundary": "A Rust wallet canister derives chain accounts from the authenticated principal and uses Internet Computer threshold signing: ECDSA for Bitcoin/Ethereum and Ed25519-compatible signing for Solana. The deployed configuration targets Bitcoin testnet, Ethereum Sepolia, and Solana devnet.",
+    "application_backend": "A Motoko actor composes community reporting and staking, analysis history, faucet, ICRC-based escrow, payment links, API tokens/credits, and persistence hooks. Separate ledger/index, LLM/chatbot, wallet, AI, backend, and frontend canister IDs are committed in canister_ids.json.",
+    "external_integrations": "The product uses chain RPC/data providers, ICRC ledgers, ICPSwap, Transak, Pinata/IPFS, Internet Identity, and a Chrome extension distribution channel.",
+    "deployment": "The frontend, backend, AI, wallet, chatbot, LLM, FRADIUM ledger, and FRADIUM index have public ICP canister IDs. The live response includes Internet Computer certificate headers, which is useful deployment evidence."
+  },
+  "technology_stack": {
+    "frontend": [
+      "React 19",
+      "Vite 6",
+      "React Router 7",
+      "Tailwind CSS 3",
+      "Radix UI",
+      "Framer Motion",
+      "Motion",
+      "GSAP",
+      "JavaScript"
+    ],
+    "extension": [
+      "Plasmo",
+      "React 18",
+      "TypeScript",
+      "Chrome Extension APIs"
+    ],
+    "internet_computer": [
+      "ICP canisters",
+      "Motoko",
+      "Rust",
+      "Candid",
+      "DFINITY Agent",
+      "Internet Identity",
+      "ICRC-1 and ICRC-2 ledgers",
+      "threshold ECDSA",
+      "threshold Ed25519-compatible signing"
+    ],
+    "ai": [
+      "ONNX",
+      "tract-onnx",
+      "Python",
+      "scikit-learn",
+      "chain-specific feature services"
+    ],
+    "web3_integrations": [
+      "Bitcoin integration",
+      "Alloy and EVM RPC",
+      "Solana RPC",
+      "ICPSwap",
+      "Transak",
+      "Pinata/IPFS"
+    ],
+    "quality_and_delivery": [
+      "PocketIC",
+      "Python unittest",
+      "GitHub Actions",
+      "tagged extension builds"
+    ]
+  },
+  "standout_engineering_decisions": [
+    "Use a conservative composition rule instead of presenting one opaque score: an AI-unsafe result stops the path, while a community-unsafe result can override an AI-safe result.",
+    "Embed model artifacts into the AI canister's Wasm build so model and inference code are deployed as one versioned unit rather than fetched at runtime.",
+    "Keep signing behind a principal-derived Internet Computer wallet canister, while the browser caches public addresses and UI preferences rather than raw private keys.",
+    "Make community intelligence an economic workflow: reports and votes require stake, the backend prevents self-voting and duplicate voting, and outcomes determine reward recovery.",
+    "Expose the same trust idea through several product surfaces—standalone analyzer, wallet send confirmation, browser extension, payment links, and developer API—so the risk signal appears near the action it is meant to influence.",
+    "Separate deployable concerns into frontend, backend, AI, wallet, ledger/index, and chatbot/LLM canisters while keeping interfaces explicit through Candid."
+  ],
+  "reliability_security_evidence": {
+    "positive_evidence": [
+      "Internet Identity authentication and explicit anonymous-caller rejection are present across wallet, report, paylink, and escrow paths.",
+      "Wallet sends derive accounts from the caller and use Internet Computer threshold-signature APIs rather than client-held private keys.",
+      "Delegated wallet sends require an explicit delegate, named scope, and expiration, with grant/revoke/list operations.",
+      "Community tests cover report creation, voting, stake/reward behavior, duplicate/self/late voting, anonymous rejection, cooldowns, and multi-user isolation.",
+      "The repository contains 37 PocketIC unittest methods. The README reports 28 passing and 9 intentionally skipped because the comprehensive suite depends on a mock/Wasm artifact; this audit did not independently rerun those results.",
+      "Motoko modules implement pre-upgrade/post-upgrade persistence, ownership checks, input validation, and some rate limiting.",
+      "A tag-driven GitHub Actions workflow builds and packages the browser extension; several production-tag runs completed successfully."
+    ],
+    "blocking_gaps_before_production_claims": [
+      "No independent smart-contract, wallet, extension, or application security audit was found.",
+      "The public Motoko actor exposes testing-only admin mutation methods for report deadline changes and deletion without a caller authorization check.",
+      "Native BTC/ETH/SOL payment-link completion accepts a supplied transaction hash after only a length check; it does not verify the transaction on-chain.",
+      "API keys are generated from timestamps and stored as plaintext token values; this is not a production-strength credential design.",
+      "A tracked .env.local contains explicitly test-only client API values. The repository warns that they are public, but the pattern must not be described as production secret management.",
+      "There is no whole-repository test/build CI, no frontend or extension automated test suite, and the latest extension production-tag workflow failed.",
+      "The deployed wallet's Bitcoin, Ethereum, and Solana flows are testnet/devnet configurations."
+    ]
+  },
+  "shipped_features": [
+    "A public ICP-hosted web application with Internet Identity sign-in.",
+    "A multi-chain wallet surface for Bitcoin, Ethereum, Solana, ICP, FRADIUM, and SNS/ICRC assets, with public-address generation, balances, history, send, and receive flows.",
+    "Address analysis for Bitcoin, Ethereum, Solana, and ICP with chain detection, feature preparation, ONNX-canister inference, community cross-checking, and scan history.",
+    "Risk information inside the transaction confirmation flow, with explicit cancel or confirm controls.",
+    "A published Chrome extension with wallet, analysis, and history surfaces.",
+    "Community report creation, evidence upload, stake-backed voting, report status, and reward/unstake flows.",
+    "Payment-link creation and execution paths for ICRC and native-token modes.",
+    "P2P escrow interfaces and Motoko logic for wrapped-token deposits and release, plus experimental native-token support.",
+    "Developer dashboard, API token management, analysis history, pricing/credits, and documentation routes.",
+    "FRADIUM ledger/index, faucet, ICPSwap integration, Transak on-ramp integration, and an AI assistant/chatbot surface."
+  ],
+  "external_validation": [
+    {
+      "claim": "Global Finale Winner, Fully On-Chain Track, World Computer Hacker League 2025.",
+      "sources": [
+        "https://bse.telkomuniversity.ac.id/tim-fradium-berhasil-meraih-global-finale-winner-fully-on-chain-track-pada-world-computer-hacker-league-2025/",
+        "https://id.linkedin.com/company/disruptives"
+      ],
+      "notes": "Telkom University names Wildan and the full six-person team; ICP HUB Indonesia publicly describes Fradium as the Fully On-Chain Track winner."
+    },
+    {
+      "claim": "Public Chrome Web Store distribution.",
+      "sources": [
+        "https://chromewebstore.google.com/detail/fradium-the-trust-layer-f/bkkhicfomfaagfhnlechfapddmdfabdp"
+      ],
+      "notes": "The listing was live at audit time and showed four ratings. Do not turn this into an adoption claim; the visible user count is small and changes over time."
+    },
+    {
+      "claim": "DoraHacks WCHL project entry and public product demonstrations.",
+      "sources": [
+        "https://dorahacks.io/buidl/28746",
+        "https://youtu.be/4Twnw54thms",
+        "https://youtu.be/OrjROVReH6o"
+      ],
+      "notes": "These sources verify public submission and presentation, not production adoption."
+    }
+  ],
+  "repository_proof": [
+    "625-commit public history with Wildan credited for 162 contributions and a clearly inspectable frontend/extension trail.",
+    "A complete recursive tree of 1,068 entries spanning web, extension, Motoko backend, Rust AI/wallet canisters, Candid declarations, model artifacts, scripts, tests, documentation, and media.",
+    "Public canister_ids.json for frontend, backend, AI, wallet, chatbot, LLM, FRADIUM ledger, and FRADIUM index deployments.",
+    "Four chain-specific ONNX artifacts and committed model metadata/scalers; repository metadata includes feature counts and model metrics.",
+    "Five PocketIC test modules with 37 test methods covering community, faucet, staking/rewards, voting, and comprehensive lifecycle scenarios.",
+    "A tag-triggered extension build/release workflow and 16 public version tags.",
+    "Architecture, user-flow, product, extension, AI-evaluation, and beta-survey media under docs/images.",
+    "Modular Motoko and Rust source with explicit Candid boundaries and upgrade persistence hooks."
+  ],
+  "available_media": {
+    "repository_media": [
+      "docs/images/cover.png and docs/images/features.png at 1920x1080.",
+      "High-resolution product captures for the landing page, wallet, address analysis, transaction history, community voting, report creation, unstaking, assistant, and extension.",
+      "Four 512x878 browser-extension screenshots.",
+      "docs/images/architecture.png and docs/images/userflow.png.",
+      "AI plots for feature importance, confusion matrix, precision-recall, ROC, and training loss.",
+      "Five beta-survey screenshots, including a field-of-work chart showing nine responses.",
+      "A large collection of production UI illustrations and product assets under src/frontend/public/assets."
+    ],
+    "public_video_and_deck": [
+      "Two-minute product demo: https://youtu.be/4Twnw54thms",
+      "Three-minute pitch: https://youtu.be/OrjROVReH6o",
+      "Beta-testing recap: https://youtu.be/9H5q75SkUJg",
+      "Pitch deck linked from the README: https://drive.google.com/file/d/1zp0Tk7d8dlwQd8qBsY3Ovyh9_pbtUC1N/view"
+    ],
+    "external_media": [
+      "Chrome Web Store listing screenshots.",
+      "Telkom University WCHL winner article image, subject to credit and reuse permission.",
+      "A current tracked reference capture exists at docs/portfolio-v1/flagship-evidence-audit/live-screens/fradium-home-1440x1024.png."
+    ],
+    "quality_note": "The media volume is strong, but many captures document older UI and terminology. Some images show the former FUM ticker, and one analysis screenshot pairs 'ADDRESS IS NOT SAFE' with copy saying the address appears clean. These should be treated as process evidence, not final hero media."
+  },
+  "evidence_gaps": [
+    "Record Wildan's owner attestation for `Leader & Full-Stack Developer`, then optionally add planning artifacts, private implementation records, or collaborator notes that make the behind-the-scenes leadership story more visual.",
+    "Record a fresh, stable 12-15 second product loop showing address input, on-chain inference/community composition, the risk verdict, and the pre-send decision. Avoid demo balances or claims that cannot be reproduced.",
+    "Capture a new standardized desktop and mobile screenshot set from the current live build; do not use the inconsistent legacy risk screenshot as primary evidence.",
+    "Redraw the architecture and product-flow diagrams as editable, editorial SVGs. The current diagrams mix outdated FUM terminology, documentation claims that diverge from the wired client flow, and rough visual hierarchy.",
+    "Add one clean commit/diff contact sheet that maps Wildan's verified contributions to visible product outcomes.",
+    "Collect the original WCHL award photo, stage/team photographs, certificate or results page, date/location, photographer credit, and reuse consent from Wildan.",
+    "Provide the raw beta-test questionnaire, anonymized responses, method, respondent profile, and calculated SUS score. Current screenshots establish nine responses but do not establish a complete SUS result.",
+    "Document model dataset provenance, train/test split, class balance, evaluation procedure, and reproducible metrics before presenting AUC/F1 as product-quality evidence. The ICP metadata reports AUC 0.485 and the README itself calls that module experimental.",
+    "Add current canister-status or transaction proof for the exact flows shown in the case study, with secrets and user data removed.",
+    "Resolve or explicitly disclose the unauthenticated admin debug methods, unverified native-payment hashes, timestamp-derived API tokens, and test-network boundaries before making any production-security claim.",
+    "Add a whole-repository CI run and a current test artifact; the existing README test count was not independently reproduced during this audit."
+  ],
+  "strongest_portfolio_angle": "Tell the story of Wildan leading a student team and building across the stack to turn a complex on-chain trust idea into a usable decision moment: detect the destination, combine AI and community evidence, explain the verdict, and place it immediately before a transaction. The case study can celebrate leadership, full-stack execution, systems integration, and product judgment under hackathon pressure while generously crediting the team members who built Fradium with him.",
+  "recommended_headline": "Making on-chain risk legible before money moves.",
+  "recommended_role_label": "Leader & Full-Stack Developer",
+  "recommended_evidence_sequence": [
+    {
+      "frame": 1,
+      "purpose": "Outcome",
+      "evidence": "A fresh current product still or short loop of the wallet's pre-send risk verdict, paired with 'WCHL 2025 Fully On-Chain Track Winner' and an honest 'public beta / test-network flows' status label."
+    },
+    {
+      "frame": 2,
+      "purpose": "Problem",
+      "evidence": "A restrained diagram of the missing decision context between pasting an address and confirming a transaction; use sourced risk context only, not generic fear statistics."
+    },
+    {
+      "frame": 3,
+      "purpose": "My role and the team",
+      "evidence": "Wildan's owner-attested Leader & Full-Stack Developer role, paired with a selected commit/build contact sheet and generous specialist team credits."
+    },
+    {
+      "frame": 4,
+      "purpose": "Product decision",
+      "evidence": "An editable flow showing address detection -> client feature preparation -> ONNX canister inference -> community cross-check -> conservative verdict composition -> scan history."
+    },
+    {
+      "frame": 5,
+      "purpose": "System behavior",
+      "evidence": "A side-by-side capture of standalone analysis and the same risk signal inside transaction confirmation, demonstrating that intelligence appears at the decision point."
+    },
+    {
+      "frame": 6,
+      "purpose": "Architecture",
+      "evidence": "A clean system plate for web/extension, Internet Identity, client data services, AI canister, Motoko backend, threshold-signature wallet, ledgers, and external providers, with testnet/mainnet boundaries visibly encoded."
+    },
+    {
+      "frame": 7,
+      "purpose": "Technical proof",
+      "evidence": "Public canister IDs and certified live response, a PocketIC test excerpt, extension build workflow, and Chrome Web Store listing. Treat repository model metrics as internal artifacts, not independent validation."
+    },
+    {
+      "frame": 8,
+      "purpose": "External outcome",
+      "evidence": "The official Telkom University WCHL result, one credited team photograph, the DoraHacks entry, and a factual caption about what the award validated."
+    },
+    {
+      "frame": 9,
+      "purpose": "What I would improve next",
+      "evidence": "A concise, constructive look at test-network scope, documentation refresh, hardening opportunities, and what Wildan would build next."
+    }
+  ],
+  "case_study_outline": [
+    "Opening — One live product frame, the headline 'Making on-chain risk legible before money moves,' verified role, team, year, award, and public-beta status.",
+    "The decision gap — Explain why an address string and a confirm button are not enough context for a crypto user.",
+    "My role and the team — Establish Wildan as Leader & Full-Stack Developer through owner attestation, show representative visible outcomes, and credit collaborators generously.",
+    "Designing trust before transaction — Explain the key interaction decision to move risk analysis into the send path rather than leave it as a separate tool.",
+    "How a verdict is assembled — Walk through network detection, client feature preparation, ONNX-canister inference, community cross-check, conservative override rules, and history.",
+    "One system, several surfaces — Compare the web analyzer, wallet confirmation, extension, reports, and developer API without turning every feature into an equal card.",
+    "Under the interface — Present the canister architecture, Internet Identity, threshold-signature wallet boundary, ledgers, and explicit testnet/mainnet map.",
+    "Proof under pressure — Show live canisters, repository history, PocketIC tests, extension delivery, beta-testing material, and WCHL recognition.",
+    "Where it stands — Place test-network scope, model evaluation, and hardening opportunities in the context of an ambitious 2025 hackathon/public-beta build.",
+    "What I learned — Reflect on translating probabilistic and community signals into a user decision, and state what Wildan would change before a production security launch."
+  ],
+  "limitations_and_no_go_claims": [
+    "Use `Leader & Full-Stack Developer` as Wildan's owner-attested role and credit the rest of the team alongside it.",
+    "Describe the system as a hybrid multi-chain risk-analysis flow: client/external feature preparation feeds on-chain inference rather than forcing a broader `everything is fully on-chain` slogan.",
+    "Present testnet/devnet as the natural boundary of an ambitious hackathon/public-beta build.",
+    "Place payment-link verification, debug admin methods, and developer-token hardening under `What I would improve next` when those details help the engineering story.",
+    "Explain the verdict as decision support: the product warns and still lets the user make the final choice.",
+    "Use model metrics with their repository context and label experimental evaluation honestly.",
+    "Use the Chrome listing and nine-response survey as modest distribution/research signals rather than scale metrics.",
+    "Label the visible build period as the 2025 Fradium sprint and use fresh screenshots instead of legacy FUM or contradictory states."
+  ],
+  "readiness_score": {
+    "score": 4,
+    "out_of": 5,
+    "rationale": "Fradium has an unusually rich case-study package: Wildan's leader/full-stack account, a live ICP deployment, published extension, major award, 625-commit repository, strong visible contribution history, demos, diagrams, tests, product screenshots, and an authentic team award photo. It can anchor the portfolio now; the remaining work is editorial polish."
+  },
+  "uncertain": []
+}

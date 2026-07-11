@@ -1,5 +1,12 @@
 # V5 Phase 1 - Global Audit and Acceptance Gate
 
+> [!WARNING]
+> **Historical V5 direction, superseded on 11 July 2026.**
+> Do not use this reactor or WebGL direction for new implementation. The
+> canonical V1 contract is [The Open Proving Ground](./portfolio-v1/README.md).
+> This document is retained only to explain the legacy implementation being
+> migrated.
+
 ## Purpose
 
 Phase 1 is the design contract for Portfolio V5. It exists so the next implementation phases do not drift into random visual polishing, isolated hero tweaks, or generic portfolio sections.
