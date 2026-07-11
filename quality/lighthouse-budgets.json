@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "toolVersion": "13.4.0",
+  "activeProfile": "legacy",
+  "numberOfRuns": 3,
+  "maxRejectedAttempts": 2,
+  "retriableRuntimeErrorCodes": ["NO_FCP"],
+  "url": "http://127.0.0.1:3101/",
+  "profiles": {
+    "legacy": {
+      "status": "provisional-regression-envelope",
+      "description": "Temporary mobile-lab ceilings for the preserved V5 root. Accessibility remains visible and constrained by the separate exact axe baseline. These are not V1 release targets.",
+      "baseline": {
+        "measuredAt": "2026-07-11",
+        "performanceScore": 0.93,
+        "accessibilityScore": 0.96,
+        "bestPracticesScore": 0.96,
+        "seoScore": 1,
+        "largestContentfulPaintMs": 3168.2082,
+        "cumulativeLayoutShift": 0,
+        "totalBlockingTimeMs": 47
+      },
+      "minimum": {
+        "performanceScore": 0.85,
+        "accessibilityScore": 0.95,
+        "bestPracticesScore": 0.95,
+        "seoScore": 1
+      },
+      "maximum": {
+        "largestContentfulPaintMs": 4000,
+        "cumulativeLayoutShift": 0.1,
+        "totalBlockingTimeMs": 200
+      }
+    },
+    "v1": {
+      "status": "locked-release-targets",
+      "description": "Approved V1 mobile-lab targets. Activate only when the V1 root becomes the release candidate.",
+      "minimum": {
+        "performanceScore": 0.9,
+        "accessibilityScore": 1,
+        "bestPracticesScore": 0.95,
+        "seoScore": 1
+      },
+      "maximum": {
+        "largestContentfulPaintMs": 2500,
+        "cumulativeLayoutShift": 0.1,
+        "totalBlockingTimeMs": 200
+      }
+    }
+  }
+}

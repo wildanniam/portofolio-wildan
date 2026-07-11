@@ -42,5 +42,9 @@ The pre-implementation gate has been satisfied:
 5. Implementation starts with source-of-truth, tooling, and foundation work,
    followed by the Fradium golden vertical slice.
 
+The runtime and executable quality gates are implemented through
+[GitHub Issue #3](https://github.com/wildanniam/portofolio-wildan/issues/3) and
+documented in the [quality harness guide](../../quality-harness.md).
+
 Production UI remains unchanged in Issue #1. The tracked baseline and migration
 map define how later issues can replace it safely.

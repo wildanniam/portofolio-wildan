@@ -13,6 +13,16 @@ const fadeUp = (delay = 0) => ({
     transition: { duration: 0.6, delay },
 });
 
+function subscribeToReducedMotion(callback: () => void) {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    mediaQuery.addEventListener('change', callback);
+    return () => mediaQuery.removeEventListener('change', callback);
+}
+
+function getReducedMotionSnapshot() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 export function Hero() {
     // typing + deleting name loop
     const fullName = "Wildan Syukri Niam";
@@ -55,17 +65,11 @@ export function Hero() {
     const mouseX = useMotionValue(0);
     const mouseY = useMotionValue(0);
     const distance = useMotionValue(0);
-    const [isReducedMotion, setIsReducedMotion] = React.useState(false);
-
-    // Check for reduced motion preference
-    React.useEffect(() => {
-        const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        setIsReducedMotion(mediaQuery.matches);
-
-        const handleChange = (e: MediaQueryListEvent) => setIsReducedMotion(e.matches);
-        mediaQuery.addEventListener('change', handleChange);
-        return () => mediaQuery.removeEventListener('change', handleChange);
-    }, []);
+    const isReducedMotion = React.useSyncExternalStore(
+        subscribeToReducedMotion,
+        getReducedMotionSnapshot,
+        () => false,
+    );
 
     // Calculate distance from center for dynamic scaling
     React.useEffect(() => {
@@ -326,6 +330,5 @@ export function Hero() {
         </section>
     );
 }
-
 
 

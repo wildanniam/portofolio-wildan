@@ -48,7 +48,7 @@ The baseline passes a production build and TypeScript, but it is not suitable to
 |---|---|---|
 | Homepage boundary | One 861-line Client Component | Recompose from Server Components and bounded client leaves |
 | Hero | R3F/Three.js scene, postprocessing, pointer interaction | Remove from V1 after replacement parity |
-| Initial JS | 214.9 KB gzip | Must fall below 150 KB total; route-owned initial target is <=18 KB on the measured runtime |
+| Initial JS | 214.9 KB gzip | Must fall below 170 KB total; route-owned initial target is <=18 KB on the measured runtime |
 | Eligible desktop WebGL chunk | 328.2 KB gzip | Must become zero homepage WebGL requests |
 | No-JavaScript | 20 opacity-zero wrappers; 0 of 7 `h2` headings visible | Critical content must be server-visible at first paint |
 | Accessibility | 17 serious contrast nodes; missing interaction semantics | Zero serious/critical axe findings and complete keyboard path |
@@ -122,7 +122,7 @@ Work:
 - remove theme switching from the new shell path;
 - align Next.js and `eslint-config-next` major versions, then re-run baseline checks;
 - pin the supported Node/npm runtime and add self-contained `typecheck`, content validation, test, E2E, a11y, analysis, and Lighthouse scripts;
-- begin the YAML/MDX work with a Next 16.2.6/Turbopack compatibility spike;
+- begin the YAML/MDX work with a pinned Next 16.2.10/Turbopack compatibility spike;
 - create Zod project, evidence, claim, link, media, moment, and site schemas;
 - keep pure parsers/validators separate from an `import "server-only"` filesystem repository and referential validation;
 - wire deterministic content validation into `prebuild`; keep external URL reachability as a separate retrying report;
@@ -369,8 +369,8 @@ Every checkpoint produces the same review packet:
 
 | Metric | Budget |
 |---|---:|
-| Homepage cold-navigation client JavaScript | `<=150 KB` gzip total; route-owned initial code `<=18 KB` |
-| Case-study cold-navigation client JavaScript | `<=145 KB` gzip total; route-owned initial code `<=12 KB` |
+| Homepage cold-navigation client JavaScript | `<=170 KB` gzip total; route-owned initial code `<=18 KB` |
+| Case-study cold-navigation client JavaScript | `<=165 KB` gzip total; route-owned initial code `<=12 KB` |
 | Lazy explorer enhancement | `<=60 KB` gzip, loaded only near explorer/explicit intent and reported separately |
 | Homepage WebGL/Three request | `0` |
 | Initial CSS | `<=30 KB` gzip |
@@ -383,7 +383,13 @@ Every checkpoint produces the same review packet:
 | Field p75 after enough traffic | LCP `<=2.5 s`, INP `<=200 ms`, CLS `<=0.1` |
 | Axe | `0` serious or critical violations |
 
-The committed CI budget script defines `initial client JavaScript` as the gzip sum of framework/runtime, shared, and route client chunks requested or prefetched from a cold production navigation before user intent. Media, fonts, CSS, development tooling, and chunks loaded only after an explicit action or explorer approach are reported separately. A request captured before intent counts even when the framework labels it lazy. The same script/configuration is used locally and in CI.
+The committed CI budget script defines `initial client JavaScript` as the gzip sum of framework/runtime, shared, and route client chunks requested or prefetched from a cold production navigation before user intent. Media, font transfers, CSS, and chunks loaded only after an explicit action or explorer approach are reported separately; development tooling is excluded from the production build measurement. A request captured before intent counts even when the framework labels it lazy. The same script/configuration is used locally and in CI.
+
+Runtime calibration on 11 July 2026 measured a 145.141 KB gzip total initial
+floor from a server-only fixture on Node 24.18.0 and Next 16.2.10. The earlier
+150 KB homepage and 145 KB case-study totals were incompatible with their
+separate 18 KB and 12 KB route-owned ceilings. The revised 170 KB and 165 KB
+totals are tracked in `quality/budgets.json`; route-owned limits did not move.
 
 ## 8. Main risks and mitigations
 

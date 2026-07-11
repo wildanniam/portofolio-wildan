@@ -11,12 +11,16 @@ of truth lives in [`docs/portfolio-v1`](./docs/portfolio-v1/README.md).
 
 Prerequisites:
 
-- Node.js 20.x
-- npm 10.x
+- Node.js 24.18.0
+- npm 11.16.0
 
-The current baseline was verified with Node.js 20.20.2 and npm 10.8.2.
+Node 20 reached end of life in March 2026. The V1 implementation is pinned to
+Node 24.18.0/npm 11.16.0 for local verification through `.nvmrc`,
+`packageManager`, and CI. The engine range accepts Vercel's supported Node 24
+minor, while `vercel.json` pins npm 11.16.0 for deployment installs.
 
 ```bash
+nvm use
 npm ci
 npm run dev
 ```
@@ -42,16 +46,22 @@ links and does not depend on this endpoint.
 
 ```bash
 npm run lint
-npx tsc --noEmit --incremental false
+npm run typecheck
+npm run test:run
 npm run build
+npm run test:e2e
+npm run test:a11y
+npm run analyze:bundle
+npm run lighthouse
 ```
 
 The exact preservation state and observed results are recorded in the
 [V5 preservation baseline](./docs/portfolio-v1/baseline/README.md).
 
-Standalone test, content validation, browser QA, accessibility, and bundle
-checks are specified in the V1 development plan and will be added by the
-corresponding implementation issues.
+The current quality commands, temporary legacy envelopes, V1 release targets,
+and browser prerequisites are documented in the
+[quality harness guide](./docs/quality-harness.md). Content validation is added
+with the content repository rather than represented by a placeholder command.
 
 ## V1 source of truth
 

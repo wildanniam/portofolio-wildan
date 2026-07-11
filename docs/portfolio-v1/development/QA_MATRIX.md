@@ -27,7 +27,7 @@ npm run test
 npm run test:e2e
 npm run test:a11y
 npm run build
-npm run analyze
+npm run analyze:bundle
 npm run lighthouse
 ```
 
@@ -213,8 +213,8 @@ Measure from a production build with a fresh browser profile. Report media separ
 
 | Metric | Gate |
 |---|---:|
-| Homepage cold-navigation client JS | `<=150 KB` gzip total; route-owned initial code `<=18 KB` |
-| Case-study cold-navigation client JS | `<=145 KB` gzip total; route-owned initial code `<=12 KB` |
+| Homepage cold-navigation client JS | `<=170 KB` gzip total; route-owned initial code `<=18 KB` |
+| Case-study cold-navigation client JS | `<=165 KB` gzip total; route-owned initial code `<=12 KB` |
 | Lazy explorer enhancement | `<=60 KB` gzip and absent from cold navigation before explorer approach/intent |
 | Homepage WebGL/Three requests | `0` |
 | Initial CSS | `<=30 KB` gzip |
@@ -230,7 +230,7 @@ Method:
 
 - use one committed CI script that reads the production route/client chunk map and gzip-computes the framework/runtime, shared, route-owned, and lazy enhancement sets;
 - define initial JavaScript as every JS chunk requested or prefetched during a cold production navigation before user intent; explorer-approach/explicit-intent chunks are measured in the separate enhancement budget;
-- make `test:e2e`, `test:a11y`, `analyze`, and `lighthouse` self-contained: build when required, start a production server on the documented deterministic port, wait for readiness, run, and always stop it;
+- make `test:e2e`, `test:a11y`, `analyze:bundle`, and `lighthouse` self-contained: build when required, start a production server on the documented deterministic port, wait for readiness, run, and always stop it;
 - run at least three cold Lighthouse samples on the agreed machine/profile and record the median;
 - include any chunk downloaded/prefetched before intent in the practical page budget;
 - capture an explorer selection performance trace and inspect long tasks/layout shifts;

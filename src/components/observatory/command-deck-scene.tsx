@@ -673,7 +673,6 @@ function HoverTooltip({
 
 function ReactorScene({
   activeSlug,
-  previewSlug,
   setActiveSlug,
   lockedSlug,
   setLockedSlug,
@@ -684,7 +683,6 @@ function ReactorScene({
   sceneActive,
 }: {
   activeSlug: string | null;
-  previewSlug: string | null;
   setActiveSlug: (slug: string | null) => void;
   lockedSlug: string | null;
   setLockedSlug: (slug: string | null) => void;
@@ -880,7 +878,6 @@ export function CommandDeckScene({
       >
         <ReactorScene
           activeSlug={activeSlug}
-          previewSlug={previewSlug}
           setActiveSlug={setPreviewSlug}
           lockedSlug={pinnedSlug}
           setLockedSlug={setPinnedSlug}

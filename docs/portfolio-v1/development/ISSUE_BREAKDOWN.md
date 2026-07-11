@@ -1,7 +1,7 @@
 # GitHub Issue Breakdown
 
 Date: 11 July 2026
-Status: **approved backlog; execution started with GitHub Issue #1**
+Status: **approved backlog; Issues #1 and #3 are in implementation**
 
 The implementation should use the standard issue-driven workflow. These are high-signal delivery slices, not activity placeholders. Replace `TBD` with the real GitHub issue number before creating a branch, and link each PR with `Closes #N`.
 
@@ -60,7 +60,8 @@ Verification:
 
 **Suggested title:** `build: align Next tooling and add portfolio quality gates`
 **Risk:** high-risk because dependency upgrades can affect the entire application
-**Suggested branch:** `codex/TBD-quality-foundation`
+**GitHub issue:** [#3](https://github.com/wildanniam/portofolio-wildan/issues/3)
+**Implementation branch:** `codex/3-quality-foundation`
 
 Scope:
 
@@ -73,7 +74,7 @@ Scope:
 - make E2E, a11y, Lighthouse, and analysis commands self-contained: they build when required, start a production server on a documented deterministic port, wait for readiness, run, and always stop the server;
 - establish one committed output method for total initial JavaScript, route-owned JavaScript, lazy enhancement chunks, CSS, and media budgets;
 - calibrate final ceilings from the pinned-runtime server-only fixture; if shared runtime alone exceeds a ceiling, document and revise the ceiling transparently rather than hiding chunks or adding measurement exceptions;
-- do not mix visual redesign or dependency deletion into this issue.
+- do not mix visual redesign or cleanup of legacy application, runtime, or animation dependencies into this issue; removing the obsolete ESLint compatibility package is part of the tooling migration.
 
 Acceptance:
 
@@ -133,7 +134,7 @@ Dependency: issue 01. It may proceed alongside issue 02 after the toolchain harn
 
 Scope:
 
-- begin with a compatibility spike proving the selected YAML/RSC MDX tooling against Next 16.2.6, Turbopack, filesystem loading, static params, metadata, and allow-listed RSC components;
+- begin with a compatibility spike proving the selected YAML/RSC MDX tooling against pinned Next 16.2.10, Turbopack, filesystem loading, static params, metadata, and allow-listed RSC components;
 - implement pure Zod parsers/validators separately from the server-only repository;
 - mark filesystem access with `import "server-only"` and expose type-only/client DTO boundaries so Zod/MDX code cannot enter browser chunks;
 - add project, claim, validation, link, ready/planned asset, moment, profile, navigation, and homepage records;
@@ -411,7 +412,7 @@ npm run test
 npm run test:e2e
 npm run test:a11y
 npm run build
-npm run analyze
+npm run analyze:bundle
 npm run lighthouse
 ```
 
