@@ -82,15 +82,24 @@ function useHeroWebGLEligibility(hostRef: React.RefObject<HTMLDivElement | null>
 
 export function HeroSceneLoader() {
   const hostRef = React.useRef<HTMLDivElement | null>(null);
-  const [sceneReady, setSceneReady] = React.useState(false);
   const { shouldMountWebGL, sceneActive } = useHeroWebGLEligibility(hostRef);
-
-  React.useEffect(() => {
-    if (!shouldMountWebGL) setSceneReady(false);
-  }, [shouldMountWebGL]);
 
   return (
     <div ref={hostRef} className="pointer-events-none absolute inset-0 overflow-hidden">
+      {shouldMountWebGL ? (
+        <MountedHeroScene sceneActive={sceneActive} />
+      ) : (
+        <HeroSceneFallback />
+      )}
+    </div>
+  );
+}
+
+function MountedHeroScene({ sceneActive }: { sceneActive: boolean }) {
+  const [sceneReady, setSceneReady] = React.useState(false);
+
+  return (
+    <>
       <div
         className={`absolute inset-0 transition-opacity duration-700 ${
           sceneReady ? "opacity-0" : "opacity-100"
@@ -98,15 +107,13 @@ export function HeroSceneLoader() {
       >
         <HeroSceneFallback />
       </div>
-      {shouldMountWebGL ? (
-        <div
-          className={`absolute inset-0 transition-opacity duration-700 ${
-            sceneReady ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <CommandDeckScene active={sceneActive} onReady={() => setSceneReady(true)} />
-        </div>
-      ) : null}
-    </div>
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 ${
+          sceneReady ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <CommandDeckScene active={sceneActive} onReady={() => setSceneReady(true)} />
+      </div>
+    </>
   );
 }

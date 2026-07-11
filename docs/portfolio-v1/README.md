@@ -55,7 +55,12 @@ bounded flagship evidence transition. WebGL and Three.js are outside V1.
 - [Migration map](./development/MIGRATION_MAP.md)
 - [Issue breakdown](./development/ISSUE_BREAKDOWN.md)
 - [QA matrix](./development/QA_MATRIX.md)
+- [Implemented quality harness](../quality-harness.md)
 - [V5 preservation baseline](./baseline/README.md)
+
+The quality foundation is tracked in
+[GitHub Issue #3](https://github.com/wildanniam/portofolio-wildan/issues/3) on
+`codex/3-quality-foundation`.
 
 The implementation uses replacement-first migration. V5 remains available
 until the V1 release candidate passes its gates and Wildan approves cutover.
