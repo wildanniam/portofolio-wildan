@@ -56,6 +56,7 @@ npx playwright install --with-deps chromium
 | `npm run test:watch` | Run the same Vitest suite in local watch mode. |
 | `npm run test:e2e` | Build and own a production server, then run desktop and mobile Chromium smoke tests. |
 | `npm run test:a11y` | Build and own a production server, run axe, attach full findings, and reject new serious/critical regressions. |
+| `npm run test:foundation` | Build the private V1 checkpoint with its gate enabled, then run the exact light/dark, responsive, focus, no-JavaScript, reflow, axe, and zero-runtime-error matrix. |
 | `npm run analyze:runtime` | Build the server-only fixture and report the pinned Next runtime floor. |
 | `npm run analyze:bundle` | Build the app, probe every active-profile route sample in a cold browser, classify runtime/shared/route/lazy/pre-intent cost, report fonts/media/WebGL/non-build scripts, and reject unexpected request or page failures. |
 | `npm run lighthouse` | Build and own a production server, collect three cold mobile Lighthouse runs, enforce medians, and always stop the server. |
@@ -68,13 +69,19 @@ versions and integrity hashes. It collects three valid samples, permits at most
 two recorded retries for the known `NO_FCP` lab-capture condition, and never
 retries other runtime errors.
 
-Playwright uses deterministic port 3100. Lighthouse uses port 3101, and the
-bundle probe uses port 3102. Their server owners require both the spawned
+Legacy Playwright uses deterministic port 3100. Lighthouse uses port 3101, the
+bundle probe uses port 3102, and the isolated foundation matrix uses port 3104.
+Their server owners require both the spawned
 process's readiness marker and a successful local response, then terminate the
 owned process group after success, failure, or an interrupt. Generated
 diagnostics live under `.quality-reports`,
 `playwright-report`, and `test-results`; all are ignored locally and uploaded by
 CI where useful.
+
+The foundation matrix treats the browser's exact `csp` rejection of local
+`/_next/static/chunks/*.js` requests as an intentional no-JavaScript condition
+only in its two `javaScriptEnabled: false` projects. Every other failed request,
+HTTP error response, console error, and page error remains blocking.
 
 ## Temporary V5 envelopes
 

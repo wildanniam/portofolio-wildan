@@ -1,7 +1,7 @@
 # GitHub Issue Breakdown
 
 Date: 11 July 2026
-Status: **approved backlog; Issues #1 and #3 are in implementation**
+Status: **approved backlog; Issues #1, #3, and #5 are in implementation**
 
 The implementation should use the standard issue-driven workflow. These are high-signal delivery slices, not activity placeholders. Replace `TBD` with the real GitHub issue number before creating a branch, and link each PR with `Closes #N`.
 
@@ -99,7 +99,8 @@ Also execute every newly added E2E, a11y, analysis, and Lighthouse command once 
 
 **Suggested title:** `feat: establish Open Proving Ground design foundations`
 **Risk:** standard
-**Suggested branch:** `codex/TBD-editorial-foundations`
+**GitHub issue:** [#5](https://github.com/wildanniam/portofolio-wildan/issues/5)
+**Implementation branch:** `codex/5-editorial-foundations`
 
 Scope:
 

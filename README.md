@@ -37,6 +37,9 @@ npm run start
 ### Environment variables
 
 No environment variables are required to build or browse the current website.
+`PORTFOLIO_V1_PREVIEW=1` enables the private, `noindex` editorial checkpoint at
+`/preview/open-proving-ground` for a build created with that value. The public
+and default test builds force this gate off.
 
 The legacy `/api/contact` endpoint requires `RESEND_API_KEY` when called.
 `RESEND_FROM` and `CONTACT_TO` are optional overrides. V1 uses direct contact
@@ -51,6 +54,7 @@ npm run test:run
 npm run build
 npm run test:e2e
 npm run test:a11y
+npm run test:foundation
 npm run analyze:bundle
 npm run lighthouse
 ```

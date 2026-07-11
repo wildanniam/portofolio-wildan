@@ -18,6 +18,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test tests/e2e --grep-invert @a11y",
     "test:a11y": "playwright test tests/e2e --grep @a11y",
+    "test:foundation": "playwright test --config=playwright.foundation.config.ts",
     "analyze:runtime": "node scripts/analyze-runtime-fixture.mjs",
     "analyze:bundle": "npm run build && node scripts/analyze-bundle-matrix.mjs",
     "lighthouse": "npm ci --prefix tools/lighthouse && npm audit --prefix tools/lighthouse --audit-level=high && node scripts/run-lighthouse.mjs",

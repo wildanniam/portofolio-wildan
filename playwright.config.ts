@@ -42,6 +42,7 @@ export default defineConfig({
     timeout: 180_000,
     env: {
       ...serverEnvironment,
+      PORTFOLIO_V1_PREVIEW: "0",
       FORCE_COLOR: "0",
     },
     gracefulShutdown: {
