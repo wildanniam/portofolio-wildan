@@ -2,7 +2,13 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { getProjectBySlug } from "../../../src/content/queries.server";
+import {
+  getAdjacentWorkProjectSummaries,
+  getMomentsNarrative,
+  getProjectBySlug,
+  getSiteShell,
+  getWorkProjectSummaries,
+} from "../../../src/content/queries.server";
 
 const originalPreviewEnvironment = process.env.PORTFOLIO_V1_PREVIEW;
 
@@ -33,5 +39,45 @@ describe("server preview query gate", () => {
     expect(
       getProjectBySlug("not-a-project", { preview: true }),
     ).toBeUndefined();
+  });
+
+  it("keeps site and archive wrappers public unless both preview gates pass", () => {
+    delete process.env.PORTFOLIO_V1_PREVIEW;
+
+    expect(getSiteShell({ preview: true }).profile.name).toBe(
+      "Wildan Syukri Niam",
+    );
+    expect(getWorkProjectSummaries({ preview: true })).toEqual([]);
+
+    process.env.PORTFOLIO_V1_PREVIEW = "1";
+    expect(getWorkProjectSummaries()).toEqual([]);
+    expect(getWorkProjectSummaries({ preview: false })).toEqual([]);
+    expect(
+      getWorkProjectSummaries({ preview: true }).map((project) => project.slug),
+    ).toEqual([
+      "quorum",
+      "paygate",
+      "crucible",
+      "specheal",
+      "nova-ai",
+      "agentpay",
+      "fradium",
+    ]);
+  });
+
+  it("applies the same preview gate to adjacent work summaries", () => {
+    process.env.PORTFOLIO_V1_PREVIEW = "1";
+
+    expect(
+      getAdjacentWorkProjectSummaries("quorum", { preview: false }),
+    ).toBeUndefined();
+    expect(
+      getAdjacentWorkProjectSummaries("quorum", { preview: true }),
+    ).toMatchObject({ next: { slug: "paygate" } });
+  });
+
+  it("does not let preview records satisfy the public moments gate", () => {
+    process.env.PORTFOLIO_V1_PREVIEW = "1";
+    expect(getMomentsNarrative()).toBeUndefined();
   });
 });

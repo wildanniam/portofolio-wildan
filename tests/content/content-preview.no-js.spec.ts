@@ -17,13 +17,19 @@ test("full and brief projects plus private 404 remain readable without JavaScrip
   await expect(
     page.locator('[data-case-study-component="SourceLink"]'),
   ).toContainText("Read the official Telkom University result.");
+  const backLinks = page.getByRole("link", { name: "Back to work" });
+  await expect(backLinks).toHaveCount(2);
+  await expect(backLinks.first()).toHaveAttribute(
+    "href",
+    "/preview/open-proving-ground/site",
+  );
 
   const briefResponse = await page.goto(`${root}/agentpay`);
   expect(briefResponse?.status()).toBe(200);
   await expect(
     page.getByRole("heading", { level: 1, name: "AgentPay" }),
   ).toBeVisible();
-  await expect(page.locator("[data-project-narrative]")).toContainText(
+  await expect(page.locator('[data-project-state="brief"]')).toContainText(
     "The prototype shipped a public marketplace",
   );
   await expect(
@@ -37,5 +43,25 @@ test("full and brief projects plus private 404 remain readable without JavaScrip
       level: 1,
       name: "This project preview does not exist.",
     }),
+  ).toBeVisible();
+});
+
+test("the portfolio composition and project links work without JavaScript", async ({
+  page,
+}) => {
+  const response = await page.goto("/preview/open-proving-ground/site");
+
+  expect(response?.status()).toBe(200);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Wildan Syukri Niam" }),
+  ).toBeVisible();
+  await expect(page.locator(".opg-project-ledger__title")).toHaveCount(4);
+
+  await page
+    .locator('a[href="/preview/open-proving-ground/content/fradium"]')
+    .click();
+  await expect(page).toHaveURL(/\/preview\/open-proving-ground\/content\/fradium$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Fradium" }),
   ).toBeVisible();
 });

@@ -60,3 +60,34 @@ test("legacy root has no new serious or critical axe regressions @a11y", async (
 
   expect(regressions).toEqual([]);
 });
+
+for (const route of ["/work", "/contact"] as const) {
+  test(`${route} has no serious or critical axe violations @a11y`, async ({
+    page,
+  }, testInfo) => {
+    const response = await page.goto(route);
+    expect(response?.status()).toBe(200);
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+    const result = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+      .analyze();
+    const blocking = result.violations.filter(
+      (violation) =>
+        violation.impact === "serious" || violation.impact === "critical",
+    );
+
+    await testInfo.attach(`axe-${route.slice(1)}`, {
+      body: Buffer.from(JSON.stringify(result, null, 2)),
+      contentType: "application/json",
+    });
+
+    expect(
+      blocking.map((violation) => ({
+        id: violation.id,
+        impact: violation.impact,
+        nodes: violation.nodes.length,
+      })),
+    ).toEqual([]);
+  });
+}

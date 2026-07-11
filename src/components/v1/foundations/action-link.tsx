@@ -37,7 +37,12 @@ export function ActionLink({
       target={target}
       {...props}
     >
-      <span>{children}</span>
+      <span>
+        {children}
+        {target === "_blank" ? (
+          <span className="sr-only"> (opens in a new tab)</span>
+        ) : null}
+      </span>
       <span aria-hidden="true" className="opg-action-link__mark">
         {marks[direction]}
       </span>

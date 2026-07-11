@@ -2,13 +2,17 @@ import "server-only";
 
 import { toProjectSummaryDto } from "./dto";
 import {
+  selectAdjacentWorkProjects,
   selectContactProfile,
   selectHomepage,
+  selectMomentsNarrative,
   selectProjectBySlug,
   selectProjectParams,
   selectPublishedMoments,
   selectPublishedProjects,
   selectRoutableProjects,
+  selectSiteShell,
+  selectWorkProjects,
 } from "./queries";
 import { getContentBundle } from "./repository.server";
 
@@ -31,6 +35,10 @@ export function getHomepage(options: PreviewQueryOptions = {}) {
   });
 }
 
+export function getSiteShell(options: PreviewQueryOptions = {}) {
+  return selectSiteShell(getContentBundle(), visibilityFor(options));
+}
+
 export function getPublishedProjects() {
   return selectPublishedProjects(getContentBundle());
 }
@@ -42,6 +50,35 @@ export function getRoutableProjectSummaries(
     getContentBundle(),
     visibilityFor(options),
   ).map(toProjectSummaryDto);
+}
+
+export function getWorkProjectSummaries(
+  options: PreviewQueryOptions = {},
+) {
+  return selectWorkProjects(
+    getContentBundle(),
+    visibilityFor(options),
+  ).map(toProjectSummaryDto);
+}
+
+export function getAdjacentWorkProjectSummaries(
+  slug: string,
+  options: PreviewQueryOptions = {},
+) {
+  const adjacent = selectAdjacentWorkProjects(
+    getContentBundle(),
+    slug,
+    visibilityFor(options),
+  );
+
+  if (!adjacent) return undefined;
+
+  return {
+    ...(adjacent.previous
+      ? { previous: toProjectSummaryDto(adjacent.previous) }
+      : {}),
+    ...(adjacent.next ? { next: toProjectSummaryDto(adjacent.next) } : {}),
+  };
 }
 
 export function getProjectBySlug(
@@ -61,6 +98,10 @@ export function getProjectParams(options: PreviewQueryOptions = {}) {
 
 export function getPublishedMoments() {
   return selectPublishedMoments(getContentBundle());
+}
+
+export function getMomentsNarrative() {
+  return selectMomentsNarrative(getContentBundle());
 }
 
 export function getContactProfile() {

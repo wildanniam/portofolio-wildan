@@ -23,6 +23,37 @@ export type HomepageSelection = {
   currentlyBuilding: CurrentlyBuildingRecord[];
 };
 
+export type SiteShellSelection = {
+  profile: Profile;
+  navigation: Navigation;
+};
+
+export type AdjacentWorkProjects = {
+  previous?: ProjectRecord;
+  next?: ProjectRecord;
+};
+
+export const MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE = 2;
+
+function selectNavigation(
+  navigation: Navigation,
+  visibleProjects: ReadonlyMap<string, ProjectRecord>,
+): Navigation {
+  return {
+    primary: navigation.primary.filter(
+      (item) => !item.projectSlug || visibleProjects.has(item.projectSlug),
+    ),
+    ...(navigation.secondary
+      ? {
+          secondary: navigation.secondary.filter(
+            (item) =>
+              !item.projectSlug || visibleProjects.has(item.projectSlug),
+          ),
+        }
+      : {}),
+  };
+}
+
 export function isRoutableProject(
   project: ProjectRecord,
   visibility: ContentVisibility = {},
@@ -60,6 +91,41 @@ export function selectRoutableProjects(
   );
 }
 
+/**
+ * Returns the project archive in a stable editorial order. Newer work appears
+ * first; slugs make equal update dates deterministic across runtimes.
+ */
+export function selectWorkProjects(
+  content: ContentBundle,
+  visibility: ContentVisibility = {},
+): ProjectRecord[] {
+  return [...selectRoutableProjects(content, visibility)].sort(
+    (left, right) =>
+      right.lastUpdatedAt.localeCompare(left.lastUpdatedAt) ||
+      left.slug.localeCompare(right.slug),
+  );
+}
+
+/**
+ * `previous` and `next` follow the stable order returned by
+ * `selectWorkProjects`; hidden records never become adjacent destinations.
+ */
+export function selectAdjacentWorkProjects(
+  content: ContentBundle,
+  slug: string,
+  visibility: ContentVisibility = {},
+): AdjacentWorkProjects | undefined {
+  const projects = selectWorkProjects(content, visibility);
+  const index = projects.findIndex((project) => project.slug === slug);
+
+  if (index === -1) return undefined;
+
+  return {
+    ...(projects[index - 1] ? { previous: projects[index - 1] } : {}),
+    ...(projects[index + 1] ? { next: projects[index + 1] } : {}),
+  };
+}
+
 export function selectProjectBySlug(
   content: ContentBundle,
   slug: string,
@@ -95,6 +161,47 @@ export function selectRoutableMoments(
   return content.moments.filter((moment) =>
     isRoutableMoment(moment, visibility),
   );
+}
+
+/**
+ * The public moments narrative stays withheld until it has enough distinct,
+ * published material to read as a sequence rather than an isolated claim.
+ * Preview and draft moments deliberately do not contribute to this gate.
+ */
+export function selectMomentsNarrative(
+  content: ContentBundle,
+): MomentRecord[] | undefined {
+  const seenNarrativePoints = new Set<string>();
+  const moments = selectPublishedMoments(content).filter((moment) => {
+    const narrativePoint = [moment.date, moment.event, moment.place]
+      .map((value) => value.trim().toLowerCase())
+      .join("\u0000");
+
+    if (seenNarrativePoints.has(narrativePoint)) return false;
+    seenNarrativePoints.add(narrativePoint);
+    return true;
+  });
+
+  return moments.length >= MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE
+    ? moments
+    : undefined;
+}
+
+export function selectSiteShell(
+  content: ContentBundle,
+  visibility: ContentVisibility = {},
+): SiteShellSelection {
+  const visibleProjects = new Map(
+    selectRoutableProjects(content, visibility).map((project) => [
+      project.slug,
+      project,
+    ]),
+  );
+
+  return {
+    profile: content.profile,
+    navigation: selectNavigation(content.navigation, visibleProjects),
+  };
 }
 
 export function selectHomepage(
@@ -135,23 +242,9 @@ export function selectHomepage(
     },
   );
 
-  const filterNavigation = (navigation: Navigation): Navigation => ({
-    primary: navigation.primary.filter(
-      (item) => !item.projectSlug || visibleProjects.has(item.projectSlug),
-    ),
-    ...(navigation.secondary
-      ? {
-          secondary: navigation.secondary.filter(
-            (item) =>
-              !item.projectSlug || visibleProjects.has(item.projectSlug),
-          ),
-        }
-      : {}),
-  });
-
   return {
     profile: content.profile,
-    navigation: filterNavigation(content.navigation),
+    navigation: selectNavigation(content.navigation, visibleProjects),
     projects,
     moments,
     currentlyBuilding,

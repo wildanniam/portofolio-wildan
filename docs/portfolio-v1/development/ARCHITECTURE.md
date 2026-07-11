@@ -42,7 +42,7 @@ src/app/
 |---|---|
 | `/` | Static/server-composed homepage from curated project slug references and site records |
 | `/work` | Static archive derived from all publishable `ProjectRecord` entries |
-| `/work/[slug]` | Statically generated full/brief page; `notFound()` for unknown, draft, or preview-with-env-off records |
+| `/work/[slug]` | Published params are statically generated full/brief pages; unknown, draft, and preview-only slugs resolve through an on-demand, fail-closed V1 `notFound()` boundary |
 | `/contact` | Static direct-contact page; no public form in V1 |
 | `/moments` | Publish-gated route; omitted from navigation and sitemap until the narrative gate passes |
 
@@ -62,7 +62,7 @@ V1 release requires all four flagships to be `published + full`. Selected non-fl
 
 A `published + brief` project is included in `/work`, `generateStaticParams()`, metadata, and sitemap. `/work/{slug}` renders a server-only `ProjectBriefPage` from YAML: title, one-liner, role, origin/lifecycle, dates, one ready media item, concise context/outcome, and explicit live/source link states. It does not require MDX, empty case-study chapters, the flagship explorer, or a client motion island.
 
-`generateStaticParams()` and `generateMetadata()` are required for case-study routes. Homepage and archive never duplicate project facts.
+`generateStaticParams()` and `generateMetadata()` are required for case-study routes. Published params are static. Unknown params remain eligible only so Next can render the scoped V1 not-found surface; the public visibility query is still the authoritative gate and the resulting 404 contains no project record. Homepage and archive never duplicate project facts.
 
 ## 3. Repository-owned content
 
@@ -343,7 +343,7 @@ Architecture is accepted when:
 
 - a new project can be added without new project-specific UI code;
 - a content validation failure blocks the production build;
-- `/work/[slug]` is static and metadata-complete;
+- every published `/work/[slug]` param is statically generated and metadata-complete; unknown params fail closed through the scoped V1 404;
 - no-JavaScript markup contains the critical four-project experience;
 - client JavaScript is limited to bounded interaction leaves;
 - no published record can reference a planned/private asset;
