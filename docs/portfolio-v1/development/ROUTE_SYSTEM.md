@@ -1,6 +1,6 @@
 # Portfolio V1 Route System
 
-Date: 11 July 2026
+Date: 12 July 2026
 Implementation: GitHub Issue #9
 
 This document records the server-first route checkpoint that sits between the
@@ -8,15 +8,17 @@ validated content repository and the later Fradium and motion work.
 
 ## Coexistence map
 
-| Public path | Current behavior |
-| --- | --- |
-| `/` | Preserved legacy homepage and legacy metadata. No V1 cutover yet. |
-| `/work` | Real V1 archive route. It shows an honest preparation state while every record remains `preview`. |
-| `/work/[slug]` | Shared full/brief template. The public query returns only `published` records, so current preview slugs return the V1 404. |
-| `/contact` | V1 direct-contact route using email and links whose content state is `public`; no form or public API. |
-| `/moments` | V1 route withheld until at least two distinct moments are `published`. |
-| `/preview/open-proving-ground/site` | Credential-protected, noindex, server-first homepage composition with the four approved flagships and a lazily eligible Fradium evidence transition. |
-| `/preview/open-proving-ground/content/[slug]` | Credential-protected full/brief shared case-study proof. |
+| Public path                                   | Current behavior                                                                                                                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                                           | Preserved legacy homepage and legacy metadata. No V1 cutover yet.                                                                                                                     |
+| `/work`                                       | Real V1 archive route. It shows an honest preparation state while every record remains `preview`.                                                                                     |
+| `/work/[slug]`                                | Shared full/brief template. The public query returns only `published` records, so current preview slugs return the V1 404.                                                            |
+| `/contact`                                    | V1 direct-contact route using email and links whose content state is `public`; no form or public API.                                                                                 |
+| `/moments`                                    | V1 route withheld until at least two distinct moments are `published`.                                                                                                                |
+| `/preview/open-proving-ground/site`           | Credential-protected, noindex, server-first homepage composition with the four approved flagships and a lazily eligible Fradium evidence transition.                                  |
+| `/preview/open-proving-ground/content/[slug]` | Credential-protected full/brief shared case-study proof.                                                                                                                              |
+| `/preview/open-proving-ground/moments`        | Credential-protected documentary sequence; planned records remain text-only until their exact derivatives clear publication review.                                                   |
+| `/preview/open-proving-ground/moments-qa`     | Temporary credential-protected four-mode layout fixture using existing project derivatives only; it is not a publication source and is removed with the preview namespace at cutover. |
 
 The existing foundation checkpoint remains at
 `/preview/open-proving-ground`. Preview authentication, no-store headers, and

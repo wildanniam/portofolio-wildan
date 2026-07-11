@@ -353,7 +353,7 @@ Verification:
 
 **Suggested title:** `perf: harden portfolio motion and responsive behavior`
 **Risk:** standard
-**Suggested branch:** `codex/TBD-motion-hardening`
+**Implemented branch:** `codex/19-motion-hardening`
 
 Dependencies: issues 07 and 08.
 
@@ -366,6 +366,13 @@ Scope:
 - author tablet and short-desktop composition rather than relying on two breakpoints;
 - remove any global pointer effect, blanket reveal, or competing animation library usage;
 - enforce target sizes, focus visibility, sticky offsets, and zoom resilience.
+
+Implementation note: the motion lifecycle now handles failed-image revisits and
+cancels stale leave-frame cleanup. The production browser matrix covers live
+motion/data preference changes, coarse pointer, threshold resize, repeated
+mount/unmount, history, no-JavaScript reflow, keyboard focus/targets, seven
+representative viewport profiles, and a private four-mode Moments media fixture.
+No documentary record or personal photo was published by this hardening slice.
 
 Acceptance:
 

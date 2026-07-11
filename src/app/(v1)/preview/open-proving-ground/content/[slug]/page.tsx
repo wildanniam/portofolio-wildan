@@ -79,13 +79,9 @@ export default async function ContentCompatibilityPage({
         </SiteContainer>
       </header>
 
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         {project.caseStudyState === "brief" ? (
-          <ProjectBriefPage
-            backHref={PREVIEW_SITE}
-            preview
-            project={project}
-          />
+          <ProjectBriefPage backHref={PREVIEW_SITE} preview project={project} />
         ) : (
           <ProjectPage
             backHref={PREVIEW_SITE}

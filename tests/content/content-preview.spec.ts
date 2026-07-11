@@ -41,15 +41,26 @@ async function loadVisibleLazyImages(page: Page): Promise<void> {
   await page.evaluate(() => window.scrollTo({ behavior: "auto", top: 0 }));
   await expect
     .poll(() =>
-      page.locator("img").evaluateAll((images) =>
-        images.every(
-          (image) =>
-            (image as HTMLImageElement).complete &&
-            (image as HTMLImageElement).naturalWidth > 0,
+      page
+        .locator("img")
+        .evaluateAll((images) =>
+          images.every(
+            (image) =>
+              (image as HTMLImageElement).complete &&
+              (image as HTMLImageElement).naturalWidth > 0,
+          ),
         ),
-      ),
     )
     .toBe(true);
+}
+
+async function expectNoDocumentOverflow(page: Page, context: string) {
+  const overflow = await page.evaluate(
+    () =>
+      document.documentElement.scrollWidth -
+      document.documentElement.clientWidth,
+  );
+  expect(overflow, `${context} horizontal overflow`).toBeLessThanOrEqual(1);
 }
 
 test("preview namespace rejects unauthenticated production requests", async ({}, testInfo) => {
@@ -94,7 +105,9 @@ test("the private moments route renders the curated sequence without leaking pla
   expect(response?.status()).toBe(200);
   expect(response?.headers()["cache-control"]).toContain("no-store");
   expect(response?.headers()["x-robots-tag"]).toContain("noindex");
-  await expect(page.getByRole("heading", { level: 1, name: "Moments." })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Moments." }),
+  ).toBeVisible();
   await expect(page.locator(".opg-moments-sequence > li")).toHaveCount(6);
   await expect(page.locator(".opg-moment-story h3")).toHaveText([
     "Second place, after the recovery loop held together",
@@ -105,15 +118,45 @@ test("the private moments route renders the curated sequence without leaking pla
     "A global result, held by the whole team",
   ]);
   expect(
-    await page.locator(".opg-moments-sequence > li").evaluateAll((items) =>
-      items.map((item) => item.getAttribute("data-mode")),
-    ),
-  ).toEqual(["evidence", "portrait", "evidence", "portrait", "lead", "evidence"]);
-  await expect(page.locator("figure, [data-placeholder-media], canvas")).toHaveCount(0);
+    await page
+      .locator(".opg-moments-sequence > li")
+      .evaluateAll((items) =>
+        items.map((item) => item.getAttribute("data-mode")),
+      ),
+  ).toEqual([
+    "evidence",
+    "portrait",
+    "evidence",
+    "portrait",
+    "lead",
+    "evidence",
+  ]);
+  await expect(
+    page.locator('.opg-moments-sequence > li[data-has-media="false"]'),
+  ).toHaveCount(6);
+  expect(
+    await page
+      .locator('.opg-moments-sequence > li[data-has-media="false"]')
+      .evaluateAll((items) =>
+        items.every((item) => {
+          const copy = item.querySelector<HTMLElement>(
+            ".opg-moment-story__copy",
+          );
+          if (!copy) return false;
+          const style = getComputedStyle(copy);
+          return style.gridColumnStart === "1" && style.gridColumnEnd === "7";
+        }),
+      ),
+  ).toBe(true);
+  await expect(
+    page.locator("figure, [data-placeholder-media], canvas"),
+  ).toHaveCount(0);
   await expect(page.getByText("capture-pending")).toHaveCount(0);
 
   const overflow = await page.evaluate(
-    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+    () =>
+      document.documentElement.scrollWidth -
+      document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(1);
   await expectNoRuntimeFailures(diagnostics, testInfo);
@@ -130,7 +173,9 @@ test("all canonical preview projects are server-rendered and non-indexable", asy
     expect(response?.headers()["cache-control"], slug).toContain("no-store");
     expect(response?.headers()["x-robots-tag"], slug).toContain("noindex");
     await expect(page.locator('[data-site-shell="v1"]')).toHaveCount(1);
-    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(
+      page.getByRole("heading", { level: 1, name: title }),
+    ).toBeVisible();
     await expect(page.locator("[data-project-page]")).toHaveCount(1);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",
@@ -195,7 +240,7 @@ test("the server-first portfolio composition exposes all four flagships", async 
   const response = await page.goto("/preview/open-proving-ground/site");
 
   expect(response?.status()).toBe(200);
-  await expect(page.locator('[data-portfolio-home-skeleton]')).toHaveCount(1);
+  await expect(page.locator("[data-portfolio-home-skeleton]")).toHaveCount(1);
   await expect(
     page.getByRole("heading", { level: 1, name: "Wildan Syukri Niam" }),
   ).toBeVisible();
@@ -267,11 +312,131 @@ test("the explorer keeps links and preview controls as separate keyboard actions
   await fradiumButton.click();
   await expect(fradiumButton).toHaveAttribute("aria-pressed", "true");
   await expect(
-    page.locator('.opg-project-explorer__panel[data-project-slug="fradium"] figure'),
+    page.locator(
+      '.opg-project-explorer__panel[data-project-slug="fradium"] figure',
+    ),
   ).toHaveCount(3);
 
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
+
+for (const viewport of [
+  { name: "wide-desktop", width: 1440, height: 900 },
+  { name: "motion-boundary", width: 1120, height: 900 },
+  { name: "compact-desktop", width: 1024, height: 900 },
+  { name: "tablet", width: 768, height: 900 },
+  { name: "reflow-200-equivalent", width: 640, height: 800 },
+  { name: "mobile", width: 390, height: 844 },
+  { name: "short-desktop", width: 1440, height: 650 },
+] as const) {
+  test(`${viewport.name} keeps representative V1 routes bounded`, async ({
+    page,
+  }, testInfo) => {
+    const diagnostics = observeRuntimeDiagnostics(page);
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
+
+    for (const [route, heading] of [
+      ["/preview/open-proving-ground/site", "Wildan Syukri Niam"],
+      [`${root}/fradium`, "Fradium"],
+      ["/preview/open-proving-ground/moments", "Moments."],
+    ] as const) {
+      await page.goto(route);
+      await expect(
+        page.getByRole("heading", { level: 1, name: heading }),
+      ).toBeVisible();
+      await expectNoDocumentOverflow(page, `${viewport.name} ${route}`);
+    }
+
+    if (viewport.name === "short-desktop") {
+      await page.goto("/preview/open-proving-ground/site");
+      const explorer = page.locator("#flagship-work-explorer-interactive");
+      await explorer.scrollIntoViewIfNeeded();
+      await expect(explorer).toHaveAttribute(
+        "data-motion-state",
+        "static-viewport",
+      );
+      await expect(explorer).toHaveAttribute("data-sticky-active", "false");
+      await expect(
+        page.locator("[data-explorer-motion-controller]"),
+      ).toHaveCount(0);
+    }
+
+    await expectNoRuntimeFailures(diagnostics, testInfo);
+  });
+}
+
+for (const viewport of [
+  { name: "desktop", width: 1440, height: 900 },
+  { name: "mobile", width: 390, height: 844 },
+] as const) {
+  test(`${viewport.name} keyboard path exposes focus and usable targets`, async ({
+    page,
+  }, testInfo) => {
+    const diagnostics = observeRuntimeDiagnostics(page);
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
+    await page.goto("/preview/open-proving-ground/site");
+
+    const skipLink = page.getByRole("link", { name: "Skip to content" });
+    await page.keyboard.press("Tab");
+    await expect(skipLink).toBeFocused();
+    await expect
+      .poll(async () => (await skipLink.boundingBox())?.y ?? -1)
+      .toBeGreaterThanOrEqual(0);
+    await page.keyboard.press("Enter");
+    await expect(page.locator("#main-content")).toBeFocused();
+
+    const nova = page.getByRole("button", {
+      name: "Preview evidence for Nova AI Wallet",
+    });
+    await nova.focus();
+    await expect(nova).toBeFocused();
+    expect(
+      await nova.evaluate((element) => {
+        const style = getComputedStyle(element);
+        return (
+          element.matches(":focus-visible") && style.outlineStyle !== "none"
+        );
+      }),
+    ).toBe(true);
+
+    const undersizedTargets = await page
+      .locator(
+        "header a, footer a, [data-project-explorer] a, " +
+          "[data-project-explorer] button, [data-project-explorer] summary",
+      )
+      .evaluateAll((elements) =>
+        elements.flatMap((element) => {
+          const style = getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          if (
+            style.display === "none" ||
+            style.visibility === "hidden" ||
+            rect.width === 0 ||
+            rect.height === 0
+          ) {
+            return [];
+          }
+          return rect.width < 24 || rect.height < 24
+            ? [
+                {
+                  height: rect.height,
+                  label: element.textContent?.trim() ?? element.tagName,
+                  width: rect.width,
+                },
+              ]
+            : [];
+        }),
+      );
+    expect(undersizedTargets).toEqual([]);
+    await expectNoRuntimeFailures(diagnostics, testInfo);
+  });
+}
 
 test("the flagship preview surfaces have no blocking axe findings", async ({
   page,
@@ -317,7 +482,10 @@ for (const viewport of [
     page,
   }, testInfo) => {
     mkdirSync(screenshotDirectory, { recursive: true });
-    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
 
     for (const [slug, title, evidenceCount, sourceCount] of [
       ["nova-ai", "Nova AI Wallet", 4, 1],
@@ -370,7 +538,10 @@ for (const viewport of [
     page,
   }, testInfo) => {
     mkdirSync(screenshotDirectory, { recursive: true });
-    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
 
     for (const [name, route] of [
       ["home", "/preview/open-proving-ground/site"],
@@ -387,7 +558,9 @@ for (const viewport of [
         documentWidth: document.documentElement.scrollWidth,
         viewportWidth: window.innerWidth,
       }));
-      expect(overflow.documentWidth).toBeLessThanOrEqual(overflow.viewportWidth);
+      expect(overflow.documentWidth).toBeLessThanOrEqual(
+        overflow.viewportWidth,
+      );
 
       const screenshotPath = resolve(
         screenshotDirectory,
@@ -406,7 +579,9 @@ for (const viewport of [
   });
 }
 
-test("unknown project preview returns a visible semantic 404", async ({ page }) => {
+test("unknown project preview returns a visible semantic 404", async ({
+  page,
+}) => {
   const response = await page.goto(`${root}/not-a-project`);
 
   expect(response?.status()).toBe(404);

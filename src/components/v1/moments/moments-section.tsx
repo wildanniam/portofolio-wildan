@@ -76,9 +76,7 @@ function MomentStory({
     <article aria-labelledby={titleId} className="opg-moment-story">
       <header className="opg-moment-story__copy">
         <p className="opg-moment-story__folio">
-          <span aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
-          </span>
+          <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
           <span>{moment.event}</span>
         </p>
         <h3 id={titleId}>{moment.title}</h3>
@@ -87,7 +85,9 @@ function MomentStory({
           <div>
             <dt>Date</dt>
             <dd>
-              <time dateTime={moment.date}>{formatMomentDate(moment.date)}</time>
+              <time dateTime={moment.date}>
+                {formatMomentDate(moment.date)}
+              </time>
             </dd>
           </div>
           <div>
@@ -158,23 +158,33 @@ export function MomentsSection({
           <p>{intro}</p>
         </div>
         {archiveHref ? (
-          <ActionLink className="opg-moments-section__archive" href={archiveHref}>
+          <ActionLink
+            className="opg-moments-section__archive"
+            href={archiveHref}
+          >
             View all moments
           </ActionLink>
         ) : null}
       </div>
 
       <ol className="opg-moments-sequence">
-        {presentedMoments.map((moment, index) => (
-          <li data-mode={moment.mode} key={moment.id}>
-            <MomentStory
-              compact={variant === "home"}
-              index={index}
-              moment={moment}
-              priorityFirstAsset={priorityFirstImage && index === 0}
-            />
-          </li>
-        ))}
+        {presentedMoments.map((moment, index) => {
+          const hasMedia = getReadyMomentAssets(moment).length > 0;
+          return (
+            <li
+              data-has-media={hasMedia ? "true" : "false"}
+              data-mode={moment.mode}
+              key={moment.id}
+            >
+              <MomentStory
+                compact={variant === "home"}
+                index={index}
+                moment={moment}
+                priorityFirstAsset={priorityFirstImage && index === 0}
+              />
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

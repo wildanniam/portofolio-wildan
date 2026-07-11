@@ -56,7 +56,9 @@ test("the portfolio composition and project links work without JavaScript", asyn
   await expect(
     page.getByRole("heading", { level: 1, name: "Wildan Syukri Niam" }),
   ).toBeVisible();
-  await expect(page.locator(".opg-project-explorer__project-link")).toHaveCount(4);
+  await expect(page.locator(".opg-project-explorer__project-link")).toHaveCount(
+    4,
+  );
   await expect(
     page.getByRole("button", { name: /Preview evidence for/ }),
   ).toHaveCount(4);
@@ -84,18 +86,71 @@ test("the portfolio composition and project links work without JavaScript", asyn
   await expect(novaPanel.locator("figure")).toHaveCount(4);
   await expect(novaPanel.locator("figure").first()).toBeVisible();
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
 
   await page
     .locator(
       '.opg-project-explorer__project-link[href="/preview/open-proving-ground/content/fradium"]',
     )
     .click();
-  await expect(page).toHaveURL(/\/preview\/open-proving-ground\/content\/fradium$/);
+  await expect(page).toHaveURL(
+    /\/preview\/open-proving-ground\/content\/fradium$/,
+  );
   await expect(
     page.getByRole("heading", { level: 1, name: "Fradium" }),
   ).toBeVisible();
 });
+
+for (const viewport of [
+  { name: "reflow-200-equivalent", width: 640, height: 800 },
+  { name: "mobile", width: 390, height: 844 },
+] as const) {
+  test(`${viewport.name} no-JavaScript explorer fallback stays focused and bounded`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({
+      width: viewport.width,
+      height: viewport.height,
+    });
+    await page.goto("/preview/open-proving-ground/site");
+
+    await page
+      .getByRole("button", { name: "Preview evidence for Nova AI Wallet" })
+      .click();
+    await expect(page).toHaveURL(/project=nova-ai/);
+    const panel = page.locator(
+      '.opg-project-explorer__panel[data-project-slug="nova-ai"]',
+    );
+    await expect(panel).toBeVisible();
+    await expect(panel).toBeFocused();
+    await expect(panel.locator("figure").first()).toBeVisible();
+    await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+    await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+      0,
+    );
+
+    const documentOverflow = await page.evaluate(
+      () =>
+        document.documentElement.scrollWidth -
+        document.documentElement.clientWidth,
+    );
+    expect(documentOverflow).toBeLessThanOrEqual(1);
+
+    if (viewport.width < 640) {
+      const diagramViewport = panel
+        .locator(".opg-evidence-contact-sheet__diagram-viewport")
+        .first();
+      await expect(diagramViewport).toBeVisible();
+      expect(
+        await diagramViewport.evaluate(
+          (element) => element.scrollWidth > element.clientWidth,
+        ),
+      ).toBe(true);
+    }
+  });
+}
 
 test("the documentary sequence remains readable without JavaScript or public media placeholders", async ({
   page,
@@ -103,7 +158,9 @@ test("the documentary sequence remains readable without JavaScript or public med
   const response = await page.goto("/preview/open-proving-ground/moments");
 
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole("heading", { level: 1, name: "Moments." })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Moments." }),
+  ).toBeVisible();
   await expect(page.locator(".opg-moments-sequence > li")).toHaveCount(6);
   await expect(page.getByRole("heading", { level: 3 })).toHaveText([
     "Second place, after the recovery loop held together",
@@ -113,5 +170,7 @@ test("the documentary sequence remains readable without JavaScript or public med
     "Learning in public",
     "A global result, held by the whole team",
   ]);
-  await expect(page.locator("figure, [data-placeholder-media], canvas")).toHaveCount(0);
+  await expect(
+    page.locator("figure, [data-placeholder-media], canvas"),
+  ).toHaveCount(0);
 });

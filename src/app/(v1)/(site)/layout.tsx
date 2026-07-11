@@ -14,7 +14,9 @@ export default function PortfolioSiteLayout({
     <div className="opg-site-shell">
       <SkipLink />
       <SiteHeader navigation={navigation} />
-      <main id="main-content">{children}</main>
+      <main id="main-content" tabIndex={-1}>
+        {children}
+      </main>
       <SiteFooter profile={profile} />
     </div>
   );

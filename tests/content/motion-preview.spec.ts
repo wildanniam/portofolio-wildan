@@ -38,7 +38,9 @@ test("wide motion stays cold, loads at the explorer, and removes its inert overl
   await page.waitForTimeout(1_000);
   const coldScripts = new Set(scriptResponses);
   await expect(root).toHaveAttribute("data-motion-state", "idle");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
 
   await page.evaluate(() => {
     let total = 0;
@@ -59,7 +61,9 @@ test("wide motion stays cold, loads at the explorer, and removes its inert overl
   await root.scrollIntoViewIfNeeded();
   await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
   await expect(root).toHaveAttribute("data-motion-profile", "desktop-sticky");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
   expect(scriptResponses.some((script) => !coldScripts.has(script))).toBe(true);
   expect(
     mediaResponses.filter((path) =>
@@ -298,7 +302,9 @@ test("rapid selection interrupts the travel visual and leaves one clean final st
   expect(quorumOverlayBounds).not.toBeNull();
   expect(quorumOverlayBounds?.width).toBeGreaterThan(100);
   expect(quorumOverlayBounds?.height).toBeGreaterThan(100);
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
   await expect(root).not.toHaveAttribute("data-motion-phase", "idle");
   await expect
     .poll(() =>
@@ -306,8 +312,8 @@ test("rapid selection interrupts the travel visual and leaves one clean final st
         panels
           .filter((panel) => panel.hasAttribute("hidden"))
           .every((panel) => {
-          const style = (panel as HTMLElement).style;
-          return !style.opacity && !style.transform && !style.visibility;
+            const style = (panel as HTMLElement).style;
+            return !style.opacity && !style.transform && !style.visibility;
           }),
       ),
     )
@@ -323,7 +329,8 @@ test("rapid selection interrupts the travel visual and leaves one clean final st
     const sheet = document.querySelector<HTMLElement>(
       ".opg-evidence-contact-sheet",
     );
-    if (!sheet) throw new Error("Expected the restored Fradium evidence sheet.");
+    if (!sheet)
+      throw new Error("Expected the restored Fradium evidence sheet.");
     const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
     const start = sheetTop - window.innerHeight * 0.72;
     const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
@@ -371,10 +378,167 @@ test("rapid selection interrupts the travel visual and leaves one clean final st
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
+test("an interrupted leave frame cannot clear a re-entered travel visual", async ({
+  page,
+}, testInfo) => {
+  const diagnostics = observeRuntimeDiagnostics(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route);
+
+  const root = page.locator(rootSelector);
+  await root.scrollIntoViewIfNeeded();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+  await page.evaluate(() => {
+    const sheet = document.querySelector<HTMLElement>(
+      ".opg-evidence-contact-sheet",
+    );
+    if (!sheet) throw new Error("Expected the Fradium evidence sheet.");
+    const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
+    const start = sheetTop - window.innerHeight * 0.72;
+    const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
+    window.scrollTo({ behavior: "auto", top: start + (end - start) * 0.5 });
+  });
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+
+  await page.evaluate(() => {
+    const originalRequest = window.requestAnimationFrame.bind(window);
+    const originalCancel = window.cancelAnimationFrame.bind(window);
+    const held = new Map<number, FrameRequestCallback>();
+    let nextHeldId = -1;
+    const typedWindow = window as typeof window & {
+      __flushHeldPortfolioFrames?: () => void;
+      __heldPortfolioFrameCount?: () => number;
+      __restorePortfolioFrames?: () => void;
+    };
+
+    window.requestAnimationFrame = (callback) => {
+      const explorer = document.querySelector<HTMLElement>(
+        "#flagship-work-explorer-interactive",
+      );
+      if (
+        explorer?.dataset.motionPhase === "release" &&
+        document.querySelector("[data-motion-overlay]")
+      ) {
+        const id = nextHeldId;
+        nextHeldId -= 1;
+        held.set(id, callback);
+        return id;
+      }
+      return originalRequest(callback);
+    };
+    window.cancelAnimationFrame = (id) => {
+      if (!held.delete(id)) originalCancel(id);
+    };
+    typedWindow.__heldPortfolioFrameCount = () => held.size;
+    typedWindow.__flushHeldPortfolioFrames = () => {
+      const callbacks = Array.from(held.values());
+      held.clear();
+      callbacks.forEach((callback) => callback(performance.now()));
+    };
+    typedWindow.__restorePortfolioFrames = () => {
+      held.clear();
+      window.requestAnimationFrame = originalRequest;
+      window.cancelAnimationFrame = originalCancel;
+    };
+  });
+
+  const scrollToProgress = (progress: number) =>
+    page.evaluate((nextProgress) => {
+      const sheet = document.querySelector<HTMLElement>(
+        ".opg-evidence-contact-sheet",
+      );
+      if (!sheet) throw new Error("Expected the Fradium evidence sheet.");
+      const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
+      const start = sheetTop - window.innerHeight * 0.72;
+      const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
+      window.scrollTo({
+        behavior: "auto",
+        top: start + (end - start) * nextProgress,
+      });
+    }, progress);
+
+  await scrollToProgress(1.15);
+  await expect(root).toHaveAttribute("data-motion-phase", "release");
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          (
+            window as typeof window & {
+              __heldPortfolioFrameCount?: () => number;
+            }
+          ).__heldPortfolioFrameCount?.() ?? 0,
+      ),
+    )
+    .toBeGreaterThan(0);
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+
+  await scrollToProgress(0.5);
+  await expect(root).toHaveAttribute("data-motion-phase", "expand");
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+  await page.evaluate(() => {
+    const typedWindow = window as typeof window & {
+      __flushHeldPortfolioFrames?: () => void;
+      __restorePortfolioFrames?: () => void;
+    };
+    typedWindow.__flushHeldPortfolioFrames?.();
+    typedWindow.__restorePortfolioFrames?.();
+  });
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+  await expect(root).toHaveAttribute("data-motion-phase", "expand");
+  await expectNoRuntimeFailures(diagnostics, testInfo);
+});
+
 test("exact viewport boundary unmounts and restores one motion controller", async ({
   page,
 }, testInfo) => {
   const diagnostics = observeRuntimeDiagnostics(page);
+  await page.addInitScript(() => {
+    const originalAdd = EventTarget.prototype.addEventListener;
+    const originalRemove = EventTarget.prototype.removeEventListener;
+    const listeners = new Map<
+      string,
+      Set<EventListenerOrEventListenerObject>
+    >();
+    const trackedTypes = new Set([
+      "opg:explorer-before-select",
+      "opg:explorer-select",
+    ]);
+    const keyFor = (target: EventTarget, type: string) =>
+      target instanceof HTMLElement &&
+      target.id === "flagship-work-explorer-interactive" &&
+      trackedTypes.has(type)
+        ? type
+        : null;
+
+    EventTarget.prototype.addEventListener = function addTrackedListener(
+      type,
+      listener,
+      options,
+    ) {
+      const key = keyFor(this, type);
+      if (key && listener) {
+        const entries = listeners.get(key) ?? new Set();
+        entries.add(listener);
+        listeners.set(key, entries);
+      }
+      originalAdd.call(this, type, listener, options);
+    };
+    EventTarget.prototype.removeEventListener = function removeTrackedListener(
+      type,
+      listener,
+      options,
+    ) {
+      const key = keyFor(this, type);
+      if (key && listener) listeners.get(key)?.delete(listener);
+      originalRemove.call(this, type, listener, options);
+    };
+    (
+      window as typeof window & {
+        __portfolioMotionListenerCount?: (type: string) => number;
+      }
+    ).__portfolioMotionListenerCount = (type) => listeners.get(type)?.size ?? 0;
+  });
   await page.setViewportSize({ width: 1120, height: 760 });
   await page.goto(route);
 
@@ -382,24 +546,90 @@ test("exact viewport boundary unmounts and restores one motion controller", asyn
   await root.scrollIntoViewIfNeeded();
   await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
   await expect(root).toHaveAttribute("data-sticky-active", "true");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
+
+  await page.evaluate(() => {
+    const sheet = document.querySelector<HTMLElement>(
+      ".opg-evidence-contact-sheet",
+    );
+    if (!sheet) throw new Error("Expected the Fradium evidence sheet.");
+    const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
+    const start = sheetTop - window.innerHeight * 0.72;
+    const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
+    window.scrollTo({ behavior: "auto", top: start + (end - start) * 0.5 });
+  });
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
 
   await page.setViewportSize({ width: 1119, height: 760 });
   await expect(root).toHaveAttribute("data-motion-state", "static-viewport");
   await expect(root).toHaveAttribute("data-motion-profile", "desktop-static");
   await expect(root).toHaveAttribute("data-sticky-active", "false");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+  await expect
+    .poll(() =>
+      page
+        .locator(
+          '[data-explorer-panel][data-project-slug="fradium"] ' +
+            ".opg-evidence-contact-sheet__media",
+        )
+        .evaluateAll((frames) =>
+          frames.every((frame) => {
+            const style = (frame as HTMLElement).style;
+            return (
+              !style.opacity &&
+              !style.transform &&
+              !style.visibility &&
+              !style.willChange
+            );
+          }),
+        ),
+    )
+    .toBe(true);
 
   await page.setViewportSize({ width: 1120, height: 759 });
   await expect(root).toHaveAttribute("data-motion-state", "static-viewport");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
 
   await page.setViewportSize({ width: 1120, height: 760 });
   await root.scrollIntoViewIfNeeded();
   await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
   await expect(root).toHaveAttribute("data-sticky-active", "true");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
+  for (let cycle = 0; cycle < 4; cycle += 1) {
+    await page.setViewportSize({ width: 1119, height: 760 });
+    await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+      0,
+    );
+    await page.setViewportSize({ width: 1120, height: 760 });
+    await root.scrollIntoViewIfNeeded();
+    await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+      1,
+    );
+  }
+  for (const type of ["opg:explorer-before-select", "opg:explorer-select"]) {
+    await expect
+      .poll(() =>
+        page.evaluate(
+          (eventType) =>
+            (
+              window as typeof window & {
+                __portfolioMotionListenerCount?: (type: string) => number;
+              }
+            ).__portfolioMotionListenerCount?.(eventType) ?? -1,
+          type,
+        ),
+      )
+      .toBe(1);
+  }
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
@@ -436,7 +666,9 @@ test("Save-Data changed during lazy loading suppresses and safely restores motio
       value: connection,
     });
     (
-      window as typeof window & { __setPortfolioSaveData: (value: boolean) => void }
+      window as typeof window & {
+        __setPortfolioSaveData: (value: boolean) => void;
+      }
     ).__setPortfolioSaveData = (value) => {
       saveData = value;
       connection.dispatchEvent(new Event("change"));
@@ -452,26 +684,107 @@ test("Save-Data changed during lazy loading suppresses and safely restores motio
 
   await page.evaluate(() => {
     (
-      window as typeof window & { __setPortfolioSaveData: (value: boolean) => void }
+      window as typeof window & {
+        __setPortfolioSaveData: (value: boolean) => void;
+      }
     ).__setPortfolioSaveData(true);
   });
   await expect(root).toHaveAttribute("data-motion-state", "static-save-data");
   await expect(root).toHaveAttribute("data-motion-profile", "save-data-static");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
   releaseBuildScript?.();
   await page.waitForTimeout(300);
   await expect(root).toHaveAttribute("data-motion-state", "static-save-data");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
 
   await page.evaluate(() => {
     (
-      window as typeof window & { __setPortfolioSaveData: (value: boolean) => void }
+      window as typeof window & {
+        __setPortfolioSaveData: (value: boolean) => void;
+      }
     ).__setPortfolioSaveData(false);
   });
   await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
   await expect(root).toHaveAttribute("data-motion-profile", "desktop-sticky");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
+  await expectNoRuntimeFailures(diagnostics, testInfo);
+});
+
+test("Save-Data toggled during travel removes and restores one clean visual", async ({
+  page,
+}, testInfo) => {
+  const diagnostics = observeRuntimeDiagnostics(page);
+  await page.addInitScript(() => {
+    const connection = new EventTarget();
+    let saveData = false;
+    Object.defineProperty(connection, "saveData", {
+      configurable: true,
+      get: () => saveData,
+    });
+    Object.defineProperty(navigator, "connection", {
+      configurable: true,
+      value: connection,
+    });
+    (
+      window as typeof window & {
+        __setPortfolioSaveData: (value: boolean) => void;
+      }
+    ).__setPortfolioSaveData = (value) => {
+      saveData = value;
+      connection.dispatchEvent(new Event("change"));
+    };
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route);
+
+  const root = page.locator(rootSelector);
+  await root.scrollIntoViewIfNeeded();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+  await page.evaluate(() => {
+    const sheet = document.querySelector<HTMLElement>(
+      ".opg-evidence-contact-sheet",
+    );
+    if (!sheet) throw new Error("Expected the Fradium evidence sheet.");
+    const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
+    const start = sheetTop - window.innerHeight * 0.72;
+    const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
+    window.scrollTo({ behavior: "auto", top: start + (end - start) * 0.5 });
+  });
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+
+  await page.evaluate(() => {
+    (
+      window as typeof window & {
+        __setPortfolioSaveData: (value: boolean) => void;
+      }
+    ).__setPortfolioSaveData(true);
+  });
+  await expect(root).toHaveAttribute("data-motion-state", "static-save-data");
+  await expect(root).toHaveAttribute("data-motion-profile", "save-data-static");
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+
+  await page.evaluate(() => {
+    (
+      window as typeof window & {
+        __setPortfolioSaveData: (value: boolean) => void;
+      }
+    ).__setPortfolioSaveData(false);
+  });
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
@@ -528,11 +841,14 @@ test("a newly selected project waits for its lead image before creating motion",
   const imageGate = new Promise<void>((resolve) => {
     releaseImage = resolve;
   });
-  await page.route("**/media/projects/quorum/discover-surface.webp", async (route) => {
-    held = true;
-    await imageGate;
-    await route.continue();
-  });
+  await page.route(
+    "**/media/projects/quorum/discover-surface.webp",
+    async (route) => {
+      held = true;
+      await imageGate;
+      await route.continue();
+    },
+  );
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(route);
 
@@ -573,6 +889,48 @@ test("a newly selected project waits for its lead image before creating motion",
   expect(bounds?.width).toBeGreaterThan(100);
   expect(bounds?.height).toBeGreaterThan(100);
   await expectNoRuntimeFailures(diagnostics, testInfo);
+});
+
+test("a failed lead image remains static when its project is revisited", async ({
+  page,
+}) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  let aborted = false;
+  await page.route(
+    "**/media/projects/quorum/discover-surface.webp",
+    async (route) => {
+      aborted = true;
+      await route.abort("failed");
+    },
+  );
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route);
+
+  const root = page.locator(rootSelector);
+  await root.scrollIntoViewIfNeeded();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+
+  await page
+    .getByRole("button", { name: "Preview evidence for Quorum" })
+    .click();
+  await expect.poll(() => aborted).toBe(true);
+  await expect(root).toHaveAttribute("data-motion-state", "ready-static");
+  await expect(root).toHaveAttribute("data-motion-profile", "desktop-static");
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+
+  await page
+    .getByRole("button", { name: "Preview evidence for Fradium" })
+    .click();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+
+  await page
+    .getByRole("button", { name: "Preview evidence for Quorum" })
+    .click();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-static");
+  await expect(root).toHaveAttribute("data-motion-profile", "desktop-static");
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+  expect(pageErrors).toEqual([]);
 });
 
 test("route replacement during travel restores at most one clean controller", async ({
@@ -641,7 +999,9 @@ test("reduced motion keeps semantic switching and never loads the travel module"
     "data-motion-state",
     "static-reduced-motion",
   );
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
 
   const paygate = page.getByRole("button", {
@@ -663,9 +1023,92 @@ test("reduced motion keeps semantic switching and never loads the travel module"
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
-test("Save-Data keeps the static profile", async ({
+test("reduced motion toggled during travel removes and restores one clean visual", async ({
   page,
 }, testInfo) => {
+  const diagnostics = observeRuntimeDiagnostics(page);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route);
+
+  const root = page.locator(rootSelector);
+  await root.scrollIntoViewIfNeeded();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+  await page.evaluate(() => {
+    const sheet = document.querySelector<HTMLElement>(
+      ".opg-evidence-contact-sheet",
+    );
+    if (!sheet) throw new Error("Expected the Fradium evidence sheet.");
+    const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
+    const start = sheetTop - window.innerHeight * 0.72;
+    const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
+    window.scrollTo({ behavior: "auto", top: start + (end - start) * 0.5 });
+  });
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await expect(root).toHaveAttribute(
+    "data-motion-state",
+    "static-reduced-motion",
+  );
+  await expect(root).toHaveAttribute("data-motion-profile", "reduced-static");
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    1,
+  );
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(1);
+  await expectNoRuntimeFailures(diagnostics, testInfo);
+});
+
+test("desktop coarse pointer keeps the GSAP travel module cold", async ({
+  browser,
+}, testInfo) => {
+  const baseURL = testInfo.project.use.baseURL;
+  if (typeof baseURL !== "string") {
+    throw new TypeError("Motion tests require a string baseURL.");
+  }
+  const context = await browser.newContext({
+    baseURL,
+    extraHTTPHeaders: testInfo.project.use.extraHTTPHeaders,
+    hasTouch: true,
+    viewport: { width: 1440, height: 900 },
+  });
+  const page = await context.newPage();
+  const diagnostics = observeRuntimeDiagnostics(page);
+  const scriptResponses = observeScriptPaths(page);
+
+  try {
+    await page.goto(route);
+    expect(
+      await page.evaluate(() => matchMedia("(pointer: fine)").matches),
+    ).toBe(false);
+    const root = page.locator(rootSelector);
+    await expect(root).toHaveAttribute("data-enhanced", "true");
+    await page.waitForTimeout(300);
+    const coldScripts = new Set(scriptResponses);
+    await root.scrollIntoViewIfNeeded();
+    await expect(root).toHaveAttribute("data-motion-state", "static-pointer");
+    await expect(root).toHaveAttribute("data-motion-profile", "desktop-static");
+    await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+      0,
+    );
+    await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+    await page.waitForTimeout(300);
+    expect(
+      scriptResponses.filter((script) => !coldScripts.has(script)),
+    ).toEqual([]);
+    await expectNoRuntimeFailures(diagnostics, testInfo);
+  } finally {
+    await context.close();
+  }
+});
+
+test("Save-Data keeps the static profile", async ({ page }, testInfo) => {
   const diagnostics = observeRuntimeDiagnostics(page);
   const scriptResponses = observeScriptPaths(page);
   await page.addInitScript(() => {
@@ -689,7 +1132,9 @@ test("Save-Data keeps the static profile", async ({
   await root.scrollIntoViewIfNeeded();
   await expect(root).toHaveAttribute("data-motion-state", "static-save-data");
   await expect(root).toHaveAttribute("data-motion-profile", "save-data-static");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
   await page.waitForTimeout(300);
   expect(scriptResponses.filter((script) => !coldScripts.has(script))).toEqual(
@@ -713,7 +1158,9 @@ test("mobile uses the semantic enhancer without loading desktop motion", async (
   await root.scrollIntoViewIfNeeded();
   await expect(root).toHaveAttribute("data-motion-state", "static-viewport");
   await expect(root).toHaveAttribute("data-motion-profile", "mobile-static");
-  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(
+    0,
+  );
 
   const quorum = page.getByRole("button", {
     name: "Preview evidence for Quorum",

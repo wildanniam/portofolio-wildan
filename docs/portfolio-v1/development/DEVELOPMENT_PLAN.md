@@ -31,12 +31,12 @@ The implementation is a controlled rewrite. The existing Next.js repository rema
 
 Public roles:
 
-| Project | Role |
-|---|---|
-| Fradium | **Leader & Full-Stack Developer** |
-| Nova AI Wallet | **Full-Stack & AI Builder** |
-| PayGate | **Founder & Full-Stack Developer** |
-| Quorum | **Full-Stack Product Builder** |
+| Project        | Role                               |
+| -------------- | ---------------------------------- |
+| Fradium        | **Leader & Full-Stack Developer**  |
+| Nova AI Wallet | **Full-Stack & AI Builder**        |
+| PayGate        | **Founder & Full-Stack Developer** |
+| Quorum         | **Full-Stack Product Builder**     |
 
 PayGate is presented as an active product awarded a verified **$5,000 SCF Instaward**. Nova and Quorum are presented positively as ambitious hackathon artifacts.
 
@@ -44,18 +44,18 @@ PayGate is presented as an active product awarded a verified **$5,000 SCF Instaw
 
 The baseline passes a production build and TypeScript, but it is not suitable to extend toward the locked concept.
 
-| Area | Current state | V1 implication |
-|---|---|---|
-| Homepage boundary | One 861-line Client Component | Recompose from Server Components and bounded client leaves |
-| Hero | R3F/Three.js scene, postprocessing, pointer interaction | Remove from V1 after replacement parity |
-| Initial JS | 214.9 KB gzip | Must fall below 175 KB total; route-owned initial target is <=18 KB on the measured runtime |
-| Eligible desktop WebGL chunk | 328.2 KB gzip | Must become zero homepage WebGL requests |
-| No-JavaScript | 20 opacity-zero wrappers; 0 of 7 `h2` headings visible | Critical content must be server-visible at first paint |
-| Accessibility | 17 serious contrast nodes; missing interaction semantics | Zero serious/critical axe findings and complete keyboard path |
-| Content | Project facts mixed with icons/colors/presentation | Migrate to validated YAML/MDX records |
-| Routes | `/work` and `/contact` redirect to hash anchors | Implement real static routes and case studies |
-| Testing | No unit, E2E, accessibility, visual, or Lighthouse suite | Add proportional automated and manual gates |
-| Toolchain | Next 16 runtime with `eslint-config-next` 15 | Align versions in a dedicated verified change |
+| Area                         | Current state                                            | V1 implication                                                                              |
+| ---------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Homepage boundary            | One 861-line Client Component                            | Recompose from Server Components and bounded client leaves                                  |
+| Hero                         | R3F/Three.js scene, postprocessing, pointer interaction  | Remove from V1 after replacement parity                                                     |
+| Initial JS                   | 214.9 KB gzip                                            | Must fall below 175 KB total; route-owned initial target is <=18 KB on the measured runtime |
+| Eligible desktop WebGL chunk | 328.2 KB gzip                                            | Must become zero homepage WebGL requests                                                    |
+| No-JavaScript                | 20 opacity-zero wrappers; 0 of 7 `h2` headings visible   | Critical content must be server-visible at first paint                                      |
+| Accessibility                | 17 serious contrast nodes; missing interaction semantics | Zero serious/critical axe findings and complete keyboard path                               |
+| Content                      | Project facts mixed with icons/colors/presentation       | Migrate to validated YAML/MDX records                                                       |
+| Routes                       | `/work` and `/contact` redirect to hash anchors          | Implement real static routes and case studies                                               |
+| Testing                      | No unit, E2E, accessibility, visual, or Lighthouse suite | Add proportional automated and manual gates                                                 |
+| Toolchain                    | Next 16 runtime with `eslint-config-next` 15             | Align versions in a dedicated verified change                                               |
 
 Two user-owned modifications currently exist in the exact legacy files that the migration will replace. They remain untouched during planning and must be preserved before destructive cleanup.
 
@@ -302,6 +302,34 @@ Work:
 - verify no nested ScrollTriggers, blanket section reveals, pointer followers, or page-wide scroll smoothing;
 - remove travel/pinning/parallax entirely under reduced motion.
 
+Implementation checkpoint — Issue #19:
+
+- a previously failed lead image now returns directly to the static profile on
+  revisit instead of waiting forever for an `error` event the browser will not
+  emit twice;
+- delayed overlay cleanup is cancellable and identity-safe, so a leave/re-enter
+  interruption cannot remove the newly active visual;
+- live reduced-motion and Save-Data changes, coarse pointer, active resize,
+  repeated eligibility cycles, route replacement, history traversal, failed
+  media, and failed lazy chunks are covered against the production build;
+- the representative route matrix now covers 1440, 1120, 1024, 768, 640, 390,
+  and short-desktop viewports, with responsive no-JavaScript fallbacks at 640
+  and 390 pixels;
+- a credential-gated, noindex Moments layout fixture exercises lead, evidence,
+  portrait, and contact-sheet media using existing project derivatives only;
+  pending real Moments records no longer inherit an empty media column;
+- skip-link landing, visible focus, minimum 24×24 action targets, internal
+  diagram scrolling, document overflow, overlay cleanup, and listener balance
+  are regression-tested;
+- the protected production preview measures 167.69 KiB initial JavaScript,
+  2.03 KiB route-owned JavaScript, 0 pre-intent enhancement bytes, 45.17 KiB
+  post-trigger GSAP, 26.08 KiB CSS, 87.11/50.67 KiB desktop/mobile initial
+  media, and zero WebGL/runtime failures; all locked V1 budgets pass;
+- the three-run mobile Lighthouse median is 0.94 performance, 1.00
+  accessibility, 1.00 best practices, 3.03 s LCP, 0 CLS, and 23.5 ms TBT under
+  the temporary protected-preview profile. The stricter public SEO and 2.5 s
+  LCP gates remain Phase 8A release checks after root cutover.
+
 Exit gate:
 
 - primary content is visible and interactive before motion completes;
@@ -376,14 +404,14 @@ Exit gate:
 
 ## 6. Approval checkpoints
 
-| Checkpoint | Decision |
-|---|---|
-| A — Foundation | Tokens, typography, grid, shell, mobile foundation |
-| B — Fradium static slice | Content structure, evidence selection, case-study readability |
+| Checkpoint               | Decision                                                       |
+| ------------------------ | -------------------------------------------------------------- |
+| A — Foundation           | Tokens, typography, grid, shell, mobile foundation             |
+| B — Fradium static slice | Content structure, evidence selection, case-study readability  |
 | C — Fradium motion slice | Signature interaction, reduced motion, keyboard/touch behavior |
-| D — Four flagships | Roles, narrative tone, claims, links, media packages |
-| E — Moments | Exact photographs, crops, captions, rights/consent |
-| F — Release candidate | Visual quality, performance, accessibility, final content |
+| D — Four flagships       | Roles, narrative tone, claims, links, media packages           |
+| E — Moments              | Exact photographs, crops, captions, rights/consent             |
+| F — Release candidate    | Visual quality, performance, accessibility, final content      |
 
 No later checkpoint should force project-specific architecture changes. If it does, the shared contract is corrected first.
 
@@ -397,21 +425,21 @@ Every checkpoint produces the same review packet:
 
 ## 7. Non-negotiable budgets
 
-| Metric | Budget |
-|---|---:|
-| Homepage cold-navigation client JavaScript | `<=175 KB` gzip total; route-owned initial code `<=18 KB` |
-| Case-study cold-navigation client JavaScript | `<=170 KB` gzip total; route-owned initial code `<=12 KB` |
-| Lazy explorer enhancement | `<=60 KB` gzip, loaded only near explorer/explicit intent and reported separately |
-| Homepage WebGL/Three request | `0` |
-| Initial CSS | `<=30 KB` gzip |
-| LCP image | `<=200 KB` desktop; `<=140 KB` mobile |
-| Initial above-fold media | `<=750 KB` desktop; `<=500 KB` mobile |
-| Lab mobile LCP | `<=2.5 s` |
-| Lab mobile CLS | `<=0.1` |
-| Lab mobile TBT | `<=200 ms` |
-| Explorer input → semantic selected state + next paint | `<=200 ms`; visual transition may continue `650–850 ms` |
-| Field p75 after enough traffic | LCP `<=2.5 s`, INP `<=200 ms`, CLS `<=0.1` |
-| Axe | `0` serious or critical violations |
+| Metric                                                |                                                                            Budget |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------: |
+| Homepage cold-navigation client JavaScript            |                         `<=175 KB` gzip total; route-owned initial code `<=18 KB` |
+| Case-study cold-navigation client JavaScript          |                         `<=170 KB` gzip total; route-owned initial code `<=12 KB` |
+| Lazy explorer enhancement                             | `<=60 KB` gzip, loaded only near explorer/explicit intent and reported separately |
+| Homepage WebGL/Three request                          |                                                                               `0` |
+| Initial CSS                                           |                                                                    `<=30 KB` gzip |
+| LCP image                                             |                                             `<=200 KB` desktop; `<=140 KB` mobile |
+| Initial above-fold media                              |                                             `<=750 KB` desktop; `<=500 KB` mobile |
+| Lab mobile LCP                                        |                                                                         `<=2.5 s` |
+| Lab mobile CLS                                        |                                                                           `<=0.1` |
+| Lab mobile TBT                                        |                                                                        `<=200 ms` |
+| Explorer input → semantic selected state + next paint |                           `<=200 ms`; visual transition may continue `650–850 ms` |
+| Field p75 after enough traffic                        |                                        LCP `<=2.5 s`, INP `<=200 ms`, CLS `<=0.1` |
+| Axe                                                   |                                                `0` serious or critical violations |
 
 The committed CI budget script defines `initial client JavaScript` as the gzip sum of framework/runtime, shared, and route client chunks requested or prefetched from a cold production navigation before user intent. Media, font transfers, CSS, and chunks loaded only after an explicit action or explorer approach are reported separately; development tooling is excluded from the production build measurement. A request captured before intent counts even when the framework labels it lazy. The same script/configuration is used locally and in CI.
 
@@ -426,18 +454,18 @@ route-owned limits did not move.
 
 ## 8. Main risks and mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Existing user edits overlap migration targets | Preserve them before cleanup; replacement-first, deletion-last |
-| Blueprint is currently ignored while obsolete docs are tracked | Promote approved contracts before implementation |
-| Real evidence/media arrives unevenly | Publication states and asset gates; never fabricate placeholders |
-| Signature motion expands scope | Fradium-only prototype and approval gate before replication |
-| GSAP harms semantics or no-JS | Server markup first; client overlay is inert and optional |
-| Project copy drifts from evidence | Zod records, source links, owner attestation, `lastVerifiedAt` |
-| Multiple animation libraries remain | GSAP + CSS ownership; remove Framer Motion and `motion` after parity |
-| Asset cleanup deletes valuable originals | Public derivatives only; private masters outside repo; reference scan before deletion |
-| Toolchain upgrade causes unrelated regressions | Dedicated issue/PR with clean-install build and browser smoke test |
-| `/moments` becomes filler | Publish gate based on narrative diversity, not file count |
+| Risk                                                           | Mitigation                                                                            |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Existing user edits overlap migration targets                  | Preserve them before cleanup; replacement-first, deletion-last                        |
+| Blueprint is currently ignored while obsolete docs are tracked | Promote approved contracts before implementation                                      |
+| Real evidence/media arrives unevenly                           | Publication states and asset gates; never fabricate placeholders                      |
+| Signature motion expands scope                                 | Fradium-only prototype and approval gate before replication                           |
+| GSAP harms semantics or no-JS                                  | Server markup first; client overlay is inert and optional                             |
+| Project copy drifts from evidence                              | Zod records, source links, owner attestation, `lastVerifiedAt`                        |
+| Multiple animation libraries remain                            | GSAP + CSS ownership; remove Framer Motion and `motion` after parity                  |
+| Asset cleanup deletes valuable originals                       | Public derivatives only; private masters outside repo; reference scan before deletion |
+| Toolchain upgrade causes unrelated regressions                 | Dedicated issue/PR with clean-install build and browser smoke test                    |
+| `/moments` becomes filler                                      | Publish gate based on narrative diversity, not file count                             |
 
 ## 9. Definition of done
 

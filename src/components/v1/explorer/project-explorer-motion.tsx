@@ -32,7 +32,8 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 function selectionDetail(event: Event): ExplorerSelectionDetail | null {
   if (!(event instanceof CustomEvent)) return null;
   const detail = event.detail as Partial<ExplorerSelectionDetail> | undefined;
-  return typeof detail?.fromSlug === "string" && typeof detail.toSlug === "string"
+  return typeof detail?.fromSlug === "string" &&
+    typeof detail.toSlug === "string"
     ? { fromSlug: detail.fromSlug, toSlug: detail.toSlug }
     : null;
 }
@@ -94,8 +95,7 @@ function targetBounds(root: HTMLElement, sourceBounds: DOMRect) {
 
   return {
     height,
-    left:
-      targetSurfaceBounds.left + (targetSurfaceBounds.width - width) / 2,
+    left: targetSurfaceBounds.left + (targetSurfaceBounds.width - width) / 2,
     top: Math.max(48, (window.innerHeight - height) / 2),
     width,
   };
@@ -138,14 +138,13 @@ export function ProjectExplorerMotion({
       let selectionTargets: HTMLElement[] = [];
       let scrollTrigger: ScrollTrigger | null = null;
       let scrollVisual: ScrollVisual | null = null;
-      let pendingLead:
-        | {
-            image: HTMLImageElement;
-            onError: () => void;
-            onLoad: () => void;
-          }
-        | null = null;
+      let pendingLead: {
+        image: HTMLImageElement;
+        onError: () => void;
+        onLoad: () => void;
+      } | null = null;
       let pendingLeadFrame: number | null = null;
+      let pendingScrollClearFrame: number | null = null;
 
       const clearPendingLead = () => {
         if (pendingLead) {
@@ -167,7 +166,14 @@ export function ProjectExplorerMotion({
         selectionTargets = [];
       };
 
+      const cancelPendingScrollClear = () => {
+        if (pendingScrollClearFrame === null) return;
+        window.cancelAnimationFrame(pendingScrollClearFrame);
+        pendingScrollClearFrame = null;
+      };
+
       const clearScrollVisual = () => {
+        cancelPendingScrollClear();
         if (!scrollVisual) return;
 
         scrollVisual.timeline.kill();
@@ -179,6 +185,7 @@ export function ProjectExplorerMotion({
       };
 
       const createScrollVisual = () => {
+        cancelPendingScrollClear();
         if (scrollVisual) return scrollVisual;
         const panel = currentPanel(root);
         if (!panel) return null;
@@ -197,7 +204,7 @@ export function ProjectExplorerMotion({
         const secondary = Array.from(
           panel.querySelectorAll<HTMLElement>(
             '.opg-evidence-contact-sheet__item:not([data-lead="true"]) ' +
-            ".opg-evidence-contact-sheet__media",
+              ".opg-evidence-contact-sheet__media",
           ),
         );
 
@@ -231,16 +238,8 @@ export function ProjectExplorerMotion({
             (target.height / liveSourceBounds.height) * inspectScale;
           const expandedScaleX = mix(1, targetScaleX, expansion);
           const expandedScaleY = mix(1, targetScaleY, expansion);
-          const expandedX = mix(
-            liveSourceBounds.left,
-            target.left,
-            expansion,
-          );
-          const expandedY = mix(
-            liveSourceBounds.top,
-            target.top,
-            expansion,
-          );
+          const expandedX = mix(liveSourceBounds.left, target.left, expansion);
+          const expandedY = mix(liveSourceBounds.top, target.top, expansion);
           const secondaryProgress = mix(selection, 0, proof);
 
           gsap.set(motionTarget, {
@@ -288,7 +287,19 @@ export function ProjectExplorerMotion({
         return scrollVisual;
       };
 
+      const scheduleScrollVisualClear = () => {
+        cancelPendingScrollClear();
+        const visual = scrollVisual;
+        if (!visual) return;
+
+        pendingScrollClearFrame = window.requestAnimationFrame(() => {
+          pendingScrollClearFrame = null;
+          if (scrollVisual === visual) clearScrollVisual();
+        });
+      };
+
       const destroyScrollTrigger = () => {
+        cancelPendingScrollClear();
         clearPendingLead();
         scrollTrigger?.kill();
         scrollTrigger = null;
@@ -318,7 +329,15 @@ export function ProjectExplorerMotion({
           return;
         }
 
-        if (!source.complete || source.naturalHeight <= 0) {
+        if (source.complete && source.naturalHeight <= 0) {
+          root.dataset.motionState = "ready-static";
+          root.dataset.motionProfile = "desktop-static";
+          root.dataset.stickyActive = "false";
+          root.dataset.motionPhase = "idle";
+          return;
+        }
+
+        if (!source.complete) {
           const expectedSlug = panel.dataset.projectSlug;
           const onLoad = () => {
             clearPendingLead();
@@ -372,7 +391,7 @@ export function ProjectExplorerMotion({
           onLeave: () => {
             root.dataset.motionPhase = "release";
             scrollVisual?.timeline.progress(1);
-            window.requestAnimationFrame(clearScrollVisual);
+            scheduleScrollVisualClear();
           },
           onLeaveBack: () => {
             root.dataset.motionPhase = "idle";

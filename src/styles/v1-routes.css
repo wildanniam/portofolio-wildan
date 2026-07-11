@@ -145,6 +145,11 @@
   min-width: 0;
 }
 
+[data-portfolio-v1] main#main-content:focus {
+  box-shadow: none;
+  outline: none;
+}
+
 [data-portfolio-v1] .opg-home-opening {
   padding-block: clamp(48px, 7vw, 96px) var(--space-9);
 }
@@ -899,18 +904,13 @@
   min-height: 44px;
 }
 
-[data-portfolio-v1]
-  .opg-case-evidence__figure
-  .opg-evidence-caption__source {
+[data-portfolio-v1] .opg-case-evidence__figure .opg-evidence-caption__source {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2) var(--space-5);
 }
 
-[data-portfolio-v1]
-  .opg-case-evidence__figure
-  .opg-evidence-caption__source
-  a {
+[data-portfolio-v1] .opg-case-evidence__figure .opg-evidence-caption__source a {
   align-items: center;
   display: inline-flex;
   min-height: 44px;
@@ -1118,7 +1118,6 @@
   [data-portfolio-v1] .opg-project-brief__body {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
 }
 
 @media (min-width: 1280px) {
@@ -1227,11 +1226,15 @@
   }
 
   [data-portfolio-v1] .opg-project-prose {
-    margin-left: calc((100% - (11 * var(--grid-gap))) / 12 * 2 + (2 * var(--grid-gap)));
+    margin-left: calc(
+      (100% - (11 * var(--grid-gap))) / 12 * 2 + (2 * var(--grid-gap))
+    );
   }
 
   [data-portfolio-v1] .opg-project-evidence-sequence__heading {
-    margin-left: calc((100% - (11 * var(--grid-gap))) / 12 * 2 + (2 * var(--grid-gap)));
+    margin-left: calc(
+      (100% - (11 * var(--grid-gap))) / 12 * 2 + (2 * var(--grid-gap))
+    );
   }
 
   [data-portfolio-v1] .opg-project-evidence-sequence__list > li {
@@ -1300,12 +1303,8 @@
     min-width: 1120px;
   }
 
-  [data-portfolio-v1]
-    .opg-case-evidence-media__asset[data-has-mobile="true"] {
-    aspect-ratio: var(
-      --opg-evidence-mobile-aspect,
-      var(--opg-evidence-aspect)
-    );
+  [data-portfolio-v1] .opg-case-evidence-media__asset[data-has-mobile="true"] {
+    aspect-ratio: var(--opg-evidence-mobile-aspect, var(--opg-evidence-aspect));
     object-position: var(
       --opg-evidence-mobile-position,
       var(--opg-evidence-position)
