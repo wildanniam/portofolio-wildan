@@ -15,6 +15,8 @@ const contentRouteSuffix = [
 const allowedContentTraceFragments = [
   "/(v1)/(site)/",
   "/(v1)/preview/open-proving-ground/content/[slug]/",
+  "/(v1)/preview/open-proving-ground/moments/",
+  "/(v1)/preview/open-proving-ground/moments-qa/",
   "/sitemap.xml/",
 ];
 
