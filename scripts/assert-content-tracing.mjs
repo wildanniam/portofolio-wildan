@@ -3,6 +3,7 @@ import { dirname, relative, resolve, sep } from "node:path";
 
 const projectRoot = process.cwd();
 const contentRoot = resolve(projectRoot, "content");
+const publicMediaRoot = resolve(projectRoot, "public/media");
 const appTraceRoot = resolve(projectRoot, ".next/server/app");
 const contentRouteSuffix = [
   "(v1)",
@@ -10,6 +11,14 @@ const contentRouteSuffix = [
   "open-proving-ground",
   "content",
   "[slug]",
+  "page.js.nft.json",
+].join("/");
+const siteRouteSuffix = [
+  "(v1)",
+  "(site)",
+  "preview",
+  "open-proving-ground",
+  "site",
   "page.js.nft.json",
 ].join("/");
 const allowedContentTraceFragments = [
@@ -31,7 +40,7 @@ function normalize(path) {
   return path.split(sep).join("/");
 }
 
-function contentFilesInTrace(tracePath) {
+function filesInTraceBelow(tracePath, root) {
   const trace = JSON.parse(readFileSync(tracePath, "utf8"));
   if (!Array.isArray(trace.files)) {
     throw new TypeError(`${tracePath} does not contain an NFT files array.`);
@@ -39,9 +48,17 @@ function contentFilesInTrace(tracePath) {
 
   return trace.files
     .map((file) => resolve(dirname(tracePath), file))
-    .filter((file) => file === contentRoot || file.startsWith(`${contentRoot}${sep}`))
+    .filter((file) => file === root || file.startsWith(`${root}${sep}`))
     .map((file) => normalize(relative(projectRoot, file)))
     .sort();
+}
+
+function contentFilesInTrace(tracePath) {
+  return filesInTraceBelow(tracePath, contentRoot);
+}
+
+function mediaFilesInTrace(tracePath) {
+  return filesInTraceBelow(tracePath, publicMediaRoot);
 }
 
 const tracePaths = filesBelow(appTraceRoot).filter((path) =>
@@ -50,12 +67,21 @@ const tracePaths = filesBelow(appTraceRoot).filter((path) =>
 const expectedContentFiles = filesBelow(contentRoot).map((path) =>
   normalize(relative(projectRoot, path)),
 );
+const expectedMediaFiles = filesBelow(publicMediaRoot).map((path) =>
+  normalize(relative(projectRoot, path)),
+);
 const contentRouteTrace = tracePaths.find((path) =>
   normalize(path).endsWith(contentRouteSuffix),
+);
+const siteRouteTrace = tracePaths.find((path) =>
+  normalize(path).endsWith(siteRouteSuffix),
 );
 
 if (!contentRouteTrace) {
   throw new Error("The content compatibility route NFT was not generated.");
+}
+if (!siteRouteTrace) {
+  throw new Error("The V1 site preview route NFT was not generated.");
 }
 
 const tracedContentFiles = contentFilesInTrace(contentRouteTrace);
@@ -65,6 +91,16 @@ const missingFiles = expectedContentFiles.filter(
 if (missingFiles.length > 0) {
   throw new Error(
     `The content route trace is missing:\n${missingFiles.map((file) => `- ${file}`).join("\n")}`,
+  );
+}
+
+const tracedMediaFiles = mediaFilesInTrace(siteRouteTrace);
+const missingMediaFiles = expectedMediaFiles.filter(
+  (file) => !tracedMediaFiles.includes(file),
+);
+if (missingMediaFiles.length > 0) {
+  throw new Error(
+    `The V1 site preview trace is missing media needed by runtime validation:\n${missingMediaFiles.map((file) => `- ${file}`).join("\n")}`,
   );
 }
 
@@ -95,5 +131,5 @@ if (leakedRoutes.length > 0) {
 }
 
 console.log(
-  `Content tracing passed. ${tracedContentFiles.length} source files are complete in the compatibility trace and limited to approved V1 consumers.`,
+  `Content tracing passed. ${tracedContentFiles.length} source files and ${tracedMediaFiles.length} media files are complete in the preview traces and limited to approved V1 consumers.`,
 );

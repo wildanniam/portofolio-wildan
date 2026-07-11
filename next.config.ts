@@ -4,13 +4,19 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   outputFileTracingRoot: process.cwd(),
   outputFileTracingIncludes: {
-    "/contact": ["./content/**/*"],
-    "/moments": ["./content/**/*"],
-    "/preview/open-proving-ground/content/*": ["./content/**/*"],
-    "/preview/open-proving-ground/site": ["./content/**/*"],
-    "/sitemap.xml": ["./content/**/*"],
-    "/work": ["./content/**/*"],
-    "/work/*": ["./content/**/*"],
+    "/contact": ["./content/**/*", "./public/media/**/*"],
+    "/moments": ["./content/**/*", "./public/media/**/*"],
+    "/preview/open-proving-ground/content/*": [
+      "./content/**/*",
+      "./public/media/**/*",
+    ],
+    "/preview/open-proving-ground/site": [
+      "./content/**/*",
+      "./public/media/**/*",
+    ],
+    "/sitemap.xml": ["./content/**/*", "./public/media/**/*"],
+    "/work": ["./content/**/*", "./public/media/**/*"],
+    "/work/*": ["./content/**/*", "./public/media/**/*"],
   },
   pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
   turbopack: {
