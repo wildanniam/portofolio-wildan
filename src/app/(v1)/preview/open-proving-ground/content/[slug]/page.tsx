@@ -45,7 +45,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${project.title} — Open Proving Ground`,
+    title: `${project.title} - Open Proving Ground`,
     description: project.oneLiner,
     robots: {
       follow: false,

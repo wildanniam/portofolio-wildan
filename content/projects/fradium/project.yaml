@@ -24,8 +24,8 @@ intendedUsers:
   - Wallet, dApp, and exchange developers exploring an address-analysis API.
 teamContext:
   summary: >-
-    Wildan led a multidisciplinary student team across product, frontend,
-    extension, AI, and Internet Computer work.
+    Wildan led a multidisciplinary student team across product development, web,
+    wallet, extension, AI, and Internet Computer work.
   collaboratorIds:
     - muhammad-bintang-al-fath
     - ghina-rosvita-maharanisa
@@ -39,14 +39,13 @@ teamContext:
 role:
   label: Leader & Full-Stack Developer
   scope:
-    - Product direction and team leadership.
-    - Full-stack implementation and integration across the public web experience.
-    - Risk-analysis and wallet-flow product decisions.
-    - Delivery, demonstration, and competition coordination.
+    - Product direction, team leadership, and delivery coordination.
+    - Full-stack implementation across the web application and wallet touchpoints.
+    - Integration across the browser extension and canister-backed product flows.
+    - Risk-analysis, transaction-decision, and demonstration experience.
   claimIds:
     - fradium-role
-  evidenceIds:
-    - fradium-role-team-proof
+  evidenceIds: []
 collaborators:
   - id: muhammad-bintang-al-fath
     name: Muhammad Bintang Al-Fath
@@ -100,7 +99,6 @@ decisions:
       redeploying the canister.
     evidenceIds:
       - fradium-system-map
-      - fradium-verification-ledger
 systemFlow:
   - A user signs in with Internet Identity and enters an address or starts a send flow.
   - The client detects Bitcoin, Ethereum, Solana, or ICP and prepares chain-specific features.
@@ -137,8 +135,8 @@ claims:
   - id: fradium-wchl-2025
     kind: award
     text: >-
-      Fradium won the Fully On-Chain Track at the World Computer Hacker League 2025
-      Global Finale.
+      Fradium's six-person team won the Fully On-Chain Track at the World Computer
+      Hacker League 2025 Global Finale.
     sources:
       - kind: url
         url: https://bse.telkomuniversity.ac.id/tim-fradium-berhasil-meraih-global-finale-winner-fully-on-chain-track-pada-world-computer-hacker-league-2025/
@@ -172,13 +170,48 @@ claims:
       whether to proceed.
     sources:
       - kind: url
-        url: https://github.com/fradiumofficial/fradium
-        label: Canonical public repository
+        url: https://github.com/fradiumofficial/fradium/tree/370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e
+        label: Reviewed public repository snapshot
         verifiedAt: "2026-07-11"
     scope: >-
       Describes the reviewed hybrid implementation; it does not claim that every
       feature-extraction step happens fully on-chain.
 evidence:
+  - id: fradium-public-beta-surface
+    status: ready
+    slot: public-beta-surface
+    evidenceType: product
+    evidenceFunctions:
+      - product-reality
+    mediaKind: image
+    src: /media/projects/fradium/public-beta.webp
+    width: 1440
+    height: 1024
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/fradium/public-beta-mobile.webp
+      width: 800
+      height: 496
+      crop:
+        mode: intrinsic
+    alt: >-
+      Fradium's public beta landing page showing its wallet, fraud detection,
+      escrow, and payment-link product entry points.
+    caption: >-
+      The current public Fradium beta surface, captured 11 July 2026, shows the
+      wallet and analysis entry points. It documents availability, not a
+      transaction guarantee, and does not replace the login-protected verdict flow.
+    provenance:
+      kind: owned
+      creator: Fradium team; portfolio derivative prepared with OpenAI Codex
+      rightsNote: >-
+        First-party derivative of the collaborative Fradium interface, prepared
+        for protected preview; public publication remains subject to Wildan's final
+        asset approval.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - fradium-public-beta
   - id: fradium-product-verdict
     status: needs-capture
     intendedEvidenceType: product
@@ -187,52 +220,90 @@ evidence:
       - product-reality
     slot: hero-product-loop
     acquisitionNotes: >-
-      Capture a fresh 12–15 second loop from the current product: address input,
+      Capture a fresh 12-15 second loop from the current product: address input,
       inference and community composition, verdict, and pre-send choice. Include a
       still poster and an intentional mobile crop.
   - id: fradium-system-map
-    status: needs-capture
-    intendedEvidenceType: architecture
-    intendedMediaKind: svg
+    status: ready
+    slot: primary-system-diagram
+    evidenceType: architecture
     evidenceFunctions:
       - system-reasoning
-    slot: primary-system-diagram
-    acquisitionNotes: >-
-      Redraw the live hybrid flow as an editorial SVG: client feature preparation,
-      AI canister, community backend, wallet boundary, and explicit network scope.
+    mediaKind: svg
+    src: /media/projects/fradium/risk-decision-flow.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    alt: >-
+      Fradium decision flow from chain-specific client feature preparation through
+      ONNX inference, community cross-checking, and an explicit wallet decision.
+    longDescription: >-
+      The diagram begins with the web analyzer, browser extension, and wallet send
+      flow. The client prepares Bitcoin testnet, Ethereum Sepolia, Solana devnet, or
+      ICP-specific evidence before sending features to a Rust canister with an
+      embedded ONNX model. An unsafe model result stops the path. A safe result is
+      cross-checked against community reports in the Motoko backend, where unsafe
+      community evidence can still override it. Fradium then presents a conservative
+      verdict before the user cancels or explicitly confirms a test-network action.
+    caption: >-
+      The reviewed hybrid flow keeps model and community evidence distinct before
+      returning a verdict to the active client surface.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam with OpenAI Codex
+      rightsNote: >-
+        Original explanatory diagram created for this portfolio from reviewed
+        public Fradium sources, without third-party visual assets.
+    claimIds:
+      - fradium-risk-flow
   - id: fradium-verification-ledger
-    status: needs-capture
-    intendedEvidenceType: deployment
-    intendedMediaKind: image
-    evidenceFunctions:
-      - verification
+    status: ready
     slot: technical-proof-ledger
-    acquisitionNotes: >-
-      Compose a sanitized proof frame from public canister IDs, certified response,
-      a representative PocketIC test, extension workflow, and store listing.
-  - id: fradium-role-team-proof
-    status: private
-    intendedEvidenceType: moment
-    intendedMediaKind: image
+    evidenceType: deployment
     evidenceFunctions:
       - verification
-    slot: team-outcome
-    acquisitionNotes: >-
-      Prepare the owner-supplied WCHL team photograph and official result as one
-      credited outcome frame after identity, date, place, rights, and consent review.
-    redactionNotes: >-
-      Remove unnecessary badge, contact, or venue identifiers before publishing a
-      derivative; preserve the untouched master outside the repository.
+    mediaKind: svg
+    src: /media/projects/fradium/verification-ledger.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    alt: >-
+      Verification ledger showing Fradium's public endpoint response carrying an
+      IC certificate header, matching deployment identifiers, repository test
+      artifacts, and public distribution footprint.
+    longDescription: >-
+      The ledger records an HTTP 200 response from fradium.io carrying an Internet
+      Computer certificate header, and frontend canister identifier
+      t4sse-tyaaa-aaaae-qfduq-cai matching the repository. It also lists the public
+      backend, AI, and wallet canister identifiers. At repository snapshot
+      370cd9724f50, checked 11 July 2026, it records 37 PocketIC test methods without
+      claiming they were freshly rerun. The public web application, Chrome Web
+      Store extension, and source repository are shown as distribution evidence.
+    caption: >-
+      A public response and repository artifacts verify a real beta and delivery
+      footprint. They do not represent an independent security audit or
+      production-scale adoption.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam with OpenAI Codex
+      rightsNote: >-
+        Original editorial synthesis created for this portfolio from live public
+        headers and the reviewed Fradium repository, without third-party visual
+        assets.
+    claimIds:
+      - fradium-public-beta
 limitations:
   - The case study must call the implementation a hybrid multi-chain analysis flow, not claim that every step is fully on-chain.
   - Bitcoin, Ethereum, and Solana wallet execution is testnet or devnet scoped.
   - Model metrics are experimental repository evidence, not an independent security guarantee.
   - The product warns and assists; it does not guarantee that an address or transaction is safe.
 next:
-  - Capture a current, reproducible product loop and standardized desktop/mobile stills.
-  - Replace legacy diagrams with an editable architecture and verdict-composition map.
-  - Harden native payment verification, admin/debug authorization, and developer credentials.
-  - Add reproducible model-evaluation context and a current whole-repository quality run.
+  - Make disagreement between model and community signals easier to understand.
+  - Verify native payment-link transactions on-chain before accepting completion.
+  - Gate administrative and debug actions, and replace timestamp-derived API tokens with production-grade credential handling.
+  - Publish reproducible model-evaluation context and a current whole-repository CI result.
 links:
   live:
     status: public

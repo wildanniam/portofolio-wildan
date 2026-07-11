@@ -4,14 +4,15 @@ import { siteConfig } from "@/lib/site-config";
 
 import "@/styles/v1-foundations.css";
 import "@/styles/v1-routes.css";
+import "@/styles/v1-explorer.css";
 
-const title = `${siteConfig.name} — ${siteConfig.role}`;
+const title = `${siteConfig.name} - ${siteConfig.role}`;
 
 export const metadata: Metadata = {
   applicationName: siteConfig.name,
   title: {
     default: title,
-    template: `%s — ${siteConfig.name}`,
+    template: `%s - ${siteConfig.name}`,
   },
   description: siteConfig.description,
   authors: [{ name: siteConfig.name, url: siteConfig.url }],

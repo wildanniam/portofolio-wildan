@@ -20,8 +20,11 @@ project facts into components.
 - Original photographs and private captures stay outside this repository. Only
   cropped, redacted, EXIF-stripped, optimized, rights-cleared derivatives may later
   become ready evidence.
-- `site/homepage.yaml` stores project slug order only. Project facts remain in the
+- `site/homepage.yaml` stores flagship order plus one project-owned highlight
+  claim ID per flagship. Claim text and every other project fact remain in the
   corresponding `project.yaml` record.
+- `socialImageAssetId` is an optional project-local pointer while authoring, but
+  every published full case study must resolve it to ready raster image evidence.
 - Moments are intentionally withheld until their caption, date, place, credit,
   rights, consent, crop, and public derivative are approved.
 

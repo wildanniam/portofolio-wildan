@@ -1,5 +1,6 @@
 import { execFileSync, spawn } from "node:child_process";
 import { once } from "node:events";
+import { createServer, request as httpRequest } from "node:http";
 import {
   existsSync,
   mkdirSync,
@@ -17,11 +18,13 @@ const lighthousePackagePath = resolve(
   "tools/lighthouse/node_modules/lighthouse/package.json",
 );
 const config = JSON.parse(readFileSync(configPath, "utf8"));
-const profile = config.profiles[config.activeProfile];
+const profileName = process.env.LIGHTHOUSE_PROFILE ?? config.activeProfile;
+const targetUrl = process.env.LIGHTHOUSE_URL ?? config.url;
+const profile = config.profiles[profileName];
 
 if (!profile) {
   throw new Error(
-    `Unknown Lighthouse budget profile: ${String(config.activeProfile)}`,
+    `Unknown Lighthouse budget profile: ${String(profileName)}`,
   );
 }
 
@@ -112,6 +115,7 @@ async function waitForServer(
   child,
   getStartupError,
   hasReportedReady,
+  requestHeaders,
   timeoutMs = 90_000,
 ) {
   const deadline = Date.now() + timeoutMs;
@@ -129,7 +133,10 @@ async function waitForServer(
     }
 
     try {
-      const response = await fetch(url, { redirect: "manual" });
+      const response = await fetch(url, {
+        redirect: "manual",
+        ...(requestHeaders ? { headers: requestHeaders } : {}),
+      });
       if (hasReportedReady() && response.status < 500) return;
     } catch {
       // The production server is still starting.
@@ -139,6 +146,151 @@ async function waitForServer(
   }
 
   throw new Error(`Production server did not become ready at ${url}.`);
+}
+
+function readPreviewAuth() {
+  const token = process.env.PORTFOLIO_V1_PREVIEW_TOKEN?.trim();
+  if (!token) return undefined;
+  if (token.length < 32) {
+    throw new Error(
+      "PORTFOLIO_V1_PREVIEW_TOKEN must contain at least 32 characters.",
+    );
+  }
+
+  const encodedCredentials = Buffer.from(`preview:${token}`).toString("base64");
+  return {
+    token,
+    encodedCredentials,
+    authorization: `Basic ${encodedCredentials}`,
+  };
+}
+
+function parseOwnedPort(value, label) {
+  const port = Number(value);
+  if (!Number.isInteger(port) || port < 1024 || port > 65_535) {
+    throw new Error(`Invalid ${label}: ${String(value)}.`);
+  }
+
+  return port;
+}
+
+const HOP_BY_HOP_HEADERS = [
+  "connection",
+  "keep-alive",
+  "proxy-authenticate",
+  "proxy-authorization",
+  "proxy-connection",
+  "te",
+  "trailer",
+  "transfer-encoding",
+  "upgrade",
+];
+
+function withoutHopByHopHeaders(headers) {
+  const result = { ...headers };
+  for (const header of HOP_BY_HOP_HEADERS) delete result[header];
+  return result;
+}
+
+async function startAuthenticatedPreviewProxy({
+  listenPort,
+  upstreamPort,
+  authorization,
+}) {
+  const proxyOrigin = `http://127.0.0.1:${listenPort}`;
+  const proxy = createServer((incoming, outgoing) => {
+    let incomingUrl;
+    try {
+      incomingUrl = new URL(incoming.url ?? "", proxyOrigin);
+    } catch {
+      outgoing.writeHead(400).end("Invalid request URL.");
+      return;
+    }
+
+    if (incomingUrl.origin !== proxyOrigin) {
+      outgoing.writeHead(400).end("Absolute proxy requests are not supported.");
+      return;
+    }
+
+    const headers = withoutHopByHopHeaders(incoming.headers);
+    headers.host = `127.0.0.1:${listenPort}`;
+    headers.authorization = authorization;
+    headers["x-forwarded-for"] = "127.0.0.1";
+    headers["x-forwarded-host"] = `127.0.0.1:${listenPort}`;
+    headers["x-forwarded-proto"] = "http";
+
+    const upstream = httpRequest(
+      {
+        hostname: "127.0.0.1",
+        port: upstreamPort,
+        method: incoming.method,
+        path: `${incomingUrl.pathname}${incomingUrl.search}`,
+        headers,
+      },
+      (response) => {
+        outgoing.writeHead(
+          response.statusCode ?? 502,
+          withoutHopByHopHeaders(response.headers),
+        );
+        response.on("aborted", () => outgoing.destroy());
+        response.on("error", (error) => outgoing.destroy(error));
+        response.pipe(outgoing);
+      },
+    );
+
+    upstream.on("error", (error) => {
+      if (!outgoing.headersSent) {
+        outgoing.writeHead(502).end("Preview upstream unavailable.");
+      } else {
+        outgoing.destroy(error);
+      }
+    });
+    incoming.on("aborted", () => upstream.destroy());
+    incoming.on("error", (error) => upstream.destroy(error));
+    incoming.pipe(upstream);
+  });
+
+  proxy.on("clientError", (_error, socket) => {
+    socket.end("HTTP/1.1 400 Bad Request\r\nConnection: close\r\n\r\n");
+  });
+
+  await new Promise((resolveStart, rejectStart) => {
+    const handleError = (error) => {
+      proxy.removeListener("listening", handleListening);
+      rejectStart(error);
+    };
+    const handleListening = () => {
+      proxy.removeListener("error", handleError);
+      resolveStart();
+    };
+
+    proxy.once("error", handleError);
+    proxy.once("listening", handleListening);
+    proxy.listen(listenPort, "127.0.0.1");
+  });
+
+  return proxy;
+}
+
+async function stopHttpServer(server) {
+  if (!server?.listening) return;
+
+  await new Promise((resolveStop) => {
+    server.close(() => resolveStop());
+    server.closeAllConnections?.();
+  });
+}
+
+function assertReportDoesNotContainSecrets(source, secrets, outputPath) {
+  const leaked = secrets.some(
+    (secret) => typeof secret === "string" && secret.length > 0 && source.includes(secret),
+  );
+  if (!leaked) return;
+
+  rmSync(outputPath, { force: true });
+  throw new Error(
+    "Lighthouse report contained protected preview credentials and was deleted.",
+  );
 }
 
 async function terminate(child) {
@@ -255,27 +407,67 @@ function evaluate(metrics) {
   return { passed: checks.every((check) => check.passed), checks };
 }
 
-const lighthouseUrl = new URL(config.url);
+const lighthouseUrl = new URL(targetUrl);
 if (
   lighthouseUrl.protocol !== "http:" ||
   lighthouseUrl.hostname !== "127.0.0.1" ||
-  !lighthouseUrl.port
+  !lighthouseUrl.port ||
+  lighthouseUrl.username ||
+  lighthouseUrl.password
 ) {
   throw new Error(
-    "Lighthouse URL must use an explicit http://127.0.0.1 port owned by this command.",
+    "Lighthouse URL must use an explicit credential-free http://127.0.0.1 port owned by this command.",
   );
 }
 
+const isProtectedPreview = lighthouseUrl.pathname.startsWith("/preview/");
+const previewAuth = isProtectedPreview ? readPreviewAuth() : undefined;
+const lighthousePort = parseOwnedPort(lighthouseUrl.port, "Lighthouse URL port");
+const upstreamPort = isProtectedPreview
+  ? parseOwnedPort(
+      process.env.LIGHTHOUSE_UPSTREAM_PORT ?? "3106",
+      "LIGHTHOUSE_UPSTREAM_PORT",
+    )
+  : lighthousePort;
+if (isProtectedPreview && upstreamPort === lighthousePort) {
+  throw new Error(
+    "LIGHTHOUSE_UPSTREAM_PORT must differ from the protected preview proxy port.",
+  );
+}
+const upstreamOrigin = `http://127.0.0.1:${upstreamPort}`;
+const upstreamTargetUrl = new URL(
+  `${lighthouseUrl.pathname}${lighthouseUrl.search}`,
+  upstreamOrigin,
+).href;
+
 rmSync(outputDirectory, { recursive: true, force: true });
 mkdirSync(outputDirectory, { recursive: true });
+const requestHeaders = previewAuth
+  ? { Authorization: previewAuth.authorization }
+  : undefined;
+if (isProtectedPreview && !previewAuth) {
+  throw new Error(
+    "A protected preview probe requires PORTFOLIO_V1_PREVIEW_TOKEN.",
+  );
+}
+if (
+  isProtectedPreview &&
+  process.env.PORTFOLIO_V1_PREVIEW !== "1"
+) {
+  throw new Error(
+    "A protected preview probe requires PORTFOLIO_V1_PREVIEW=1.",
+  );
+}
 
 let server = null;
+let previewProxy = null;
 let cleanupPromise;
 const cleanupOwnedResources = () => {
   cleanupPromise ??= (async () => {
     await Promise.all(
       [...activeChildren].map((child) => terminate(child)),
     );
+    await stopHttpServer(previewProxy);
     if (server) await terminate(server);
   })();
   return cleanupPromise;
@@ -296,7 +488,7 @@ try {
       "--hostname",
       "127.0.0.1",
       "--port",
-      lighthouseUrl.port,
+      String(upstreamPort),
     ],
     {
       cwd: root,
@@ -317,11 +509,26 @@ try {
   server.stderr.on("data", (chunk) => process.stderr.write(chunk));
 
   await waitForServer(
-    config.url,
+    upstreamTargetUrl,
     server,
     () => serverStartupError,
     () => serverReportedReady,
+    requestHeaders,
   );
+
+  if (isProtectedPreview) {
+    previewProxy = await startAuthenticatedPreviewProxy({
+      listenPort: lighthousePort,
+      upstreamPort,
+      authorization: previewAuth.authorization,
+    });
+    const proxyResponse = await fetch(targetUrl, { redirect: "manual" });
+    if (proxyResponse.status >= 400) {
+      throw new Error(
+        `Protected preview proxy returned ${proxyResponse.status} for ${targetUrl}.`,
+      );
+    }
+  }
 
   const runs = [];
   const attempts = [];
@@ -335,19 +542,23 @@ try {
   while (runs.length < config.numberOfRuns) {
     attemptIndex += 1;
     const outputPath = resolve(outputDirectory, `attempt-${attemptIndex}.json`);
+    const lighthouseArguments = [
+      lighthouseCli,
+      targetUrl,
+      "--quiet",
+      "--output=json",
+      `--output-path=${outputPath}`,
+      "--only-categories=performance,accessibility,best-practices,seo",
+      "--chrome-flags=--headless=new --disable-dev-shm-usage",
+    ];
+    const lighthouseEnvironment = { ...process.env };
+    delete lighthouseEnvironment.PORTFOLIO_V1_PREVIEW_TOKEN;
     const commandResult = await run(
       process.execPath,
-      [
-        lighthouseCli,
-        config.url,
-        "--quiet",
-        "--output=json",
-        `--output-path=${outputPath}`,
-        "--only-categories=performance,accessibility,best-practices,seo",
-        "--chrome-flags=--headless=new --disable-dev-shm-usage",
-      ],
+      lighthouseArguments,
       {
         allowFailure: true,
+        env: lighthouseEnvironment,
       },
     );
 
@@ -357,7 +568,18 @@ try {
       );
     }
 
-    const report = JSON.parse(readFileSync(outputPath, "utf8"));
+    const reportSource = readFileSync(outputPath, "utf8");
+    assertReportDoesNotContainSecrets(
+      reportSource,
+      [
+        previewAuth?.token,
+        previewAuth?.encodedCredentials,
+        previewAuth?.authorization,
+      ],
+      outputPath,
+    );
+    const report = JSON.parse(reportSource);
+    writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
     if (report.runtimeError) {
       const rejectedAttempt = {
         attemptIndex,
@@ -437,8 +659,8 @@ try {
       lighthouseProvenance?.hostUserAgent,
     ),
     toolVersion: config.toolVersion,
-    profile: config.activeProfile,
-    url: config.url,
+    profile: profileName,
+    url: targetUrl,
     attempts,
     runs,
     medians,

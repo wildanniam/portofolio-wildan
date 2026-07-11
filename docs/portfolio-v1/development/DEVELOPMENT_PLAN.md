@@ -370,7 +370,7 @@ Every checkpoint produces the same review packet:
 | Metric | Budget |
 |---|---:|
 | Homepage cold-navigation client JavaScript | `<=170 KB` gzip total; route-owned initial code `<=18 KB` |
-| Case-study cold-navigation client JavaScript | `<=165 KB` gzip total; route-owned initial code `<=12 KB` |
+| Case-study cold-navigation client JavaScript | `<=170 KB` gzip total; route-owned initial code `<=12 KB` |
 | Lazy explorer enhancement | `<=60 KB` gzip, loaded only near explorer/explicit intent and reported separately |
 | Homepage WebGL/Three request | `0` |
 | Initial CSS | `<=30 KB` gzip |
@@ -385,11 +385,12 @@ Every checkpoint produces the same review packet:
 
 The committed CI budget script defines `initial client JavaScript` as the gzip sum of framework/runtime, shared, and route client chunks requested or prefetched from a cold production navigation before user intent. Media, font transfers, CSS, and chunks loaded only after an explicit action or explorer approach are reported separately; development tooling is excluded from the production build measurement. A request captured before intent counts even when the framework labels it lazy. The same script/configuration is used locally and in CI.
 
-Runtime calibration on 11 July 2026 measured a 145.141 KB gzip total initial
-floor from a server-only fixture on Node 24.18.0 and Next 16.2.10. The earlier
-150 KB homepage and 145 KB case-study totals were incompatible with their
-separate 18 KB and 12 KB route-owned ceilings. The revised 170 KB and 165 KB
-totals are tracked in `quality/budgets.json`; route-owned limits did not move.
+Runtime calibration on 11 July 2026 first measured a 145.141 KB gzip total
+initial floor from a server-only fixture on Node 24.18.0 and Next 16.2.10.
+Issue #11 then measured the real production V1 route's shared-runtime floor at
+169.637 KB. The homepage and case-study total ceilings are therefore both
+170 KB in `quality/budgets.json`; the separate 18 KB and 12 KB route-owned
+limits did not move.
 
 ## 8. Main risks and mitigations
 

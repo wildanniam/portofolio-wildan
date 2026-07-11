@@ -28,6 +28,7 @@ function printHelp() {
 
 Options:
   --route <path>       Public route to inspect (default: /)
+  --budget-route <path> Canonical public route whose budget applies
   --profile <name>     Budget profile (default: quality config activeProfile)
   --build-dir <path>   Existing Next production build (default: .next)
   --config <path>      Budget config (default: quality/budgets.json)
@@ -42,6 +43,7 @@ Options:
 function parseArgs(argv) {
   const options = {
     route: "/",
+    budgetRoute: undefined,
     profile: undefined,
     buildDir: DEFAULT_BUILD_DIR,
     config: DEFAULT_BUDGET_CONFIG,
@@ -54,6 +56,7 @@ function parseArgs(argv) {
 
   const valueOptions = new Map([
     ["--route", "route"],
+    ["--budget-route", "budgetRoute"],
     ["--profile", "profile"],
     ["--build-dir", "buildDir"],
     ["--config", "config"],
@@ -357,6 +360,7 @@ async function waitForServer(
   child,
   getStartupError,
   hasReportedReady,
+  requestHeaders,
   timeoutMs = 90_000,
 ) {
   const deadline = Date.now() + timeoutMs;
@@ -374,7 +378,10 @@ async function waitForServer(
     }
 
     try {
-      const response = await fetch(url, { redirect: "manual" });
+      const response = await fetch(url, {
+        redirect: "manual",
+        ...(requestHeaders ? { headers: requestHeaders } : {}),
+      });
       if (hasReportedReady() && response.status < 500) return;
     } catch {
       // The production server is still starting.
@@ -384,6 +391,33 @@ async function waitForServer(
   }
 
   throw new Error(`Production server did not become ready at ${url}.`);
+}
+
+function previewCredentials(origin) {
+  const token = process.env.PORTFOLIO_V1_PREVIEW_TOKEN?.trim();
+  if (!token) return undefined;
+  if (token.length < 32) {
+    throw new Error(
+      "PORTFOLIO_V1_PREVIEW_TOKEN must contain at least 32 characters.",
+    );
+  }
+
+  return {
+    username: "preview",
+    password: token,
+    origin,
+    send: "always",
+  };
+}
+
+function previewRequestHeaders(credentials) {
+  if (!credentials) return undefined;
+
+  return {
+    Authorization: `Basic ${Buffer.from(
+      `${credentials.username}:${credentials.password}`,
+    ).toString("base64")}`,
+  };
 }
 
 async function terminateProcess(child) {
@@ -475,6 +509,24 @@ async function measureColdNavigation(buildDir, publicRoute, viewport) {
 
   const origin = `http://127.0.0.1:${port}`;
   const url = new URL(publicRoute, origin).href;
+  const isProtectedPreview = new URL(url).pathname.startsWith("/preview/");
+  const credentials = isProtectedPreview
+    ? previewCredentials(origin)
+    : undefined;
+  const requestHeaders = previewRequestHeaders(credentials);
+  if (isProtectedPreview && !credentials) {
+    throw new Error(
+      "A protected preview probe requires PORTFOLIO_V1_PREVIEW_TOKEN.",
+    );
+  }
+  if (
+    isProtectedPreview &&
+    process.env.PORTFOLIO_V1_PREVIEW !== "1"
+  ) {
+    throw new Error(
+      "A protected preview probe requires PORTFOLIO_V1_PREVIEW=1.",
+    );
+  }
   let startupError = null;
   let serverReportedReady = false;
   const server = spawn(
@@ -518,10 +570,11 @@ async function measureColdNavigation(buildDir, publicRoute, viewport) {
   const removeSignalCleanup = registerSignalCleanup(cleanupOwnedResources);
   try {
     await waitForServer(
-      origin,
+      url,
       server,
       () => startupError,
       () => serverReportedReady,
+      requestHeaders,
     );
     browser = await chromium.launch({ headless: true });
     const browserVersion = browser.version();
@@ -532,6 +585,7 @@ async function measureColdNavigation(buildDir, publicRoute, viewport) {
       isMobile: viewport.isMobile,
       reducedMotion: "no-preference",
       serviceWorkers: "block",
+      ...(credentials ? { httpCredentials: credentials } : {}),
     });
     await context.addInitScript(() => {
       const originalGetContext = HTMLCanvasElement.prototype.getContext;
@@ -710,6 +764,7 @@ async function main() {
   const configPath = resolve(cwd, options.config);
   const outputPath = resolve(cwd, options.output);
   const publicRoute = normalizePublicRoute(options.route);
+  const budgetRoute = normalizePublicRoute(options.budgetRoute ?? publicRoute);
   const budgetConfig = readJson(configPath);
   const profileName =
     options.profile ?? process.env.QUALITY_PROFILE ?? budgetConfig.activeProfile;
@@ -733,7 +788,7 @@ async function main() {
   if (typeof viewport.hasTouch !== "boolean" || typeof viewport.isMobile !== "boolean") {
     throw new Error(`Viewport ${viewportName} must define hasTouch and isMobile.`);
   }
-  const budgetSelection = selectRouteBudget(profile.routes, publicRoute);
+  const budgetSelection = selectRouteBudget(profile.routes, budgetRoute);
 
   const buildManifestPath = join(buildDir, "build-manifest.json");
   const appPathsManifestPath = join(buildDir, "server", "app-paths-manifest.json");
@@ -878,6 +933,7 @@ async function main() {
     },
     route: {
       publicPath: publicRoute,
+      budgetPath: budgetRoute,
       manifestKey: routeEntry.manifestKey,
       modulePath: routeEntry.modulePath,
       clientEntryKeys: routeEntryKeys,

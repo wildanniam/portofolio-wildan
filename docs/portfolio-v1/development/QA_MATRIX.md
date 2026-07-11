@@ -214,7 +214,7 @@ Measure from a production build with a fresh browser profile. Report media separ
 | Metric | Gate |
 |---|---:|
 | Homepage cold-navigation client JS | `<=170 KB` gzip total; route-owned initial code `<=18 KB` |
-| Case-study cold-navigation client JS | `<=165 KB` gzip total; route-owned initial code `<=12 KB` |
+| Case-study cold-navigation client JS | `<=170 KB` gzip total; route-owned initial code `<=12 KB` |
 | Lazy explorer enhancement | `<=60 KB` gzip and absent from cold navigation before explorer approach/intent |
 | Homepage WebGL/Three requests | `0` |
 | Initial CSS | `<=30 KB` gzip |

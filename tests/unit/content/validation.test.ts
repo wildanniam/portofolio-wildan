@@ -8,6 +8,7 @@ import { validateContentBundle } from "../../../src/content/validate";
 import {
   cloneSeedBundle,
   makeMoment,
+  makePlannedAsset,
   makeReadyImage,
   makeReadyVideo,
   projectBySlug,
@@ -59,9 +60,13 @@ describe("claim provenance rules", () => {
     const externalClaim = project.claims.find(
       (claim) => claim.kind === "award",
     );
-    const privateEvidence = project.evidence.find(
-      (asset) => asset.status === "private",
-    );
+    const privateEvidence = makePlannedAsset({
+      id: "private-owner-controlled-evidence",
+      status: "private",
+      intendedEvidenceType: "document",
+      intendedMediaKind: "document",
+    });
+    project.evidence.push(privateEvidence);
 
     expect(externalClaim).toBeDefined();
     expect(privateEvidence).toBeDefined();
@@ -83,7 +88,29 @@ describe("claim provenance rules", () => {
 describe("project publication gates", () => {
   it("blocks a published full case study while any evidence is planned", () => {
     const content = cloneSeedBundle();
-    projectBySlug(content, "fradium").publication = "published";
+    const project = projectBySlug(content, "fradium");
+    project.publication = "published";
+    delete project.socialImageAssetId;
+    project.evidence = [
+      makePlannedAsset({ id: "planned-product-reality" }),
+      makePlannedAsset({
+        id: "planned-system-reasoning",
+        intendedEvidenceType: "architecture",
+        intendedMediaKind: "svg",
+        evidenceFunctions: ["system-reasoning"],
+      }),
+      makePlannedAsset({
+        id: "planned-verification",
+        intendedEvidenceType: "test-result",
+        evidenceFunctions: ["verification"],
+      }),
+    ];
+    project.role.evidenceIds = [];
+    if (project.caseStudyState !== "full") throw new Error("Expected full project.");
+    project.decisions = project.decisions.map((decision) => ({
+      ...decision,
+      evidenceIds: [],
+    }));
 
     const codes = diagnosticCodes(content);
 
@@ -109,6 +136,7 @@ describe("project publication gates", () => {
     });
     project.publication = "published";
     project.evidence = [evidence];
+    project.socialImageAssetId = evidence.id;
     project.role.evidenceIds = [];
     project.decisions = project.decisions.map((decision) => ({
       ...decision,
@@ -116,6 +144,31 @@ describe("project publication gates", () => {
     }));
 
     expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("requires a social image before a full case study can be published", () => {
+    const content = cloneSeedBundle();
+    const project = projectBySlug(content, "fradium");
+    const evidence = makeReadyImage({
+      id: "complete-full-evidence-without-social-image",
+      evidenceFunctions: [
+        "product-reality",
+        "system-reasoning",
+        "verification",
+      ],
+    });
+    project.publication = "published";
+    project.evidence = [evidence];
+    project.role.evidenceIds = [];
+    if (project.caseStudyState !== "full") throw new Error("Expected full project.");
+    project.decisions = project.decisions.map((decision) => ({
+      ...decision,
+      evidenceIds: [evidence.id],
+    }));
+
+    expect(diagnosticCodes(content)).toContain(
+      "publication.full-social-image-required",
+    );
   });
 
   it("blocks a published brief without ready media", () => {
@@ -150,6 +203,105 @@ describe("project publication gates", () => {
     delete source.caseStudyMdxPath;
 
     expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+});
+
+describe("project social-image references", () => {
+  it("accepts a ready raster image owned by the same project", () => {
+    const content = cloneSeedBundle();
+    const project = projectBySlug(content, "fradium");
+    const socialImage = makeReadyImage({ id: "fradium-social-image" });
+    project.evidence.push(socialImage);
+    project.socialImageAssetId = socialImage.id;
+
+    expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("rejects a social image owned by another project", () => {
+    const content = cloneSeedBundle();
+    const fradium = projectBySlug(content, "fradium");
+    const nova = projectBySlug(content, "nova-ai");
+    const socialImage = makeReadyImage({ id: "nova-social-image" });
+    nova.evidence.push(socialImage);
+    fradium.socialImageAssetId = socialImage.id;
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.project-social-image-ownership",
+    );
+  });
+
+  it("rejects a planned social image", () => {
+    const content = cloneSeedBundle();
+    const project = projectBySlug(content, "fradium");
+    const plannedImage = makePlannedAsset({
+      id: "planned-social-image",
+    });
+    project.evidence.push(plannedImage);
+    project.socialImageAssetId = plannedImage.id;
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.project-social-image-readiness",
+    );
+  });
+
+  it("rejects ready SVG evidence because the social image must be raster", () => {
+    const content = cloneSeedBundle();
+    const project = projectBySlug(content, "fradium");
+    const svg = makeReadyImage({
+      id: "fradium-social-svg",
+      mediaKind: "svg",
+      src: "/media/tests/social-graphic.svg",
+    });
+    project.evidence.push(svg);
+    project.socialImageAssetId = svg.id;
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.project-social-image-kind",
+    );
+  });
+});
+
+describe("homepage flagship highlight claims", () => {
+  it("accepts one project-owned claim for every flagship", () => {
+    const content = cloneSeedBundle();
+
+    expect(content.homepage.flagshipHighlightClaimIds).toEqual({
+      fradium: "fradium-wchl-2025",
+      "nova-ai": "nova-lisk-recognition",
+      paygate: "paygate-instaward-2026",
+      quorum: "quorum-six-testnet-flows",
+    });
+    expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("requires exact coverage of the flagship project list", () => {
+    const content = cloneSeedBundle();
+    delete content.homepage.flagshipHighlightClaimIds.fradium;
+    content.homepage.flagshipHighlightClaimIds.agentpay = "agentpay-role";
+
+    expect(
+      diagnosticCodes(content).filter(
+        (code) => code === "reference.homepage-highlight-coverage",
+      ),
+    ).toHaveLength(2);
+  });
+
+  it("rejects a highlight claim owned by a different project", () => {
+    const content = cloneSeedBundle();
+    content.homepage.flagshipHighlightClaimIds.fradium = "nova-role";
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.homepage-highlight-ownership",
+    );
+  });
+
+  it("rejects an unknown highlight claim", () => {
+    const content = cloneSeedBundle();
+    content.homepage.flagshipHighlightClaimIds.fradium = "unknown-claim";
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.homepage-highlight-claim",
+    );
   });
 });
 
@@ -232,9 +384,16 @@ describe("ready media file presence", () => {
       makeReadyVideo({ id: "missing-video-files" }),
     );
 
+    const missingPaths = new Set([
+      "public/media/tests/product-desktop.webp",
+      "public/media/tests/product-mobile.webp",
+      "public/media/tests/verification-loop.mp4",
+      "public/media/tests/verification-poster.webp",
+    ]);
+
     const diagnostics = validationDiagnostics(
       content,
-      (repositoryPath) => !repositoryPath.startsWith("public/media/"),
+      (repositoryPath) => !missingPaths.has(repositoryPath),
     );
     const codes = diagnostics.map((diagnostic) => diagnostic.code);
 

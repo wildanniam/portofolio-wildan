@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title description">
+  <title id="title">Fradium public beta verification ledger</title>
+  <desc id="description">An editorial verification ledger showing the public Fradium endpoint, a response carrying an Internet Computer certificate header, matching frontend and service canister identifiers, repository test artifacts, and public distribution links. It verifies a real public beta and delivery footprint, not an independent security audit or production-scale adoption.</desc>
+  <defs>
+    <style>
+      .canvas { fill: #f4f5f3; }
+      .surface { fill: #ffffff; }
+      .soft { fill: #e8ecff; }
+      .matte { fill: #111315; }
+      .ink { fill: #111315; }
+      .text { fill: #2b3035; }
+      .muted { fill: #555c63; }
+      .light { fill: #f4f5f3; }
+      .accent { fill: #2448d8; }
+      .rule { stroke: #c9ced3; }
+      .rule-strong { stroke: #20252a; }
+      .rule-accent { stroke: #2448d8; }
+      .sans { font-family: Geist, Arial, sans-serif; }
+      .mono { font-family: "Geist Mono", "SFMono-Regular", Consolas, monospace; }
+      .hairline { stroke-width: 1; vector-effect: non-scaling-stroke; }
+      .strong { stroke-width: 2; vector-effect: non-scaling-stroke; }
+    </style>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#c9ced3" stroke-width="1" opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <rect class="canvas" width="1600" height="1000"/>
+  <rect x="48" y="48" width="1504" height="904" fill="url(#grid)"/>
+  <rect x="48" y="48" width="1504" height="904" fill="none" class="rule-strong hairline"/>
+
+  <text x="88" y="103" class="mono accent" font-size="18" font-weight="600" letter-spacing="1.4">FRADIUM / VERIFICATION LEDGER</text>
+  <text x="88" y="178" class="sans ink" font-size="68" font-weight="600" letter-spacing="-3.2">A beta you can inspect.</text>
+  <text x="88" y="221" class="sans text" font-size="22">Public deployment and repository artifacts leave a concrete delivery trail.</text>
+  <text x="1512" y="103" text-anchor="end" class="mono muted" font-size="15" letter-spacing="1">LAST CHECKED / 11 JUL 2026</text>
+  <line x1="88" y1="260" x2="1512" y2="260" class="rule-strong hairline"/>
+
+  <rect x="88" y="300" width="680" height="214" class="surface rule-strong strong"/>
+  <text x="116" y="342" class="mono accent" font-size="15" letter-spacing="1">PUBLIC ENDPOINT</text>
+  <text x="116" y="395" class="sans ink" font-size="32" font-weight="600">fradium.io</text>
+  <text x="116" y="437" class="mono text" font-size="18">HTTP 200</text>
+  <text x="280" y="437" class="mono text" font-size="18">IC-CERTIFICATE PRESENT</text>
+  <rect x="592" y="332" width="144" height="54" class="matte"/>
+  <text x="664" y="366" text-anchor="middle" class="mono light" font-size="14" letter-spacing="1">PUBLIC BETA</text>
+  <text x="116" y="480" class="sans muted" font-size="16">Verified from the live response. Availability is not a security guarantee.</text>
+
+  <rect x="792" y="300" width="720" height="214" class="matte rule-strong strong"/>
+  <text x="820" y="342" class="mono light" font-size="15" letter-spacing="1">LIVE RESPONSE</text>
+  <text x="820" y="393" class="sans light" font-size="24" font-weight="600">x-ic-canister-id</text>
+  <text x="820" y="435" class="mono light" font-size="20">t4sse-tyaaa-aaaae-qfduq-cai</text>
+  <line x1="820" y1="458" x2="1484" y2="458" stroke="#555c63" class="hairline"/>
+  <text x="820" y="486" class="sans light" font-size="16">Matches the frontend identifier recorded in the repository.</text>
+
+  <rect x="88" y="538" width="914" height="250" class="surface rule-strong strong"/>
+  <text x="116" y="580" class="mono accent" font-size="15" letter-spacing="1">DEPLOYMENT MAP</text>
+  <text x="116" y="626" class="sans ink" font-size="25" font-weight="600">Four public service boundaries</text>
+  <line x1="116" y1="652" x2="974" y2="652" class="rule hairline"/>
+  <text x="116" y="692" class="mono muted" font-size="14">FRONTEND</text>
+  <text x="276" y="692" class="mono text" font-size="15">t4sse-tyaaa-aaaae-qfduq-cai</text>
+  <text x="116" y="727" class="mono muted" font-size="14">BACKEND</text>
+  <text x="276" y="727" class="mono text" font-size="15">oqcob-6iaaa-aaaar-qbr7q-cai</text>
+  <text x="560" y="692" class="mono muted" font-size="14">AI</text>
+  <text x="664" y="692" class="mono text" font-size="15">zkoni-faaaa-aaaar-qbsaa-cai</text>
+  <text x="560" y="727" class="mono muted" font-size="14">WALLET</text>
+  <text x="664" y="727" class="mono text" font-size="15">v3x23-lyaaa-aaaam-aej2a-cai</text>
+  <text x="116" y="765" class="sans muted" font-size="15">Repository identifiers are deployment evidence, not an audit of the canister code.</text>
+
+  <rect x="1026" y="538" width="486" height="250" class="soft rule-accent strong"/>
+  <text x="1054" y="580" class="mono accent" font-size="15" letter-spacing="1">REPOSITORY ARTIFACTS</text>
+  <text x="1054" y="626" class="sans ink" font-size="25" font-weight="600">37 PocketIC test methods</text>
+  <text x="1054" y="669" class="sans text" font-size="17">Address analysis, voting, staking,</text>
+  <text x="1054" y="696" class="sans text" font-size="17">wallet, and integration scenarios.</text>
+  <line x1="1054" y1="724" x2="1484" y2="724" class="rule-accent hairline"/>
+  <text x="1054" y="757" class="mono accent" font-size="11.5">SNAPSHOT 370CD9724F50 / NOT FRESHLY RERUN</text>
+
+  <rect x="88" y="812" width="1424" height="74" class="matte"/>
+  <text x="116" y="841" class="mono light" font-size="14" letter-spacing="0.8">PUBLIC DISTRIBUTION</text>
+  <text x="116" y="869" class="sans light" font-size="17">ICP-hosted web application + Chrome Web Store extension + public source repository</text>
+
+  <text x="88" y="925" class="sans muted" font-size="15">This ledger verifies a public beta and delivery footprint. It does not claim production-scale adoption or independent security certification.</text>
+  <text x="1512" y="925" text-anchor="end" class="mono muted" font-size="13">SOURCE: LIVE HEADERS + CANISTER_IDS.JSON + REPOSITORY TEST INDEX</text>
+</svg>

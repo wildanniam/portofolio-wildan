@@ -71,7 +71,8 @@ retries other runtime errors.
 
 Legacy Playwright uses deterministic port 3100. Lighthouse uses port 3101, the
 bundle probe uses port 3102, and the isolated foundation matrix uses port 3104.
-Their server owners require both the spawned
+For a protected Lighthouse checkpoint only, port 3101 is the loopback proxy and
+the owned Next.js upstream defaults to port 3106. Their server owners require both the spawned
 process's readiness marker and a successful local response, then terminate the
 owned process group after success, failure, or an interrupt. Generated
 diagnostics live under `.quality-reports`,
@@ -82,6 +83,42 @@ The foundation matrix treats the browser's exact `csp` rejection of local
 `/_next/static/chunks/*.js` requests as an intentional no-JavaScript condition
 only in its two `javaScriptEnabled: false` projects. Every other failed request,
 HTTP error response, console error, and page error remains blocking.
+
+### Protected V1 preview probes
+
+The bundle and Lighthouse runners can inspect the Basic-auth-protected V1
+checkpoint without weakening the preview gate. Both enforce a minimum
+32-character token. The bundle probe scopes Playwright HTTP credentials to its
+runner-owned origin. The Lighthouse runner keeps the credential out of the
+Lighthouse process, command arguments, and reports: a loopback-only proxy on
+port 3101 injects Basic auth only while forwarding to the runner-owned Next.js
+upstream on port 3106. Cross-origin browser requests never receive it.
+
+```bash
+export PORTFOLIO_V1_PREVIEW=1
+export PORTFOLIO_V1_PREVIEW_TOKEN="local-preview-token-with-at-least-32-characters"
+
+npm run build
+node scripts/analyze-bundle.mjs \
+  --profile v1 \
+  --route /preview/open-proving-ground/site \
+  --budget-route / \
+  --viewport desktop \
+  --output .quality-reports/bundle-v1-preview-desktop.json
+
+LIGHTHOUSE_PROFILE=v1-preview \
+LIGHTHOUSE_URL=http://127.0.0.1:3101/preview/open-proving-ground/site \
+npm run lighthouse
+```
+
+`--budget-route` applies the canonical public route ceiling while the preview
+path remains private. The measured manifest entry and network path remain the
+actual preview route in the report. `v1-preview` is an implementation diagnostic:
+it omits the SEO minimum because the protected checkpoint is intentionally
+`noindex`, and allows up to 3.5 seconds lab LCP while the preview is being
+assembled. It does not relax release approval. The unchanged `v1` profile must
+pass against the public root, including SEO 1.0 and LCP at most 2.5 seconds,
+before cutover.
 
 ## Temporary V5 envelopes
 
@@ -116,7 +153,7 @@ The inactive `v1` profiles preserve the approved release budgets:
 
 - homepage initial JavaScript at most 170,000 gzip bytes;
 - homepage route-owned JavaScript at most 18,000 gzip bytes;
-- case-study initial JavaScript at most 165,000 gzip bytes;
+- case-study initial JavaScript at most 170,000 gzip bytes;
 - case-study route-owned JavaScript at most 12,000 gzip bytes;
 - lazy explorer JavaScript at most 60,000 gzip bytes;
 - pre-intent enhancement JavaScript exactly 0 bytes;
@@ -139,14 +176,16 @@ enforced. Shared Next runtime cost and font transfers are reported separately so
 a framework floor cannot be hidden inside route-owned numbers.
 
 The original plan proposed 150,000 bytes for the homepage and 145,000 for a
-case study. The pinned server-only fixture measured a 145,141-byte total initial
-floor before any portfolio route code. On 11 July 2026 those totals were
-therefore revised to 170,000 and 165,000 bytes. The stricter 18,000 and 12,000
-route-owned ceilings remain unchanged. This preserves a meaningful reduction
-from the measured 555,535-byte V5 cold pre-intent baseline without defining an
-impossible framework budget. The same V5 build declared 219,444 bytes through
-the initial Next manifests; the larger number deliberately includes its scene
-chunks because they load automatically within the fixed three-second window.
+case study. The pinned server-only fixture first measured a 145,141-byte total
+initial floor before portfolio route code. Issue #11 then calibrated the real
+production V1 route and measured a 169,637-byte shared-runtime floor. Homepage
+and case-study total ceilings are therefore both 170,000 bytes. The stricter
+18,000- and 12,000-byte route-owned ceilings remain unchanged and are enforced
+as separate measurements. This preserves a meaningful reduction from the
+measured 555,535-byte V5 cold pre-intent baseline without hiding the production
+framework floor. The same V5 build declared 219,444 bytes through the initial
+Next manifests; the larger number deliberately includes its scene chunks
+because they load automatically within the fixed three-second window.
 
 ## Audit note
 

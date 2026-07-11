@@ -5,7 +5,7 @@ import { ProjectBriefPage } from "@/components/v1/case-study/project-brief-page"
 import { ProjectPage } from "@/components/v1/case-study/project-page";
 import { getProjectNarrative } from "@/components/v1/case-study/project-narrative.server";
 import { getProjectBySlug, getProjectParams } from "@/content/queries.server";
-import type { ReadyImageAsset } from "@/content/types";
+import { selectProjectSocialImage } from "@/content/queries";
 
 type WorkProjectPageProps = {
   params: Promise<{ slug: string }>;
@@ -32,11 +32,7 @@ export async function generateMetadata({
     };
   }
 
-  const socialImage = project.evidence.find(
-    (asset): asset is ReadyImageAsset =>
-      asset.status === "ready" &&
-      (asset.mediaKind === "image" || asset.mediaKind === "svg"),
-  );
+  const socialImage = selectProjectSocialImage(project);
 
   return {
     title: project.title,
@@ -45,7 +41,7 @@ export async function generateMetadata({
       canonical: `/work/${project.slug}`,
     },
     openGraph: {
-      title: `${project.title} — Wildan Syukri Niam`,
+      title: `${project.title} - Wildan Syukri Niam`,
       description: project.oneLiner,
       type: "article",
       url: `/work/${project.slug}`,
@@ -64,7 +60,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: socialImage ? "summary_large_image" : "summary",
-      title: `${project.title} — Wildan Syukri Niam`,
+      title: `${project.title} - Wildan Syukri Niam`,
       description: project.oneLiner,
       ...(socialImage ? { images: [socialImage.src] } : {}),
     },

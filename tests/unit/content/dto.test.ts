@@ -21,7 +21,7 @@ describe("client-safe project DTO", () => {
         note: "DO_NOT_LEAK_OWNER_ATTESTATION_NOTE",
       },
     ];
-    project.evidence.push(
+    project.evidence = [
       makeReadyImage({ id: "public-ready-evidence" }),
       {
         id: "private-authoring-evidence",
@@ -33,7 +33,7 @@ describe("client-safe project DTO", () => {
         acquisitionNotes: "DO_NOT_LEAK_ACQUISITION_NOTE",
         redactionNotes: "DO_NOT_LEAK_REDACTION_NOTE",
       },
-    );
+    ];
 
     const dto = toProjectSummaryDto(project);
     const serialized = JSON.stringify(dto);
