@@ -1,0 +1,252 @@
+slug: fradium
+title: Fradium
+publication: preview
+caseStudyState: full
+lifecycle: beta
+origin:
+  - hackathon
+  - collaboration
+validationKinds:
+  - award
+  - live-deployment
+startedAt: "2025"
+lastUpdatedAt: "2025-12-24"
+lastVerifiedAt: "2026-07-11"
+oneLiner: Making on-chain risk legible before money moves.
+problem: >-
+  Crypto users often reach a send confirmation with little context about the
+  destination address. Wallet balances, explorer history, risk signals, and
+  community reports are fragmented, so the most important judgment happens with
+  incomplete evidence.
+intendedUsers:
+  - Retail crypto users who want a pre-transaction risk check in a wallet or browser extension.
+  - Community reporters and validators who contribute evidence about suspicious addresses.
+  - Wallet, dApp, and exchange developers exploring an address-analysis API.
+teamContext:
+  summary: >-
+    Wildan led a multidisciplinary student team across product, frontend,
+    extension, AI, and Internet Computer work.
+  collaboratorIds:
+    - muhammad-bintang-al-fath
+    - ghina-rosvita-maharanisa
+    - yazid-alghozali
+    - arga-adolf-lumunon
+    - indra-mahesa
+  ownershipBoundary: >-
+    Wildan's owner attestation is the source for leadership and full-stack work;
+    public history illustrates only part of that responsibility, and specialist
+    contributions remain explicitly credited.
+role:
+  label: Leader & Full-Stack Developer
+  scope:
+    - Product direction and team leadership.
+    - Full-stack implementation and integration across the public web experience.
+    - Risk-analysis and wallet-flow product decisions.
+    - Delivery, demonstration, and competition coordination.
+  claimIds:
+    - fradium-role
+  evidenceIds:
+    - fradium-role-team-proof
+collaborators:
+  - id: muhammad-bintang-al-fath
+    name: Muhammad Bintang Al-Fath
+    role: Product Developer
+  - id: ghina-rosvita-maharanisa
+    name: Ghina Rosvita Maharanisa
+    role: UI/UX Designer
+  - id: yazid-alghozali
+    name: Yazid Alghozali
+    role: Extension Developer
+  - id: arga-adolf-lumunon
+    name: Arga Adolf Lumunon
+    role: AI Engineer
+  - id: indra-mahesa
+    name: Indra Mahesa
+constraints:
+  - >-
+    The risk verdict had to combine model output and community evidence without
+    pretending either signal was absolute truth.
+  - >-
+    The team had to join a web product, browser extension, multiple canisters,
+    chain-specific data preparation, and wallet signing inside a hackathon sprint.
+  - >-
+    Bitcoin, Ethereum, and Solana wallet execution remained on test networks;
+    production-security and adoption claims are outside the proven scope.
+decisions:
+  - title: Put the risk signal inside the transaction decision
+    rationale: >-
+      A separate analyzer is easy to ignore. Fradium repeats the same evidence at
+      the point where a user is about to confirm or cancel a send.
+    consequence: >-
+      The product makes risk visible without taking the final decision away from
+      the user.
+    evidenceIds:
+      - fradium-product-verdict
+  - title: Compose AI and community evidence conservatively
+    rationale: >-
+      A single opaque score would hide disagreement. An unsafe model result stops
+      the path, while an unsafe community result can override an AI-safe result.
+    consequence: >-
+      The verdict is explainable as a decision rule, although the model and
+      community inputs still require careful evaluation and moderation.
+    evidenceIds:
+      - fradium-system-map
+  - title: Keep model and inference code in one deployable unit
+    rationale: >-
+      Embedding ONNX artifacts in the Rust AI canister keeps inference code and its
+      model version together instead of fetching a mutable model at runtime.
+    consequence: >-
+      Deployments are easier to inspect, while updates require rebuilding and
+      redeploying the canister.
+    evidenceIds:
+      - fradium-system-map
+      - fradium-verification-ledger
+systemFlow:
+  - A user signs in with Internet Identity and enters an address or starts a send flow.
+  - The client detects Bitcoin, Ethereum, Solana, or ICP and prepares chain-specific features.
+  - The Rust AI canister runs its embedded ONNX model and returns a risk result.
+  - A safe AI result is cross-checked against Motoko community-report data.
+  - Fradium renders the verdict, confidence, analysis source, and history.
+  - The user cancels or explicitly confirms the test-network transaction.
+technologies:
+  - React 19
+  - Vite 6
+  - TypeScript
+  - JavaScript
+  - Plasmo
+  - Internet Computer
+  - Motoko
+  - Rust
+  - Candid
+  - ONNX
+  - Python
+  - Internet Identity
+claims:
+  - id: fradium-role
+    kind: role
+    text: Wildan served as Fradium's Leader & Full-Stack Developer.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: >-
+          Wildan confirms that he led the project and worked across the full stack;
+          the public repository captures only part of that responsibility.
+    scope: >-
+      A truthful self-described role that coexists with explicit collaborator
+      credit; it is not a claim that Wildan built every specialist subsystem alone.
+  - id: fradium-wchl-2025
+    kind: award
+    text: >-
+      Fradium won the Fully On-Chain Track at the World Computer Hacker League 2025
+      Global Finale.
+    sources:
+      - kind: url
+        url: https://bse.telkomuniversity.ac.id/tim-fradium-berhasil-meraih-global-finale-winner-fully-on-chain-track-pada-world-computer-hacker-league-2025/
+        label: Telkom University award announcement
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Competition recognition for the six-person Fradium team; not evidence of
+      production adoption or a security certification.
+  - id: fradium-public-beta
+    kind: lifecycle
+    text: >-
+      Fradium is a publicly accessible beta with an ICP-hosted web application and
+      a Chrome Web Store extension.
+    sources:
+      - kind: url
+        url: https://fradium.io
+        label: Public Fradium application
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://chromewebstore.google.com/detail/fradium-the-trust-layer-f/bkkhicfomfaagfhnlechfapddmdfabdp
+        label: Chrome Web Store listing
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Public availability, not a claim of production-scale use; the reviewed
+      Bitcoin, Ethereum, and Solana execution paths use testnet or devnet.
+  - id: fradium-risk-flow
+    kind: behavior
+    text: >-
+      The reviewed implementation combines chain-specific feature preparation,
+      ONNX-canister inference, and a community cross-check before a user chooses
+      whether to proceed.
+    sources:
+      - kind: url
+        url: https://github.com/fradiumofficial/fradium
+        label: Canonical public repository
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Describes the reviewed hybrid implementation; it does not claim that every
+      feature-extraction step happens fully on-chain.
+evidence:
+  - id: fradium-product-verdict
+    status: needs-capture
+    intendedEvidenceType: product
+    intendedMediaKind: video
+    evidenceFunctions:
+      - product-reality
+    slot: hero-product-loop
+    acquisitionNotes: >-
+      Capture a fresh 12–15 second loop from the current product: address input,
+      inference and community composition, verdict, and pre-send choice. Include a
+      still poster and an intentional mobile crop.
+  - id: fradium-system-map
+    status: needs-capture
+    intendedEvidenceType: architecture
+    intendedMediaKind: svg
+    evidenceFunctions:
+      - system-reasoning
+    slot: primary-system-diagram
+    acquisitionNotes: >-
+      Redraw the live hybrid flow as an editorial SVG: client feature preparation,
+      AI canister, community backend, wallet boundary, and explicit network scope.
+  - id: fradium-verification-ledger
+    status: needs-capture
+    intendedEvidenceType: deployment
+    intendedMediaKind: image
+    evidenceFunctions:
+      - verification
+    slot: technical-proof-ledger
+    acquisitionNotes: >-
+      Compose a sanitized proof frame from public canister IDs, certified response,
+      a representative PocketIC test, extension workflow, and store listing.
+  - id: fradium-role-team-proof
+    status: private
+    intendedEvidenceType: moment
+    intendedMediaKind: image
+    evidenceFunctions:
+      - verification
+    slot: team-outcome
+    acquisitionNotes: >-
+      Prepare the owner-supplied WCHL team photograph and official result as one
+      credited outcome frame after identity, date, place, rights, and consent review.
+    redactionNotes: >-
+      Remove unnecessary badge, contact, or venue identifiers before publishing a
+      derivative; preserve the untouched master outside the repository.
+limitations:
+  - The case study must call the implementation a hybrid multi-chain analysis flow, not claim that every step is fully on-chain.
+  - Bitcoin, Ethereum, and Solana wallet execution is testnet or devnet scoped.
+  - Model metrics are experimental repository evidence, not an independent security guarantee.
+  - The product warns and assists; it does not guarantee that an address or transaction is safe.
+next:
+  - Capture a current, reproducible product loop and standardized desktop/mobile stills.
+  - Replace legacy diagrams with an editable architecture and verdict-composition map.
+  - Harden native payment verification, admin/debug authorization, and developer credentials.
+  - Add reproducible model-evaluation context and a current whole-repository quality run.
+links:
+  live:
+    status: public
+    url: https://fradium.io
+    lastVerifiedAt: "2026-07-11"
+  source:
+    status: public
+    url: https://github.com/fradiumofficial/fradium
+    lastVerifiedAt: "2026-07-11"
+  docs:
+    status: public
+    url: https://fradium.gitbook.io/docs
+    lastVerifiedAt: "2026-07-11"
+  demo:
+    status: public
+    url: https://youtu.be/4Twnw54thms
+    lastVerifiedAt: "2026-07-11"

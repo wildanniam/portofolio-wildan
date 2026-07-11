@@ -46,7 +46,7 @@ src/app/
 | `/contact` | Static direct-contact page; no public form in V1 |
 | `/moments` | Publish-gated route; omitted from navigation and sitemap until the narrative gate passes |
 
-During migration, `/preview/open-proving-ground` is available only when `PORTFOLIO_V1_PREVIEW=1`. It returns `notFound()` otherwise, carries `noindex`, is absent from navigation/sitemap, and is removed after the approved root switch. This permits small merged foundation/content PRs while Wildan reviews the complete new root composition on a branch-preview deployment.
+During migration, `/preview/open-proving-ground` is available only when `PORTFOLIO_V1_PREVIEW=1` and a valid 32+ character `PORTFOLIO_V1_PREVIEW_TOKEN` is supplied through HTTP Basic Authentication. It fails closed otherwise, carries `private, no-store` and `noindex`, is absent from navigation/sitemap, and is removed after the approved root switch. This permits small merged foundation/content PRs while Wildan reviews the complete new root composition on a branch-preview deployment without treating `noindex` as access control.
 
 The root layout stays visually neutral. The current dark providers/chrome/styles move into `(legacy)/layout.tsx`; V1 tokens/chrome stay scoped to `(v1)/layout.tsx`. This prevents early global-style or layout work from breaking the still-public legacy homepage. At cutover, the approved V1 composition becomes the root page; the unreachable legacy group is deleted in a later PR.
 
@@ -55,7 +55,7 @@ The root layout stays visually neutral. The current dark providers/chrome/styles
 | State | Route/query behavior |
 |---|---|
 | `draft` | Authoring-only. Never appears in public queries, routes, navigation, metadata, or sitemap. |
-| `preview` | Available only when `PORTFOLIO_V1_PREVIEW=1`, always `noindex`, and excluded from production navigation/sitemap. |
+| `preview` | Available only with the preview build flag and valid secret-backed Basic credentials; always `private, no-store` and `noindex`, and excluded from production navigation/sitemap. |
 | `published` | Publicly routable and eligible for `/`, `/work`, metadata, and sitemap curation. |
 
 V1 release requires all four flagships to be `published + full`. Selected non-flagship archive entries may be `published + brief`. A published record may reference only `ReadyAsset` items; `PlannedAsset` belongs only to draft/preview authoring or an internal backlog.

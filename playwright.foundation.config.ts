@@ -2,6 +2,10 @@ import { defineConfig } from "@playwright/test";
 
 const port = 3104;
 const baseURL = `http://127.0.0.1:${port}`;
+const previewToken = "portfolio-v1-foundation-preview-test-token";
+const previewAuthorization = `Basic ${Buffer.from(
+  `preview:${previewToken}`,
+).toString("base64")}`;
 const visualTest = "**/foundation.visual.spec.ts";
 const focusTest = "**/foundation.focus.spec.ts";
 const noJavaScriptTest = "**/foundation.no-js.spec.ts";
@@ -48,6 +52,9 @@ export default defineConfig({
       ],
   use: {
     baseURL,
+    extraHTTPHeaders: {
+      Authorization: previewAuthorization,
+    },
     trace: "on-first-retry",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -154,6 +161,7 @@ export default defineConfig({
     env: {
       ...serverEnvironment,
       PORTFOLIO_V1_PREVIEW: "1",
+      PORTFOLIO_V1_PREVIEW_TOKEN: previewToken,
       FORCE_COLOR: "0",
     },
     gracefulShutdown: {

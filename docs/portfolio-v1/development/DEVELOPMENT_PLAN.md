@@ -153,7 +153,7 @@ Work:
 - verify no reachable legacy UI consumes `/api/contact`, then disable/remove the unprotected endpoint in this route phase; defer dead email/form dependency cleanup to Phase 8B;
 - add `not-found`, `sitemap`, and `robots` behavior;
 - keep `/moments` gated until its publication rule passes;
-- add the temporary `/preview/open-proving-ground` composition, enabled only by `PORTFOLIO_V1_PREVIEW=1`, marked `noindex`, and omitted from navigation/sitemap;
+- add the temporary `/preview/open-proving-ground` composition, enabled only by `PORTFOLIO_V1_PREVIEW=1`, protected by a deployment-secret `PORTFOLIO_V1_PREVIEW_TOKEN`, marked `private, no-store` and `noindex`, and omitted from navigation/sitemap;
 - implement the full case-study structural template without project-specific forks;
 - implement the server-only YAML `ProjectBriefPage` used by published non-flagship routes.
 
@@ -162,7 +162,7 @@ Exit gate:
 - route structure and fixture tests work, while draft/preview project records remain absent from public queries until their real evidence is ready;
 - every public route has one clear `h1`, unique metadata, and canonical navigation;
 - JavaScript-disabled navigation, archive, project summaries, and direct contact work;
-- the legacy root retains visual parity; preview env off returns 404, env on returns 200 plus `noindex`, and preview stays out of navigation/sitemap;
+- the legacy root retains visual parity; preview env off returns 404, missing/invalid credentials fail closed, valid env/token credentials return 200 plus `private, no-store` and `noindex`, and preview stays out of navigation/sitemap;
 - no placeholder frame appears in production output.
 
 ### Phase 3A — Fradium static golden vertical slice

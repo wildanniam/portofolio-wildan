@@ -17,8 +17,9 @@ PayGate, Quorum, or any other project record.
 - V1 styles must begin at `[data-portfolio-v1]`; route-loaded CSS is allowed to
   remain in the browser after navigation without changing V5.
 - The private checkpoint is `/preview/open-proving-ground`. It exists only in a
-  build created with `PORTFOLIO_V1_PREVIEW=1`, emits `noindex, nofollow`, and is
-  absent from V5 navigation.
+  build created with `PORTFOLIO_V1_PREVIEW=1`, requires a valid 32+ character
+  `PORTFOLIO_V1_PREVIEW_TOKEN` through HTTP Basic Authentication, emits
+  `private, no-store` and `noindex, nofollow`, and is absent from V5 navigation.
 
 ## Primitive contracts
 

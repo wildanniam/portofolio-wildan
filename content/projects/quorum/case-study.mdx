@@ -1,0 +1,77 @@
+> Quorum turns a collaborative event into one inspectable path across access, contract accounting, evidence, withdrawal, and cash-out continuation.
+
+## Problem and stakes
+
+A paid community event can involve an organizer, speaker, venue, community, sponsor, and attendee, yet one host often collects the money and reconciles everyone later through spreadsheets and screenshots. Access and check-in create another record, and payout creates another.
+
+Quorum treats that coordination as a systems problem. Event terms, wallet authorization, exact payment, pass ownership, split balances, check-in, indexed proof, contract withdrawal, and an optional off-ramp must stay consistent across several trust boundaries.
+
+## My role and the team
+
+I was Quorum's Full-Stack Product Builder. I worked across product specification, the Next.js application, sessions and data, Soroban contracts, deployment tooling, wallet transaction validation, evidence indexing, settlement modeling, MoneyGram-compatible integration, and QA.
+
+ArgaAAL contributed substantive infrastructure and evidence work, including the Postgres migration, event indexer, proof surfaces, collaborator ledger, wallet and RPC fixes, live-flow evidence, and deployment support. The case study credits that phase directly.
+
+## Constraint
+
+Quorum needed the speed of an off-chain product database and the assurance of on-chain authorization and accounting. The system also had to distinguish a prepared action from a signed transaction, a signed transaction from confirmed finality, a confirmed event from indexed evidence, and an event withdrawal from a later off-ramp transfer.
+
+The build is testnet scoped. Its contracts are not independently audited, the hosted evidence feed needs another verification pass, and the final MoneyGram transfer and pickup have not been evidenced end to end.
+
+## Decision
+
+### Give each fact one source of truth
+
+Postgres owns mutable event content and the product experience. QuorumCore and QuorumPassNFT enforce the values that control event creation, payment, balances, pass uniqueness, withdrawal, and check-in. The indexer translates emitted events into inspectable product evidence without redefining contract truth.
+
+### Inspect wallet intent before and after signing
+
+Prepared and signed XDR are checked for signer, network, source account, contract, function, and encoded arguments. Persistence waits for finality and decoded result validation. Mocked proof mode remains separate so local development cannot silently impersonate a live transaction.
+
+### Make evidence part of the product
+
+Contract events are indexed idempotently with cursor state and globally unique proof hashes. Event proof, pass receipts, the evidence hub, and the collaborator ledger give different audiences a readable view of the same underlying execution.
+
+### Correct the settlement model
+
+Implementation exposed a risk: contract withdrawal and MoneyGram cash-out had been treated too much like one event. They are two movements. The corrected model requires an eligible settled withdrawal, separates the contract-to-wallet and wallet-to-MoneyGram hashes, prevents over-allocation, and reuses failed or cancelled cash-out records for safe retry.
+
+## System behavior
+
+- An organizer authenticates with Freighter and creates an event with access mode, capacity, resources, and collaborator percentages totaling 100 percent.
+- Publishing prepares and validates a QuorumCore action, then requires explicit wallet signing and finality before persistence.
+- An attendee pays exact testnet USDC or claims a free pass.
+- QuorumCore enforces capacity and uniqueness, credits balances, and invokes QuorumPassNFT.
+- The non-transferable pass unlocks resources and supports authorized check-in.
+- An indexer persists contract events for event, global, pass, and collaborator evidence views.
+- A collaborator withdraws the credited balance to a wallet.
+- Only a confirmed withdrawal can continue into a separate MoneyGram-compatible SEP-24 cash-out record.
+
+## Evidence sequence
+
+- A stable deployed flow will follow one event through setup, purchase or claim, pass, resource, check-in, ledger, withdrawal, and explorer confirmation.
+- A trust-boundary map will show browser intent, session, Postgres, XDR validation, Freighter, both contracts, finality, indexing, and evidence.
+- A verification ledger will pair the six Horizon-confirmed flows with deployment records and 26 contract tests while labeling external and self-recorded proof.
+- A before-and-after settlement plate will reconstruct the correction from contract settlement to wallet, then from wallet to MoneyGram-compatible cash-out.
+
+The evidence sequence will distinguish Horizon-confirmed network proof, repository artifacts, and the current hosted state, so each layer can be inspected on its own terms.
+
+## Outcome and validation
+
+Quorum deployed QuorumCore and QuorumPassNFT on Stellar testnet. Six signed flows recorded in the repository were independently confirmed successful through Horizon: paid-event publish, paid checkout, free-event publish, free claim, check-in, and collaborator withdrawal.
+
+The public application, runtime contract-status endpoint, and hosted Stellar client-domain document were reachable during the audit. This validates network execution and delivery, not market traction, mainnet readiness, or an external security audit.
+
+## Where it stands
+
+Quorum is a live Stellar testnet hackathon prototype with unusually broad end-to-end evidence for its build window. The core event, pass, accounting, withdrawal, and indexing ideas are implemented, and the settlement correction is a strong record of product judgment during development.
+
+The public evidence route still needs a database reconnection and verification pass. MoneyGram-compatible SEP-10 exchange and sandbox SEP-24 initiation establish the continuation path; completing the final wallet transfer and pickup is the next proof milestone.
+
+## What I'd improve next
+
+- Repair the hosted evidence path and preserve a stable end-to-end replay on the public domain.
+- Complete and document the remaining wallet transfer, status sync, and MoneyGram pickup flow.
+- Harden contracts, static QR behavior, refund and cancellation policy, wallet coverage, indexing cadence, and observability.
+- Add explicit releases and licensing, then separate local smoke proof from CI coverage more clearly.
+- Test the product with real organizers and collaborators and gather consented validation.

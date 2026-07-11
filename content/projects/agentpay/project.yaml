@@ -1,0 +1,81 @@
+slug: agentpay
+title: AgentPay
+publication: preview
+caseStudyState: brief
+lifecycle: prototype
+origin:
+  - independent
+validationKinds:
+  - live-deployment
+  - testnet
+startedAt: "2026"
+lastUpdatedAt: "2026-05-01"
+lastVerifiedAt: "2026-07-11"
+oneLiner: A marketplace where software agents can discover and pay for APIs per request.
+context: >-
+  AgentPay explores an agent-native alternative to human subscription checkout:
+  machine-readable tool discovery, HTTP 402 payment negotiation, Stellar testnet
+  USDC settlement, protected provider forwarding, and inspectable receipts.
+outcome: >-
+  The prototype shipped a public marketplace, discovery document, external-agent
+  consumer, provider console, payment and usage logs, and a Soroban registry proof.
+role:
+  label: Product Builder & Full-Stack Developer
+  scope:
+    - Product definition and marketplace interaction design.
+    - Full-stack application, provider, registry, payment, and evidence flows.
+    - Stellar testnet and external-agent integration.
+  claimIds:
+    - agentpay-role
+  evidenceIds: []
+technologies:
+  - Next.js
+  - TypeScript
+  - Stellar
+  - x402
+  - Supabase
+  - Prisma
+  - Soroban
+claims:
+  - id: agentpay-role
+    kind: role
+    text: Wildan built AgentPay as Product Builder & Full-Stack Developer.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: >-
+          Wildan confirms responsibility for the product and full-stack build;
+          publication will preserve any additional collaborator credit that later
+          becomes relevant to this archive entry.
+    scope: Responsibility for the public testnet prototype and its implementation record.
+  - id: agentpay-testnet-prototype
+    kind: behavior
+    text: >-
+      AgentPay exposes a public testnet prototype for machine-readable API discovery,
+      HTTP 402 payment, provider forwarding, and usage evidence.
+    sources:
+      - kind: url
+        url: https://github.com/wildanniam/AgentPay
+        label: Canonical public repository and implementation guide
+        verifiedAt: "2026-07-11"
+    scope: Stellar testnet prototype behavior; not a mainnet, revenue, or adoption claim.
+evidence:
+  - id: agentpay-archive-thumbnail
+    status: needs-capture
+    slot: archive-thumbnail
+    evidenceFunctions:
+      - product-reality
+    intendedEvidenceType: product
+    intendedMediaKind: image
+    acquisitionNotes: >-
+      Re-capture the current marketplace and agent discovery path as an approved
+      16:10 desktop frame with an intentional mobile crop.
+links:
+  live:
+    status: public
+    url: https://agent-pay-jet.vercel.app
+    lastVerifiedAt: "2026-07-11"
+  source:
+    status: public
+    url: https://github.com/wildanniam/AgentPay
+    lastVerifiedAt: "2026-07-11"

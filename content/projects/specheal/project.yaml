@@ -1,0 +1,106 @@
+slug: specheal
+title: SpecHeal
+publication: preview
+caseStudyState: brief
+lifecycle: prototype
+origin:
+  - hackathon
+  - collaboration
+validationKinds:
+  - award
+startedAt: "2026"
+lastUpdatedAt: "2026-05-13"
+lastVerifiedAt: "2026-07-11"
+oneLiner: A recovery cockpit that separates safe test healing from real product bugs.
+context: >-
+  SpecHeal was built during the Refactory Hackathon around a hard engineering
+  productivity problem: recovering Playwright failures without converting genuine
+  regressions into false-green test runs.
+outcome: >-
+  The team produced an end-to-end artifact spanning failure evidence, OpenSpec
+  behavior, structured AI reasoning, controlled candidate patches, browser reruns,
+  audit history, and product-bug handoff, and placed second at the Refactory Hackathon.
+role:
+  label: Product Developer, Full-Stack Developer & AI Integration Lead
+  scope:
+    - Product workflow and full-stack implementation.
+    - AI verdict and evidence integration.
+    - Browser-validation and controlled recovery flow.
+  claimIds:
+    - specheal-role
+  evidenceIds: []
+collaborators:
+  - id: arga-aal
+    name: ArgaAAL
+    role: Engineering collaborator
+    url: https://github.com/ArgaAAL
+technologies:
+  - Next.js
+  - Playwright
+  - OpenAI
+  - OpenSpec
+  - PostgreSQL
+  - Jira
+  - Kubernetes
+claims:
+  - id: specheal-role
+    kind: role
+    text: >-
+      Wildan served as SpecHeal's Product Developer, Full-Stack Developer & AI
+      Integration Lead.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: >-
+          Wildan confirms his product, full-stack, and AI-integration responsibilities
+          in the team hackathon build.
+    scope: A personal role statement within a collaborative hackathon artifact.
+  - id: specheal-recovery-flow
+    kind: behavior
+    text: >-
+      The SpecHeal repository documents a recovery loop from captured Playwright
+      evidence through structured verdict, controlled patch, rerun, and handoff.
+    sources:
+      - kind: url
+        url: https://github.com/antech2-async/SpecHeal
+        label: Canonical public repository
+        verifiedAt: "2026-07-11"
+    scope: Repository-backed hackathon behavior, not a production adoption claim.
+  - id: specheal-refactory-second-place
+    kind: award
+    text: SpecHeal placed second at the Refactory Hackathon.
+    sources:
+      - kind: url
+        url: https://hackathon.refactory.id/
+        label: Official Refactory Telkom round and second-place program context
+        verifiedAt: "2026-07-11"
+      - kind: evidence
+        evidenceId: specheal-refactory-outcome
+        label: Owner-supplied event photograph showing the official second-place placard
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: Wildan confirms the team result shown in the supplied event photograph.
+    scope: Team competition result; the photograph remains private until rights and consent review.
+evidence:
+  - id: specheal-refactory-outcome
+    status: private
+    slot: archive-thumbnail
+    evidenceFunctions:
+      - verification
+    intendedEvidenceType: moment
+    intendedMediaKind: image
+    acquisitionNotes: >-
+      Prepare a rights-reviewed derivative from the supplied Refactory second-place
+      photograph or capture the recovery cockpit itself; keep the untouched photo
+      master outside the repository.
+    redactionNotes: Review faces, venue details, and readable badge or contact data.
+links:
+  live:
+    status: offline
+    note: >-
+      The historical hackathon deployment at merge-kalau-berani.hackathon.sev-2.com
+      did not respond during the 2026-07-11 reachability check; the source remains public.
+  source:
+    status: public
+    url: https://github.com/antech2-async/SpecHeal
+    lastVerifiedAt: "2026-07-11"

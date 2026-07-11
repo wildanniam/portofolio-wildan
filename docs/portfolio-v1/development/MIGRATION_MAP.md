@@ -38,7 +38,7 @@ history so future work follows the correct source of truth.
 | Missing `/work/[slug]` | Add | Shared static case-study route |
 | Missing sitemap/robots/not-found | Add | Publication-aware document surfaces |
 | Missing `/moments` | Add only after gate | `notFound()` or absent navigation until publishable |
-| Missing preview surface | Add temporarily | Env-gated, `noindex` `/preview/open-proving-ground`; remove after root switch |
+| Missing preview surface | Add temporarily | Env- and credential-gated, `private, no-store`, `noindex` `/preview/open-proving-ground`; remove after root switch |
 
 ### Content
 
@@ -141,7 +141,7 @@ Run a source reference scan and production route smoke test before deleting any 
 
 ## 3. Target source tree
 
-During coexistence, the current root page/chrome lives under `(legacy)` and the new shell/routes live under `(v1)`. The temporary preview route is enabled only with `PORTFOLIO_V1_PREVIEW=1`, is `noindex`, and is absent from navigation/sitemap. The final tree below is reached only after the root switch and deletion of both the temporary preview route and legacy group.
+During coexistence, the current root page/chrome lives under `(legacy)` and the new shell/routes live under `(v1)`. The temporary preview route is enabled only with `PORTFOLIO_V1_PREVIEW=1` plus valid secret-backed Basic credentials, is `private, no-store` and `noindex`, and is absent from navigation/sitemap. The final tree below is reached only after the root switch and deletion of both the temporary preview route and legacy group.
 
 ```text
 content/

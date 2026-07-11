@@ -37,9 +37,11 @@ npm run start
 ### Environment variables
 
 No environment variables are required to build or browse the current website.
-`PORTFOLIO_V1_PREVIEW=1` enables the private, `noindex` editorial checkpoint at
-`/preview/open-proving-ground` for a build created with that value. The public
-and default test builds force this gate off.
+The private editorial checkpoint at `/preview/open-proving-ground` requires both
+`PORTFOLIO_V1_PREVIEW=1` and a random `PORTFOLIO_V1_PREVIEW_TOKEN` of at least 32
+characters. Sign in through HTTP Basic Authentication with username `preview`
+and that token as the password. Authenticated responses remain `private,
+no-store` and `noindex`; the public and default test builds force the gate off.
 
 The legacy `/api/contact` endpoint requires `RESEND_API_KEY` when called.
 `RESEND_FROM` and `CONTACT_TO` are optional overrides. V1 uses direct contact

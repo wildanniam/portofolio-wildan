@@ -1,0 +1,12 @@
+items:
+  - id: paygate-active-2026
+    projectSlug: paygate
+    title: Building PayGate on Stellar
+    summary: >-
+      Turning ordinary APIs into machine-paid endpoints and making each testnet
+      request, payment, credit, delivery state, and withdrawal inspectable.
+    startedAt: "2026-04-24"
+    link:
+      status: public
+      url: https://trypaygate.com
+      lastVerifiedAt: "2026-07-11"

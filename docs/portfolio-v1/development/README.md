@@ -11,11 +11,12 @@ This package turns the approved portfolio concept, scope, content contract, medi
 
 1. [DESIGN.md](./DESIGN.md) — visual tokens, typography, grid, media, component vocabulary, states, motion, and responsive rules.
 2. [FOUNDATION_COMPONENTS.md](./FOUNDATION_COMPONENTS.md) — implemented shell boundary, primitive semantics, deliberate deviations, and QA hooks.
-3. [ARCHITECTURE.md](./ARCHITECTURE.md) — route, content, Server Component, client island, media, dependency, and SEO boundaries.
-4. [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — controlled-rewrite strategy, phased delivery, approval gates, budgets, risks, and definition of done.
-5. [MIGRATION_MAP.md](./MIGRATION_MAP.md) — exact keep/rewrite/retire map for current routes, components, data, dependencies, assets, and documentation.
-6. [ISSUE_BREAKDOWN.md](./ISSUE_BREAKDOWN.md) — twelve proposed high-signal GitHub issues with dependencies, acceptance criteria, and verification.
-7. [QA_MATRIX.md](./QA_MATRIX.md) — browser, viewport, no-JavaScript, reduced-motion, accessibility, performance, visual, content, and release checks.
+3. [CONTENT_SYSTEM.md](./CONTENT_SYSTEM.md) — implemented schemas, publication gates, restricted MDX, server/query/DTO boundaries, and authoring workflow.
+4. [ARCHITECTURE.md](./ARCHITECTURE.md) — route, content, Server Component, client island, media, dependency, and SEO boundaries.
+5. [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — controlled-rewrite strategy, phased delivery, approval gates, budgets, risks, and definition of done.
+6. [MIGRATION_MAP.md](./MIGRATION_MAP.md) — exact keep/rewrite/retire map for current routes, components, data, dependencies, assets, and documentation.
+7. [ISSUE_BREAKDOWN.md](./ISSUE_BREAKDOWN.md) — twelve proposed high-signal GitHub issues with dependencies, acceptance criteria, and verification.
+8. [QA_MATRIX.md](./QA_MATRIX.md) — browser, viewport, no-JavaScript, reduced-motion, accessibility, performance, visual, content, and release checks.
 
 ## Locked implementation decisions
 
@@ -46,6 +47,10 @@ The pre-implementation gate has been satisfied:
 The runtime and executable quality gates are implemented through
 [GitHub Issue #3](https://github.com/wildanniam/portofolio-wildan/issues/3) and
 documented in the [quality harness guide](../../quality-harness.md).
+
+The validated content repository and private compatibility routes are tracked
+through [GitHub Issue #7](https://github.com/wildanniam/portofolio-wildan/issues/7)
+and documented in [CONTENT_SYSTEM.md](./CONTENT_SYSTEM.md).
 
 Production UI remains unchanged in Issue #1. The tracked baseline and migration
 map define how later issues can replace it safely.

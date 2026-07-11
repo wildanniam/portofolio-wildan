@@ -1,0 +1,73 @@
+> Fradium asks a practical question: can risk evidence appear before a user commits to a transaction, rather than after something goes wrong?
+
+## Problem and stakes
+
+A wallet can show an address, balance, and confirm button without explaining what the destination has done before. Explorers contain pieces of that context, but asking a user to leave the transaction, inspect several tools, and interpret raw history creates a decision gap at the worst possible moment.
+
+Fradium was built to close that gap. The product detects the destination network, prepares chain-specific evidence, runs a model, cross-checks community reports, and returns a verdict where the user can still cancel. The goal is decision support, not a promise that software can guarantee safety.
+
+## My role and the team
+
+I served as Leader & Full-Stack Developer. I guided the product direction, coordinated delivery, worked across the public application and system integration, and helped translate a large technical idea into a competition-ready product.
+
+Fradium was a team build. Muhammad Bintang Al-Fath contributed product development, Ghina Rosvita Maharanisa led UI and UX work, Yazid Alghozali developed the extension, Arga Adolf Lumunon worked on AI, and Indra Mahesa is named in the official award team. Together, we turned a wide technical idea into a coherent product and a global-final-winning build.
+
+## Constraint
+
+The team had to connect a web product, browser extension, chain-specific data sources, ONNX inference, community reporting, token incentives, and wallet execution during a hackathon sprint. Those pieces also had different trust boundaries. A model score could be wrong, a community report could be contested, and a transaction still needed an explicit user decision.
+
+The deployed wallet paths for Bitcoin, Ethereum, and Solana use test or development networks. That boundary is part of the artifact, not something the case study should hide.
+
+## Decision
+
+### Put evidence at the decision point
+
+Fradium supports a standalone analyzer, but the more important interaction repeats the signal inside transaction confirmation. The user sees the risk context where it can change the next action.
+
+### Compose signals conservatively
+
+Instead of reducing everything to one unexplained score, the flow keeps model and community evidence distinct. An unsafe model result stops the path. If the model is safe, an unsafe community result can still override it. The rule is simple enough to explain, even though the underlying inputs still need rigorous evaluation.
+
+### Version inference with the deployed model
+
+The Rust AI canister embeds its ONNX artifacts in the Wasm build. The model and inference implementation move as one deployable unit rather than depending on a mutable runtime download.
+
+## System behavior
+
+- A user signs in with Internet Identity and opens an analysis or send flow.
+- The client identifies Bitcoin, Ethereum, Solana, or ICP and prepares the relevant features.
+- A Rust canister runs embedded ONNX inference.
+- A safe model result is checked against the Motoko community-report backend.
+- The interface renders the verdict, confidence, source, and history.
+- In a send flow, the user chooses whether to cancel or explicitly confirm the test-network transaction.
+
+The wider system separates web, extension, backend, AI, wallet, ledger, and chatbot concerns through explicit canister interfaces. That breadth made Fradium ambitious; the case study focuses on the risk-decision path rather than presenting every feature as equally important.
+
+## Evidence sequence
+
+- A fresh product loop will show address input, analysis, verdict composition, and the pre-send decision.
+- An editorial architecture map will separate client feature preparation, AI inference, community evidence, wallet signing, and network scope.
+- A verification ledger will combine public canister identifiers, a certified live response, representative tests, extension delivery, and the Chrome Web Store listing.
+- A rights-reviewed team outcome frame will connect the official result to the people who built the project.
+
+These are planned assets. The preview must not replace them with generated screenshots, empty frames, or outdated contradictory captures.
+
+## Outcome and validation
+
+Fradium won the Fully On-Chain Track at the World Computer Hacker League 2025 Global Finale. The result belongs to the six-person team and validates the competition build, not production adoption or independent security.
+
+The project also reached a public beta: the web application is hosted on the Internet Computer and the extension has a public Chrome Web Store listing. Those are useful distribution signals without turning a small student-team beta into a scale claim.
+
+<SourceLink href="https://bse.telkomuniversity.ac.id/tim-fradium-berhasil-meraih-global-finale-winner-fully-on-chain-track-pada-world-computer-hacker-league-2025/">Read the official Telkom University result.</SourceLink>
+
+## Where it stands
+
+Fradium is a completed 2025 sprint and publicly accessible beta. The product demonstrates a real multi-surface trust flow, while Bitcoin, Ethereum, and Solana execution remains testnet or devnet scoped. Repository model results are experimental evidence, and several administrative, payment-verification, credential, and quality boundaries would need further hardening before a production-security claim.
+
+## What I'd improve next
+
+- Capture one current, reproducible product path and retire inconsistent legacy media.
+- Redraw the architecture around the implementation that is actually wired today.
+- Add reproducible model evaluation, current whole-repository CI, and stronger credential and admin boundaries.
+- Verify native payment transactions on-chain before accepting completion claims.
+- Continue testing how to explain disagreement between model and community evidence without overwhelming the user.
