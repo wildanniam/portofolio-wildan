@@ -97,6 +97,9 @@ jobs:
       - name: Run accessibility regression tests
         run: npm run test:a11y
 
+      - name: Run editorial foundation matrix
+        run: npm run test:foundation
+
       - name: Upload Playwright diagnostics
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

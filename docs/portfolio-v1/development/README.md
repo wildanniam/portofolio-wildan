@@ -10,11 +10,12 @@ This package turns the approved portfolio concept, scope, content contract, medi
 ## Documents
 
 1. [DESIGN.md](./DESIGN.md) — visual tokens, typography, grid, media, component vocabulary, states, motion, and responsive rules.
-2. [ARCHITECTURE.md](./ARCHITECTURE.md) — route, content, Server Component, client island, media, dependency, and SEO boundaries.
-3. [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — controlled-rewrite strategy, phased delivery, approval gates, budgets, risks, and definition of done.
-4. [MIGRATION_MAP.md](./MIGRATION_MAP.md) — exact keep/rewrite/retire map for current routes, components, data, dependencies, assets, and documentation.
-5. [ISSUE_BREAKDOWN.md](./ISSUE_BREAKDOWN.md) — twelve proposed high-signal GitHub issues with dependencies, acceptance criteria, and verification.
-6. [QA_MATRIX.md](./QA_MATRIX.md) — browser, viewport, no-JavaScript, reduced-motion, accessibility, performance, visual, content, and release checks.
+2. [FOUNDATION_COMPONENTS.md](./FOUNDATION_COMPONENTS.md) — implemented shell boundary, primitive semantics, deliberate deviations, and QA hooks.
+3. [ARCHITECTURE.md](./ARCHITECTURE.md) — route, content, Server Component, client island, media, dependency, and SEO boundaries.
+4. [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — controlled-rewrite strategy, phased delivery, approval gates, budgets, risks, and definition of done.
+5. [MIGRATION_MAP.md](./MIGRATION_MAP.md) — exact keep/rewrite/retire map for current routes, components, data, dependencies, assets, and documentation.
+6. [ISSUE_BREAKDOWN.md](./ISSUE_BREAKDOWN.md) — twelve proposed high-signal GitHub issues with dependencies, acceptance criteria, and verification.
+7. [QA_MATRIX.md](./QA_MATRIX.md) — browser, viewport, no-JavaScript, reduced-motion, accessibility, performance, visual, content, and release checks.
 
 ## Locked implementation decisions
 

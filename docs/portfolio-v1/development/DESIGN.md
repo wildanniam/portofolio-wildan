@@ -78,6 +78,10 @@ Contrast requirements:
 
 Use **Geist Sans** and **Geist Mono** through `next/font/google`; the production build self-hosts the resulting font files. Before implementation, record the exact upstream source/version and retain the verified license notice. V1 introduces no third typeface unless the opening typesetting checkpoint fails and a replacement passes a new license/performance review.
 
+The verified source commits, binary versions, copyright notice, and retained
+OFL 1.1 text are recorded in the
+[typography source and license record](../typography-source.md).
+
 | Style | Family and specification |
 |---|---|
 | Display XL | Geist Sans, `clamp(3.5rem, 9vw, 8.75rem) / 0.88`, weight 600, tracking `-0.055em` |
@@ -245,6 +249,12 @@ Use semantic variables instead of scattering numeric values through components:
 | Layering | `--layer-base: 0`, `--layer-sticky: 20`, `--layer-header: 30`, `--layer-motion-overlay: 40`, `--layer-modal: 50` |
 
 Tailwind utilities may reference these variables, but the variables remain the documented source of truth. Components must not invent new z-index scales or motion durations without updating this contract.
+
+The four required line-height tokens are the coarse semantic defaults. The
+foundation may define `--leading-display-l`, `--leading-heading-m`,
+`--leading-body-l`, and `--leading-small` to encode the other exact values in
+the typography table; these are documented variants, not component-local
+inventions.
 
 ## 11. Responsive composition
 

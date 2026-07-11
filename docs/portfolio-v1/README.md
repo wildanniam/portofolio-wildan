@@ -19,6 +19,8 @@ for pre-existing user work are recorded in the
 - [Approved blueprint and flagship dossier](./blueprint-summary.md)
 - [V1 scope and route lock](./scope-v1.md)
 - [Design contract](./development/DESIGN.md)
+- [Foundation component contracts](./development/FOUNDATION_COMPONENTS.md)
+- [Typography source and license record](./typography-source.md)
 - [Target architecture](./development/ARCHITECTURE.md)
 - [Development plan](./development/DEVELOPMENT_PLAN.md)
 
@@ -61,6 +63,10 @@ bounded flagship evidence transition. WebGL and Three.js are outside V1.
 The quality foundation is tracked in
 [GitHub Issue #3](https://github.com/wildanniam/portofolio-wildan/issues/3) on
 `codex/3-quality-foundation`.
+
+The light editorial foundation checkpoint is tracked in
+[GitHub Issue #5](https://github.com/wildanniam/portofolio-wildan/issues/5) on
+`codex/5-editorial-foundations`.
 
 The implementation uses replacement-first migration. V5 remains available
 until the V1 release candidate passes its gates and Wildan approves cutover.

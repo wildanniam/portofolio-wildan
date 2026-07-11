@@ -16,6 +16,8 @@
 /playwright-report/
 /test-results/
 /.quality-reports/
+/.playwright-cli/
+/output/playwright/
 
 # next.js
 /.next/
