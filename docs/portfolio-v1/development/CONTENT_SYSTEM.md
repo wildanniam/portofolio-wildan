@@ -218,8 +218,8 @@ usage must be recorded first.
 - `server-only` marks the filesystem boundary.
 - `tsx` is used only as the TypeScript CLI loader. Because the MDX dependency
   chain is ESM-only, a small `.mjs` runner imports the TypeScript validator under
-  `node --import tsx/esm`; this also keeps Node 24 Linux from classifying the
-  TypeScript entry as CommonJS before the ESM loader runs.
+  `node --import tsx/esm`; the package is explicitly ESM so Node 24 Linux does
+  not classify the TypeScript module graph as CommonJS before the loader runs.
 - The repository requires Node 24 and is not an Edge Runtime module.
 
 | Package | Pinned version | License | Purpose |
