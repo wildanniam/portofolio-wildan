@@ -1,0 +1,27 @@
+topic: Wildan Portfolio Flagship Evidence Audit
+as_of: 2026-07-11
+time_range: Current repository and live-product state through 2026-07-11, with full public history used when relevant
+items:
+  - name: Fradium
+    category: AI-powered Web3 trust layer
+    repository: https://github.com/fradiumofficial/fradium
+    live_url: https://fradium.io
+    owner_context: Wildan confirms his role as Leader & Full-Stack Developer; owner attestation is valid role provenance
+  - name: Nova AI Wallet
+    category: AI wallet orchestration
+    repository: https://github.com/OfficialNovaAI/nova-wallet
+    live_url: https://nova-wallet-puce.vercel.app
+    owner_context: Wildan confirms his role as Full-Stack & AI Builder; owner attestation is valid role provenance
+  - name: PayGate
+    category: API monetization and agentic payments
+    repository: https://github.com/wildanniam/paygate-stellar
+    live_url: https://trypaygate.com
+    owner_context: Wildan confirms his role as Founder & Full-Stack Developer and a verified $5K SCF Instaward recipient
+  - name: Quorum
+    category: Stellar event, access, and settlement hackathon build
+    repository: https://github.com/wildanniam/Quorum
+    owner_context: Wildan confirms his role as Full-Stack Product Builder; owner attestation is valid role provenance
+execution:
+  batch_size: 3
+  items_per_agent: 1
+  output_dir: ./results

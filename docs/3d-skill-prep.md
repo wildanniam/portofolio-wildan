@@ -1,5 +1,12 @@
 # 3D Skill Preparation
 
+> [!WARNING]
+> **Historical V5 implementation experiment, superseded on 11 July 2026.**
+> Do not use this reactor or WebGL direction for new implementation. The
+> canonical V1 contract is [The Open Proving Ground](./portfolio-v1/README.md).
+> This document is retained only to explain the legacy implementation being
+> migrated.
+
 ## Installed Codex Skills
 
 The following Claude design skills were adapted into permanent Codex skills under `/Users/wildanniam/.codex/skills`:

@@ -1,0 +1,211 @@
+{
+  "project_name": "Nova AI Wallet",
+  "repository_url": "https://github.com/OfficialNovaAI/nova-wallet",
+  "live_urls": [
+    {
+      "label": "Public product deployment",
+      "url": "https://nova-wallet-puce.vercel.app",
+      "verification": "The landing page returned HTTP 200 on 2026-07-11 and visibly exposed the Nova product, feature grid, wallet connection entry point, and /chat route."
+    },
+    {
+      "label": "Wallet-gated chat experience",
+      "url": "https://nova-wallet-puce.vercel.app/chat",
+      "verification": "The route returned HTTP 200 and initially rendered a Connect Your Wallet gate on 2026-07-11. In a real browser session, the page later crashed because /api/copilotkit returned HTTP 500 and no CopilotKit agent registered; treat this as a degraded demo, not a working end-to-end product."
+    },
+    {
+      "label": "Canonical public repository",
+      "url": "https://github.com/OfficialNovaAI/nova-wallet",
+      "verification": "Public, non-archived repository with 82 commits and main as the default branch."
+    },
+    {
+      "label": "External trade-cost predictor",
+      "url": "https://wildanniam-slippagepredictoronchain.hf.space",
+      "verification": "The /health endpoint returned HTTP 200 on 2026-07-11 and identified a LightGBM model running with ONNX Runtime. A read-only ETH/USDT prediction request also returned HTTP 200 with ranked venue quotes."
+    },
+    {
+      "label": "Lisk Builders Challenge Round Three program page",
+      "url": "https://lisk-builders-challenge-3.devfolio.co/",
+      "verification": "Public program page confirms the Southeast Asia challenge, Lisk and BlockDevId organizers, four-month build program, January 10, 2026 submission deadline, and January 31 Demo Day."
+    }
+  ],
+  "repository_state": {
+    "visibility": "Public, non-fork, non-archived repository under the OfficialNovaAI organization.",
+    "default_branch": "main",
+    "history": "The repository contains 82 commits, 187 tracked files, 136 TypeScript/TSX files, and roughly 20,445 lines of TypeScript/TSX. GitHub credits Wildan with 56 contributions; local history associates 62 of 82 commits with his verified email or GitHub identity, making him the dominant contributor.",
+    "latest_updates": "The last code change was ArgaAAL's Ethereum client update on 2026-01-29. Wildan's two May 2026 commits updated the README and documentation assets; the latest push was 2026-05-04. The gap between the January code freeze and May documentation polish is consistent with a completed hackathon sprint rather than an actively operated product.",
+    "license_and_release_state": "GitHub detects no license, there is no LICENSE file, no tags or releases are published, and no GitHub Actions workflows are configured. The repository has zero public stars and forks; those counts are not quality metrics, but they provide no external adoption signal.",
+    "quality_state": "A clean npm install succeeded but reported 89 dependency vulnerabilities: 10 low, 56 moderate, and 23 high. npm run lint failed with 173 errors and 85 warnings. A local production build compiled and type-checked, then failed while prerendering /_not-found because a dependency attempted to use localStorage on the server."
+  },
+  "product_maturity": "An award-recognized hackathon artifact with a public landing page, substantial full-stack AI-agent implementation, authentic team and beta-testing media, and a live companion prediction service. It captures a completed sprint and the learning around it. Recorded flows and repository evidence remain the canonical showcase even when the historical chat runtime is unavailable.",
+  "problem": "Existing crypto wallets expose users to menus, raw addresses, fragmented explorers, unclear execution costs, and payment rails that assume both parties already understand crypto. Nova explores whether one conversational layer can translate intent into wallet reads, on-chain analysis, transaction preparation, and fiat-to-crypto payment workflows while keeping the final wallet signature under the user's control.",
+  "intended_users": {
+    "primary": [
+      "Crypto users who already have an EVM wallet but want to ask for balances, transaction preparation, and address activity in natural language.",
+      "On-chain explorers and traders who want portfolio, whale, counterparty, transaction-statistics, and trade-cost summaries without manually combining several explorers and market tools.",
+      "Freelancers and creators who want to create a paylink for a client who prefers QRIS, card, or fiat on-ramp payment."
+    ],
+    "important_boundary": "The current code requires a connected external wallet for the main chat page. It does not create or custody wallet keys, and the current prototype is unsuitable for high-value or production financial use."
+  },
+  "value_proposition": "Nova turns a natural-language request into an inspectable wallet action or evidence card: identify intent, select a tool, fetch wallet, chain, payment, or market data, render a structured preview, and ask the user to confirm signing in their own wallet. For the portfolio, the strongest promise is not 'an autonomous superwallet'; it is 'a prototype orchestration layer that makes crypto workflows conversational without moving the signing boundary into the AI.'",
+  "canonical_product_flow": [
+    "The user opens the public landing page, enters /chat, and connects an EVM wallet through RainbowKit and WalletConnect-compatible providers.",
+    "The active chat UI wraps the experience in CopilotKit. Its system instructions map prompts to registered frontend actions such as balance checks, comprehensive address analysis, transaction preparation, trade-cost prediction, and paylink creation.",
+    "For reads and analysis, the action calls a Next.js API route. The blockchain layer selects a chain client, fetches RPC or explorer data, aggregates portfolio, token activity, transaction statistics, whale activity, and counterparties, then returns data for a dedicated generative UI card.",
+    "For a send request, Nova validates the recipient and amount, requests a network switch when needed, and renders a transaction card. Only a separate user click invokes Wagmi sendTransaction, after which the connected wallet owns the signing decision.",
+    "For trade-cost prediction, Nova calls the repository's Next.js proxy to Wildan's Hugging Face service, which currently returns LightGBM/ONNX venue estimates; the UI ranks the returned exchanges in a SlippageCard.",
+    "For Paylink, Nova collects amount, token, network, and recipient wallet; Prisma stores a payment request, Midtrans handles the QRIS side, and Transak is intended to quote or deliver the crypto side. A client-facing /pay/[paymentId] page polls the request state.",
+    "The result is rendered as chat text, a form, a status card, an analysis card, or a transaction preview. Some branches currently fall back to mocks or synthetic completion; these must be visibly separated from real evidence in the case study."
+  ],
+  "verified_role": "Wildan's role was `Full-Stack & AI Builder`, established through owner attestation and strongly reinforced by repository history. As the top contributor, he worked across the Next.js application, AI agents, CopilotKit and generative UI, transaction preparation, prediction integration, Paylink, rate limiting, deployment fixes, and documentation. Nova remains credited as a team build.",
+  "contribution_evidence": {
+    "commit_ownership": "Wildan is associated with 62 of 82 commits in local history, while GitHub's contributor API credits wildanniam with 56 contributions. He authored the initial commit on 2025-12-21 and both May 2026 documentation updates.",
+    "representative_commits": [
+      "f12dde6 — feat: build agent",
+      "5d1d6b1 — feat: implement CopilotKit UI tools with gpt-4o-mini",
+      "64f70e6 — generative UI transaction",
+      "c8ea690 — generative UI slippage predictor",
+      "e74e56b — integration payment link",
+      "7554425 — Redis and rate-limiting implementation",
+      "7febe7d and 5a31020 — Vercel and Prisma build/deployment fixes",
+      "22ac379 — generative UI on-chain search",
+      "38b03a8 — final documentation and evidence update"
+    ],
+    "authored_surfaces": "Wildan's history repeatedly touches app/chat/page.tsx, app/chat/actions/useNovaActions.tsx, app/api/copilotkit/route.ts, app/api/ai/chat/route.ts, transaction and payment cards, payment services and webhooks, Prisma schema, chain configuration, on-chain routes, tests, README, PRD, and deployment configuration.",
+    "public_pull_requests": "Wildan opened and merged agent work through pull requests #2, #3, #5, #7, and #8 in the public repository."
+  },
+  "collaborators": "Keep code and award rosters separate. GitHub publicly credits three code contributors: Wildan (wildanniam), Galih Aditya M (galihadityam1), and ArgaAAL. Galih's history is concentrated in chat and landing-page UI redesign work; Arga implemented and hardened the multi-chain intelligence layer and Ethereum/explorer behavior. Telkom University's institutional award report names Wildan, Arga, and Casta Garneta as the Nova team for the recognition. The award photo contains four people, but the fourth person's identity and role were not verified; do not infer that every person pictured was a code contributor or named award-team member. Do not imply that Wildan designed every visual surface or built every blockchain client alone.",
+  "architecture": "Nova is a Next.js App Router application deployed on Vercel. The browser uses RainbowKit, Wagmi, Viem, TanStack Query, and a client-only wallet provider. The current /chat path uses CopilotKit with a server runtime at /api/copilotkit backed by OpenAIAdapter and gpt-4o-mini, while most callable tools are registered in the browser so they can render generative UI. A second, manual Gemini/Gemma tool-calling route exists at /api/ai/chat, but the current chat page does not call it. Tool actions invoke Next.js routes for balances, a blockchain orchestrator, payments, and predictions. Chain-specific clients combine EVM RPC reads with explorer-style APIs; aggregators derive portfolio, token activity, transaction statistics, whale, and counterparty views. Transaction execution remains in the connected wallet after a rendered confirmation card. The Paylink subsystem stores PaymentRequest and WebhookLog records in PostgreSQL through Prisma, integrates Midtrans QRIS and Transak staging flows, and serves a polling client payment page. Upstash Redis rate-limits the CopilotKit route. The trade-cost route proxies to a separate Hugging Face LightGBM/ONNX service.",
+  "technology_stack": {
+    "frontend": "Next.js 16.1 App Router, React 19.2, TypeScript 5.9, Tailwind CSS 4, Radix UI/shadcn-style components, Framer Motion, Recharts, Lucide, React Hook Form, Zod, and Axios.",
+    "agent_and_ai": "CopilotKit 1.49 with OpenAIAdapter/gpt-4o-mini in the active chat runtime; an alternate Google Generative AI Gemma/Gemini route and custom intent parser; generative UI actions and cards; an external LightGBM model served with ONNX Runtime for trade-cost prediction.",
+    "web3": "Wagmi 2, Viem 2, RainbowKit 2, WalletConnect, EVM RPC clients, Etherscan/Blockscout-style explorer clients, and configured Ethereum, Lisk, Mantle, Polygon, Optimism, Arbitrum, and Base mainnet/testnet chains.",
+    "data_and_payments": "Prisma 5, PostgreSQL, Midtrans QRIS, Transak staging and widget flows, Upstash Redis rate limiting, and external price/data sources including CryptoCompare, Moralis, and DeFiLlama fallbacks in chain clients.",
+    "verification": "ESLint, a single script-style blockchain integration check, several manual Gemini key/model probes, and manual browser inspection. No CI workflow, unit-test suite, assertion-based integration suite, or end-to-end test harness is present."
+  },
+  "standout_engineering_decisions": [
+    "Treat Nova as an orchestration layer above existing wallets instead of creating a new custodial wallet. This keeps private keys outside the application and makes the connected wallet the final signing boundary.",
+    "Use generative UI rather than text-only answers. Balance, portfolio, counterparty, whale, payment, slippage, and transaction results become purpose-built cards or forms that users can inspect before acting.",
+    "Register tool actions close to the React presentation layer. That makes action state available to visual cards and enables a form-first fallback when the user's prompt omits transaction or payment parameters.",
+    "Consolidate expensive address research into a comprehensive action that requests portfolio, whale, counterparty, statistics, and token activity in one backend call instead of issuing multiple sequential agent calls.",
+    "Bound analysis windows and add caching, retries, request de-duplication, and multi-chain fallbacks to keep explorer-heavy analysis usable during a hackathon demo.",
+    "Separate transaction preparation from execution: the AI chooses and validates a proposed action, while a user-operated card triggers network switching and wallet confirmation.",
+    "Split Paylink by payer context: Midtrans QRIS for Indonesian payments and Transak for global on-ramp flows. This was ambitious product scope for the challenge, although the current implementation must remain labeled prototype.",
+    "Use an external model service for execution-cost prediction so the web application can consume a separately deployable model through a narrow HTTP contract.",
+    "The demo fallbacks are also an important engineering lesson: preserving a presentation with synthetic data helped the sprint, but mixing simulation into normal execution paths weakened trust. The case study should show the decision, its cost, and the planned replacement with explicit demo fixtures and provenance labels."
+  ],
+  "reliability_security_evidence": {
+    "implemented_controls": [
+      "User-controlled wallet confirmation for sends; the AI does not hold a private key or sign the transaction.",
+      "Recipient and amount validation in the send flow, Viem address validation in wallet reads, and supported-chain checks.",
+      "A sliding-window Upstash rate limiter on the CopilotKit endpoint.",
+      "Midtrans SHA-512 webhook signature verification and payment-status modeling in Prisma.",
+      "Caching, exponential backoff, rate-limit handling, and request de-duplication in parts of the on-chain and prediction layers.",
+      "A blockchain integration script that executed successfully on 2026-07-11 for transaction statistics, portfolio, and token activity, although it returned empty Sepolia data and contains no assertions.",
+      "The companion prediction service returned a healthy status and a real response during the audit."
+    ],
+    "material_gaps": [
+      "The public /chat experience crashed during browser inspection because /api/copilotkit returned HTTP 500; duplicate action registration warnings appeared before the crash.",
+      "The repository has no GitHub Actions workflows. ESLint currently fails with 173 errors, and a clean local production build fails during prerendering.",
+      "npm audit reported 89 dependency vulnerabilities, including 23 high-severity findings; this is a dependency snapshot, not proof that every finding is exploitable.",
+      "The Transak webhook route accepts plain JSON event bodies when encrypted data is absent and does not independently authenticate that fallback path.",
+      "Payment creation validates presence but not a bounded amount, currency allowlist, network allowlist, or recipient address. Several payment states auto-complete with randomly generated transaction hashes for demo purposes.",
+      "Mantle and Lisk chain wrappers inject synthetic reconciliation transactions with random hashes when RPC balance exceeds reconstructed explorer history. Those records can influence derived statistics and must never be presented as authentic on-chain proof.",
+      "Trade-cost and Transak errors can fall back to hard-coded or mock results in normal UI paths. The UI labels at least one prediction fallback as simulated, but evidence provenance is not consistently enforced across the product.",
+      "No external security audit, uptime history, monitoring, production incident record, or independently replayable payment transaction evidence was found."
+    ]
+  },
+  "shipped_features": [
+    "A public responsive marketing site with Nova's AI-wallet positioning, feature overview, and wallet entry point.",
+    "Wallet connection and chain configuration through RainbowKit, Wagmi, Viem, and WalletConnect-compatible EVM wallets.",
+    "A chat-first product shell with CopilotKit system instructions, tool selection, quick actions, and generative UI rendering.",
+    "Native and multi-chain balance reads, portfolio summaries, token activity, transaction statistics, whale analysis, counterparty analysis, and a comprehensive wallet-analysis action.",
+    "Natural-language transaction preparation with network switching, a review card, explicit confirm/cancel controls, and connected-wallet signing.",
+    "A trade execution-cost form and card backed by a currently healthy external LightGBM/ONNX prediction API, plus a documented API guide.",
+    "Paylink creation forms, persisted payment requests, public payment pages, QRIS initiation, Transak staging/widget integration, webhook routes, and status polling. These are technically present but include demo-only completion and quote fallbacks.",
+    "A product PRD, API guide, architecture slides, beta-testing slide, roadmap, award photo, and README implementation index."
+  ],
+  "external_validation": [
+    "Telkom University's institutional report at https://bse.telkomuniversity.ac.id/prestasi-tim-nova-ai-di-south-east-asia-lisk-builder-challenge-3/ confirms Nova's 1st Notable Mention and 1st Social Media Challenge recognition and names Wildan, Arga, and Casta Garneta.",
+    "The repository's authentic award photo at https://github.com/OfficialNovaAI/nova-wallet/blob/main/docs/assets/readme/winner.jpg visibly shows the Nova team receiving '1st Notable Mention' with USD 500 and 'Social Media Challenge' with USD 150 at a Lisk x BlockDevId event.",
+    "Casta Garneta's public LinkedIn profile, https://id.linkedin.com/in/castagarneta, lists '1st Notable Mention & Social Media Challenge Winner – Lisk Builders Challenge 3 (Southeast Asia Region)' from BlockDev Indonesia in January 2026.",
+    "The official program page at https://lisk-builders-challenge-3.devfolio.co/ confirms the organizers, Southeast Asia scope, submission process, finalist stage, and January 31, 2026 Demo Day. It does not itself list Nova's award category.",
+    "The repository's beta slide reports seven respondents with scores from 80 to 98 and an average SUS score of 90. This is internal product evidence rather than independent validation because raw questionnaires, recruitment criteria, task scripts, and calculations are not published.",
+    "No verified user count, transaction volume, production partnership, grant, investment, mainnet deployment, or independent customer testimonial was found."
+  ],
+  "repository_proof": [
+    "README.md maps agent capabilities to concrete files and states the bounded product direction, core flows, stack, roadmap, and current polish areas.",
+    "Nova_Wallet_UI_UX_PRD_v2.md contains product problems, user personas, core flows, component requirements, design principles, target metrics, out-of-scope items, and a phased roadmap.",
+    "app/chat/page.tsx and app/chat/actions/useNovaActions.tsx contain the wallet gate, CopilotKit context, 27 registered action definitions, generative cards, transaction confirmation, Paylink, and multi-chain analysis behavior.",
+    "app/api/copilotkit/route.ts, app/api/ai/chat/route.ts, app/lib/intentParser.ts, and app/lib/systemPrompt.ts expose the active and alternate agent paths and their guardrails.",
+    "app/lib/blockchain/orchestrator, clients, aggregators, and app/lib/blockchainAgentWrapper.ts contain the multi-chain data acquisition and analysis implementation, including both useful resilience logic and synthetic reconciliation debt.",
+    "app/lib/services/payment.service.ts, midtrans.service.ts, transak.service.ts, payment/webhook API routes, and prisma/schema.prisma expose the Paylink state machine and provider boundaries.",
+    "test/test-blockchain-integration.ts is an executable smoke script. It ran successfully during the audit but has no assertions and returned zero-transaction data, so it is evidence of a reachable code path rather than correctness coverage.",
+    "api.md documents the external cost-prediction contract; the linked Hugging Face health and prediction endpoints were live during the audit.",
+    "The git history and public pull requests make Wildan's agent, transaction, payment, deployment, and documentation contributions inspectable."
+  ],
+  "available_media": [
+    "docs/assets/readme/winner.jpg — authentic 1280x960 four-person award moment with visible 1st Notable Mention and Social Media Challenge boards; strongest human moment asset.",
+    "docs/assets/readme/solution-overview.png — 1800x1012 product overview slide containing laptop renders of the landing page and chat UI.",
+    "docs/assets/readme/system-architecture.jpeg — 1800x756 architecture drawing covering agent, analysis, wallet, payment, Midtrans, Transak, and market-data layers. It is visually usable as source material but should be redrawn to match the actual code.",
+    "docs/assets/readme/beta-sus-score.png — 1800x1012 beta-testing collage with participant photos, seven SUS bars, average score, and qualitative takeaways. Obtain consent and raw methodology before treating it as research proof.",
+    "docs/assets/readme/how-it-works.png and roadmap.png — 1800x1012 flow and future-roadmap slides. The how-it-works slide includes Health Wallet Score and Hugging Face risk language not confirmed in the current application, so it is not a canonical architecture asset.",
+    "public/landing-page and public/card-assets — hero decoration, product UI renders, feature-card illustrations, and a larger 771x528 chat interface render used by the live landing page.",
+    "public/nova-logo.webp, public/navbar/navbar-icon.png, chain logos, and Paylink background/logo assets — reusable authentic brand and product materials.",
+    "The live landing page itself is a valid source for fresh desktop/mobile captures. No MP4, GIF, narrated walkthrough, silent product loop, exported Figma file, or full-resolution screen-by-screen product screenshot set was found."
+  ],
+  "evidence_gaps": [
+    "Optionally restore the historical CopilotKit runtime; the canonical case study can already use recorded flows, repository evidence, and a curated product reconstruction of the completed sprint.",
+    "Create a sanitized 8–15 second demo loop for one canonical path: prompt → tool selection → generative evidence card → explicit wallet confirmation. Also provide a poster frame and reduced-motion fallback.",
+    "Capture standardized, current screenshots for the welcome state, connected chat, comprehensive address analysis, transaction review, wallet signature, trade-cost card, Paylink creation, and client payment state.",
+    "Redraw the architecture from the current source. Separate active CopilotKit/OpenAI behavior, unused Gemini route, chain analysis, user-signing boundary, predictor service, and prototype payment system. Retire slides that claim unimplemented wallet-health or risk features.",
+    "Separate real, simulated, and aspirational evidence at the data-model level. Remove synthetic reconciliation transactions and random completion hashes from normal runtime paths; keep demo fixtures behind an explicit mode with visible provenance.",
+    "Add assertion-based unit/integration tests, one browser end-to-end happy path, CI gates, a reproducible production build, dependency remediation, and a public status or verification record.",
+    "Harden and document the Transak webhook authentication path, payment input validation, idempotency, reconciliation, and transaction verification before showing Paylink as anything beyond a prototype.",
+    "Publish raw or summarized beta-research methodology: tasks, respondent criteria, consent, anonymization, individual SUS answers, calculation, and findings. Do not rely only on the designed slide.",
+    "Add an official or organizer-hosted award result link if available, plus a named team roster and role attribution. The current photo and teammate profile support the outcome but do not fully document individual responsibilities.",
+    "Add a LICENSE file, release or version record, change history, and a concise reproduction guide with safe example environment variables.",
+    "Obtain real explorer links or sanitized transaction receipts for any on-chain or payment claim selected for the case study."
+  ],
+  "strongest_portfolio_angle": "Show how Wildan and the Nova team turned one ambiguous sentence into a bounded, inspectable wallet action without giving the agent signing authority. Follow a prompt through intent, tool selection, data, a generative evidence card, and explicit user confirmation. The result is a strong hackathon story about AI-agent UX, Web3 boundaries, rapid full-stack execution, award recognition, and what Wildan learned while building an ambitious prototype under time pressure.",
+  "recommended_headline": "Turning wallet intent into inspectable actions—without taking over the signature.",
+  "recommended_role_label": "Full-Stack & AI Builder",
+  "recommended_evidence_sequence": [
+    "01 — The friction map: one compact frame showing the menus, explorer tabs, raw addresses, and hidden costs Nova attempted to collapse into a conversation.",
+    "02 — The build sprint: introduce the Lisk Builders Challenge, the team, Wildan's Full-Stack & AI Builder role, and the external-wallet signing boundary.",
+    "03 — Prompt becomes plan: animate a real example such as 'Analyze this address' into intent, selected action, chain, and data sources. Use source-derived labels rather than a decorative AI-brain diagram.",
+    "04 — Agent architecture: show active CopilotKit runtime → frontend action → Next.js route → chain client/aggregator → generative card. Visually mark the alternate Gemini route as experimental or omit it from the primary flow.",
+    "05 — Evidence card: expand a real comprehensive-analysis card beside sanitized API payload and source files. Never use the synthetic reconciliation path as proof.",
+    "06 — Human confirmation: show transaction details, network switch, confirm/cancel card, and the connected wallet signature prompt to prove that the user—not the model—authorizes execution.",
+    "07 — Model boundary: show the live Hugging Face health response and one trade-cost result, clearly distinguishing model output from guaranteed execution price.",
+    "08 — Ambitious branch: present Paylink as a prototype system map and UI flow, with demo/staging labels and no claim of completed production settlement.",
+    "09 — External outcome: expand the authentic award photo, exact 1st Notable Mention and Social Media Challenge labels, program context, and a factual caption about what the team shipped.",
+    "10 — What I would improve next: distinguish recorded, live, and simulated states, then close with the ideas Wildan would carry into the next iteration."
+  ],
+  "case_study_outline": [
+    "Opening — Nova AI Wallet; headline, status 'Lisk Builders Challenge prototype', role label, year, live/repository links, and one authentic product frame.",
+    "Why it existed — the concrete wallet, address, on-chain data, cost, and payment friction; keep the scope to the problems actually represented in code.",
+    "The challenge context — four-month Southeast Asia build program, team and collaborator credits, deadline pressure, and exact award outcome.",
+    "My role and the team — Wildan's Full-Stack & AI Builder ownership across agent tools, generative UI, transaction preparation, Paylink, rate limiting, deployment, and documentation, alongside collaborator credit.",
+    "One canonical flow — prompt → intent/action → live data → evidence card → user confirmation. Use a real address-read or testnet send as the golden walkthrough.",
+    "System anatomy — active AI runtime, browser actions, Next.js routes, multi-chain analysis, external predictor, wallet signing boundary, and payment prototype.",
+    "Engineering decisions — generative UI, comprehensive action, bounded analysis windows, de-duplication, external-wallet custody, and service separation.",
+    "What shipped — current landing, wallet connection, analysis actions, transaction review, predictor integration, and Paylink surfaces, each tagged live, degraded, staging, or simulated.",
+    "Validation — award photo and source, event program, seven-person beta slide with methodology caveat, live predictor response, and repository evidence.",
+    "Where it stands — a completed hackathon artifact whose live, recorded, staging, and simulated states are labeled clearly.",
+    "What I would improve next — explicit evidence provenance, one agent architecture, deterministic fixtures, CI/e2e coverage, verified payment state, and a refreshed media package.",
+    "Archive metadata — collaborators, stack, source links, last verified date, license status, project maturity, and limitations."
+  ],
+  "limitations_and_no_go_claims": [
+    "Frame Nova proudly as an award-recognized hackathon artifact rather than a production wallet.",
+    "Use the exact recognition: `1st Notable Mention` and `1st Social Media Challenge`, with the USD 500 and USD 150 boards visible in the authentic team photograph.",
+    "Differentiate live, recorded, staging, and simulated states where it helps a visitor understand the prototype.",
+    "Describe transactions as agent-assisted preparation with explicit connected-wallet confirmation.",
+    "Present Paylink, internal beta results, and architecture material in their hackathon context, and credit Galih, Arga, and the broader team alongside Wildan's Full-Stack & AI Builder role."
+  ],
+  "readiness_score": {
+    "score": 4,
+    "out_of": 5,
+    "rationale": "Nova already supports a compelling full hackathon case study through Wildan's Full-Stack & AI Builder role, a substantive repository, a coherent product idea, authentic award/team media, product renders, architecture material, beta documentation, and a live companion model. A focused media pass will improve presentation; an inactive historical runtime does not invalidate the completed sprint artifact."
+  },
+  "uncertain": []
+}

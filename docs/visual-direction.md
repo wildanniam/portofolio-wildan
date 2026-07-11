@@ -1,5 +1,12 @@
 # Portfolio Visual Direction
 
+> [!WARNING]
+> **Historical V5 direction, superseded on 11 July 2026.**
+> Do not use this reactor or WebGL direction for new implementation. The
+> canonical V1 contract is [The Open Proving Ground](./portfolio-v1/README.md).
+> This document is retained only to explain the legacy implementation being
+> migrated.
+
 ## Working Gates
 
 - [V5 Phase 1 - Global Audit and Acceptance Gate](./v5-phase-1-audit.md)

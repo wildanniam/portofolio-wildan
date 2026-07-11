@@ -1,0 +1,134 @@
+field_categories:
+  - category: Project Identity
+    fields:
+      - name: project_name
+        description: Canonical public project name.
+        detail_level: brief
+        required: true
+      - name: repository_url
+        description: Canonical GitHub repository URL used for the audit.
+        detail_level: brief
+        required: true
+      - name: live_urls
+        description: Verified public product, demo, documentation, or presentation URLs.
+        detail_level: moderate
+        required: true
+      - name: repository_state
+        description: Visibility, default branch, latest meaningful update, license, and repository maturity signals.
+        detail_level: detailed
+        required: true
+      - name: product_maturity
+        description: Evidence-based maturity classification such as active product, funded sprint, prototype, hackathon build, or archived experiment.
+        detail_level: detailed
+        required: true
+  - category: Product Story
+    fields:
+      - name: problem
+        description: The concrete user or system problem the project addresses.
+        detail_level: detailed
+        required: true
+      - name: intended_users
+        description: Primary users and their relevant jobs or risks.
+        detail_level: moderate
+        required: true
+      - name: value_proposition
+        description: Concise evidence-backed value proposition suitable for portfolio use.
+        detail_level: detailed
+        required: true
+      - name: canonical_product_flow
+        description: Main input-to-outcome flow confirmed by source code, docs, or live product.
+        detail_level: detailed
+        required: true
+  - category: Wildan Contribution
+    fields:
+      - name: verified_role
+        description: Role wording may be established by Wildan's owner attestation. Repository, commit, documentation, and team evidence illustrate concrete scope and collaboration; they do not override his stated role.
+        detail_level: detailed
+        required: true
+      - name: contribution_evidence
+        description: Concrete evidence of Wildan's ownership or implementation contribution, including commits, authored files, architecture, deployment, or product work.
+        detail_level: detailed
+        required: true
+      - name: collaborators
+        description: Publicly verifiable collaborators or team context when relevant.
+        detail_level: moderate
+        required: true
+  - category: Technical System
+    fields:
+      - name: architecture
+        description: Major system components, boundaries, integrations, and data or control flow.
+        detail_level: detailed
+        required: true
+      - name: technology_stack
+        description: Verified frameworks, languages, infrastructure, AI, Web3, data, and testing technologies.
+        detail_level: detailed
+        required: true
+      - name: standout_engineering_decisions
+        description: Technical or product decisions that demonstrate judgment rather than a stack list.
+        detail_level: detailed
+        required: true
+      - name: reliability_security_evidence
+        description: Tests, CI, audit trails, validation, security controls, signing boundaries, transaction verification, monitoring, or other trust signals.
+        detail_level: detailed
+        required: true
+  - category: Proof And Media
+    fields:
+      - name: shipped_features
+        description: Features visibly or technically confirmed as implemented.
+        detail_level: detailed
+        required: true
+      - name: external_validation
+        description: Awards, grants, users, partnerships, demos, or third-party recognition with sources; omit anything not verified.
+        detail_level: detailed
+        required: true
+      - name: repository_proof
+        description: Strong inspectable repository artifacts such as tests, workflows, diagrams, changelogs, releases, or substantive modules.
+        detail_level: detailed
+        required: true
+      - name: available_media
+        description: Existing screenshots, videos, diagrams, logos, social images, or other authentic media and where they are located.
+        detail_level: detailed
+        required: true
+      - name: evidence_gaps
+        description: Missing proof or media required before the project can support a premium case study.
+        detail_level: detailed
+        required: true
+  - category: Portfolio Translation
+    fields:
+      - name: strongest_portfolio_angle
+        description: The most differentiated, truthful project story for the Open Proving Ground concept.
+        detail_level: detailed
+        required: true
+      - name: recommended_headline
+        description: Short English project headline that stays within verified evidence.
+        detail_level: moderate
+        required: true
+      - name: recommended_role_label
+        description: Concise public role label approved by Wildan and consistent with the known project context.
+        detail_level: brief
+        required: true
+      - name: recommended_evidence_sequence
+        description: Ordered evidence-frame sequence for problem, decision, system behavior, proof, and outcome.
+        detail_level: detailed
+        required: true
+      - name: case_study_outline
+        description: Recommended case-study chapter order and project-specific emphasis.
+        detail_level: detailed
+        required: true
+      - name: limitations_and_no_go_claims
+        label: Context And Next Milestones
+        description: Current lifecycle and technical boundaries, plus wording that would materially misrepresent users, funds, security, partnerships, or production status. Keep this concise and constructive.
+        detail_level: detailed
+        required: true
+      - name: readiness_score
+        description: Portfolio evidence readiness from 1 to 5 with concise rationale; this is not product maturity.
+        detail_level: moderate
+        required: true
+uncertain: []
+
+# Portfolio evidence-readiness rubric (not a product-quality or production-maturity score):
+# 1 — insufficient public evidence to publish a responsible project record.
+# 2 — a credible project summary is possible, but a case study would rely on major unsupported gaps.
+# 3 — a verified project brief is publishable; one focused proof/media sprint is still needed for a full case study.
+# 4 — a strong evidence-first case study is feasible now, with explicit gaps and claim boundaries.
+# 5 — a complete, durable proof package exists across product reality, system reasoning, verification, attribution, and media.

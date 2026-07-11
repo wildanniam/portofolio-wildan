@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wildan Syukri Niam - Portfolio
 
-## Getting Started
+An evidence-first portfolio for Wildan's work across software engineering, AI
+agents, and Web3 systems.
 
-First, run the development server:
+The current V5 website remains intact while **The Open Proving Ground V1** is
+developed through a controlled, issue-driven migration. The approved V1 source
+of truth lives in [`docs/portfolio-v1`](./docs/portfolio-v1/README.md).
+
+## Local development
+
+Prerequisites:
+
+- Node.js 20.x
+- npm 10.x
+
+The current baseline was verified with Node.js 20.20.2 and npm 10.8.2.
 
 ```bash
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To run the production build locally:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+### Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+No environment variables are required to build or browse the current website.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The legacy `/api/contact` endpoint requires `RESEND_API_KEY` when called.
+`RESEND_FROM` and `CONTACT_TO` are optional overrides. V1 uses direct contact
+links and does not depend on this endpoint.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Current verification
 
-## Deploy on Vercel
+```bash
+npm run lint
+npx tsc --noEmit --incremental false
+npm run build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The exact preservation state and observed results are recorded in the
+[V5 preservation baseline](./docs/portfolio-v1/baseline/README.md).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Standalone test, content validation, browser QA, accessibility, and bundle
+checks are specified in the V1 development plan and will be added by the
+corresponding implementation issues.
+
+## V1 source of truth
+
+- [Canonical V1 index](./docs/portfolio-v1/README.md)
+- [Blueprint summary](./docs/portfolio-v1/blueprint-summary.md)
+- [Scope V1](./docs/portfolio-v1/scope-v1.md)
+- [Content and asset contract](./docs/portfolio-v1/content-asset-contract.md)
+- [Motion storyboard](./docs/portfolio-v1/motion-storyboard.md)
+- [Development package](./docs/portfolio-v1/development/README.md)
+- [QA matrix](./docs/portfolio-v1/development/QA_MATRIX.md)
+
+The older reactor and 3D documents describe the preserved V5 direction. They
+are historical context, not implementation guidance for V1.
+
+## Development workflow
+
+Meaningful work follows the repository's issue-driven workflow:
+
+1. Create or reuse a GitHub issue.
+2. Branch from the agreed integration head using
+   `codex/<issue-number>-<short-topic>`.
+3. Implement the smallest complete delivery slice.
+4. Run the relevant verification commands.
+5. Open a pull request containing summary, verification, risks or notes, and a
+   link to the issue.
+6. Do not merge without Wildan's explicit approval.
+
+The safety branch is recovery evidence, not an implementation base.
+
+## Publishing policy
+
+V5 remains the public root until the V1 release candidate passes the tracked QA
+matrix and receives explicit cutover approval. V1 preview routes remain
+unlisted and `noindex` while unfinished.
+
+Only optimized, redacted, rights-cleared derivatives may be committed for
+documentary photos. Original photo masters remain outside the repository.
