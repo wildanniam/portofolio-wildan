@@ -15,7 +15,9 @@ Prerequisites:
 - npm 11.16.0
 
 Node 20 reached end of life in March 2026. The V1 implementation is pinned to
-the supported Node 24 LTS line through `.nvmrc`, `package.json`, and CI.
+Node 24.18.0/npm 11.16.0 for local verification through `.nvmrc`,
+`packageManager`, and CI. The engine range accepts Vercel's supported Node 24
+minor, while `vercel.json` pins npm 11.16.0 for deployment installs.
 
 ```bash
 nvm use

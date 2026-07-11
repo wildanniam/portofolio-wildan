@@ -15,7 +15,11 @@ alongside them.
 
 The original V5 baseline used Node 20.20.2. Node 20 reached end of life on 24
 March 2026, so Issue #3 deliberately moved the implementation runtime to Node
-24 LTS. `package.json`, `.nvmrc`, and CI pin the supported line.
+24 LTS. `.nvmrc`, `packageManager`, and CI pin the exact verification runtime.
+The root engine contract accepts supported Node 24/npm 11 minors because Vercel
+guarantees the runtime major rather than a specific patch. `vercel.json` still
+installs the pinned npm 11.16.0 before the clean deployment install, so the same
+strict install-script policy applies there.
 
 npm install scripts are deny-by-default in this repository. `.npmrc` turns
 unreviewed scripts into installation failures, while `package.json` approves
