@@ -12,6 +12,11 @@ const contentRouteSuffix = [
   "[slug]",
   "page.js.nft.json",
 ].join("/");
+const allowedContentTraceFragments = [
+  "/(v1)/(site)/",
+  "/(v1)/preview/open-proving-ground/content/[slug]/",
+  "/sitemap.xml/",
+];
 
 function filesBelow(directory) {
   return readdirSync(directory, { recursive: true, withFileTypes: true })
@@ -62,7 +67,15 @@ if (missingFiles.length > 0) {
 }
 
 const leakedRoutes = tracePaths.flatMap((tracePath) => {
-  if (tracePath === contentRouteTrace) return [];
+  const normalizedTracePath = normalize(tracePath);
+  if (
+    tracePath === contentRouteTrace ||
+    allowedContentTraceFragments.some((fragment) =>
+      normalizedTracePath.includes(fragment),
+    )
+  ) {
+    return [];
+  }
   const leakedFiles = contentFilesInTrace(tracePath);
   return leakedFiles.length > 0
     ? [
@@ -80,5 +93,5 @@ if (leakedRoutes.length > 0) {
 }
 
 console.log(
-  `Content tracing passed. ${tracedContentFiles.length} source files are isolated to the content route NFT.`,
+  `Content tracing passed. ${tracedContentFiles.length} source files are complete in the compatibility trace and limited to approved V1 consumers.`,
 );

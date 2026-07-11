@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import { siteConfig } from "@/lib/site-config";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,26 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://wildanniam.dev"),
-  title: {
-    default: "Wildan Syukri Niam - AI Researcher & Web3 Builder",
-    template: "%s - Wildan Syukri Niam",
-  },
-  description:
-    "Portfolio of Wildan Syukri Niam, an AI Researcher and Web3 Builder working on trustworthy agents, on-chain intelligence, and autonomous payment systems.",
-  openGraph: {
-    title: "Wildan Syukri Niam - AI Researcher & Web3 Builder",
-    description:
-      "Trustworthy AI agents, Web3 trust layers, on-chain intelligence, and agentic payments.",
-    type: "website",
-    url: "https://wildanniam.dev",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Wildan Syukri Niam - AI Researcher & Web3 Builder",
-    description:
-      "Building trustworthy AI agents for Web3 systems, payments, and software reliability.",
-  },
+  metadataBase: new URL(siteConfig.url),
 };
 
 export default function RootLayout({

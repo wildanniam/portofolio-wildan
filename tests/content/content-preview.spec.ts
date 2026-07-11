@@ -33,6 +33,18 @@ test("preview namespace rejects unauthenticated production requests", async ({},
   expect(response.headers.get("x-robots-tag")).toContain("noindex");
 });
 
+test("preview-enabled builds do not make public project routes routable", async ({
+  page,
+}) => {
+  const response = await page.goto("/work/fradium");
+
+  expect(response?.status()).toBe(404);
+  await expect(page.locator("[data-public-v1-not-found]")).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Fradium" }),
+  ).toHaveCount(0);
+});
+
 test("all canonical preview projects are server-rendered and non-indexable", async ({
   page,
 }, testInfo) => {
@@ -45,6 +57,7 @@ test("all canonical preview projects are server-rendered and non-indexable", asy
     expect(response?.headers()["x-robots-tag"], slug).toContain("noindex");
     await expect(page.locator('[data-site-shell="v1"]')).toHaveCount(1);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(page.locator("[data-project-page]")).toHaveCount(1);
     await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
       "content",
       /noindex/i,
@@ -67,7 +80,6 @@ test("full MDX and brief YAML routes render their intended structures", async ({
 
   await page.goto(`${root}/fradium`);
   await expect(page.getByRole("heading", { level: 2 })).toHaveText([
-    "Project facts.",
     "Problem and stakes",
     "My role and the team",
     "Constraint",
@@ -86,12 +98,45 @@ test("full MDX and brief YAML routes render their intended structures", async ({
   );
 
   await page.goto(`${root}/agentpay`);
-  await expect(page.locator("[data-project-narrative]")).toContainText(
+  await expect(page.locator('[data-project-state="brief"]')).toContainText(
     "machine-readable tool discovery",
   );
+  await expect(page.getByRole("heading", { level: 2 })).toHaveText([
+    "Why it exists",
+    "What the build produced",
+    "My role",
+  ]);
   await expect(
     page.getByRole("heading", { level: 2, name: "Problem and stakes" }),
   ).toHaveCount(0);
+
+  await expectNoRuntimeFailures(diagnostics, testInfo);
+});
+
+test("the motion-free portfolio composition exposes all four flagships", async ({
+  page,
+}, testInfo) => {
+  const diagnostics = observeRuntimeDiagnostics(page);
+  const response = await page.goto("/preview/open-proving-ground/site");
+
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('[data-portfolio-home-skeleton]')).toHaveCount(1);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Wildan Syukri Niam" }),
+  ).toBeVisible();
+  await expect(page.locator(".opg-project-ledger__title")).toHaveText([
+    "Fradium",
+    "Nova AI Wallet",
+    "PayGate",
+    "Quorum",
+  ]);
+  await expect(
+    page.locator(
+      'a[href="/preview/open-proving-ground/content/fradium"]',
+    ),
+  ).toHaveCount(1);
+  await expect(page.getByText("Building PayGate on Stellar")).toBeVisible();
+  await expect(page.locator("figure, canvas, [data-placeholder-media]")).toHaveCount(0);
 
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });

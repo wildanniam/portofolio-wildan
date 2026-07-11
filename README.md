@@ -43,9 +43,8 @@ characters. Sign in through HTTP Basic Authentication with username `preview`
 and that token as the password. Authenticated responses remain `private,
 no-store` and `noindex`; the public and default test builds force the gate off.
 
-The legacy `/api/contact` endpoint requires `RESEND_API_KEY` when called.
-`RESEND_FROM` and `CONTACT_TO` are optional overrides. V1 uses direct contact
-links and does not depend on this endpoint.
+The legacy `/api/contact` endpoint is intentionally unavailable. V1 uses direct
+contact links and does not depend on this endpoint.
 
 ## Current verification
 

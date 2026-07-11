@@ -3,13 +3,18 @@ import { describe, expect, it } from "vitest";
 import {
   isRoutableMoment,
   isRoutableProject,
+  MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE,
+  selectAdjacentWorkProjects,
   selectHomepage,
+  selectMomentsNarrative,
   selectProjectBySlug,
   selectProjectParams,
   selectPublishedMoments,
   selectPublishedProjects,
   selectRoutableMoments,
   selectRoutableProjects,
+  selectSiteShell,
+  selectWorkProjects,
 } from "../../../src/content/queries";
 import { cloneSeedBundle, makeMoment, projectBySlug } from "./fixtures";
 
@@ -93,6 +98,112 @@ describe("public, preview, and draft route selectors", () => {
     expect(isRoutableMoment(draftMoment, { includePreview: true })).toBe(
       false,
     );
+  });
+
+  it("filters site-shell project links without making preview the default", () => {
+    const { content, publishedProject, previewProject, draftProject } =
+      createVisibilityMatrix();
+    content.navigation.primary.push(
+      {
+        id: "published-shell-link",
+        label: "Published",
+        href: `/work/${publishedProject.slug}`,
+        projectSlug: publishedProject.slug,
+      },
+      {
+        id: "preview-shell-link",
+        label: "Preview",
+        href: `/work/${previewProject.slug}`,
+        projectSlug: previewProject.slug,
+      },
+      {
+        id: "draft-shell-link",
+        label: "Draft",
+        href: `/work/${draftProject.slug}`,
+        projectSlug: draftProject.slug,
+      },
+    );
+
+    expect(selectSiteShell(content).profile).toEqual(content.profile);
+    expect(
+      selectSiteShell(content).navigation.primary.map((item) => item.id),
+    ).toEqual(expect.arrayContaining(["published-shell-link"]));
+    expect(
+      selectSiteShell(content).navigation.primary.map((item) => item.id),
+    ).not.toEqual(expect.arrayContaining(["preview-shell-link"]));
+    expect(
+      selectSiteShell(content, { includePreview: true }).navigation.primary.map(
+        (item) => item.id,
+      ),
+    ).toEqual(
+      expect.arrayContaining(["published-shell-link", "preview-shell-link"]),
+    );
+    expect(
+      selectSiteShell(content, { includePreview: true }).navigation.primary.map(
+        (item) => item.id,
+      ),
+    ).not.toEqual(expect.arrayContaining(["draft-shell-link"]));
+  });
+
+  it("orders the work archive by update date and uses the slug as a tie-break", () => {
+    const { content, publishedProject, previewProject, secondPreview } =
+      createVisibilityMatrix();
+    publishedProject.lastUpdatedAt = "2026-07-10";
+    previewProject.lastUpdatedAt = "2026-07-11";
+    secondPreview.lastUpdatedAt = "2026-07-11";
+
+    expect(
+      selectWorkProjects(content, { includePreview: true }).map(
+        (project) => project.slug,
+      ),
+    ).toEqual([previewProject.slug, secondPreview.slug, publishedProject.slug]);
+    expect(selectWorkProjects(content).map((project) => project.slug)).toEqual([
+      publishedProject.slug,
+    ]);
+  });
+
+  it("derives adjacent work only from the visible, deterministic archive", () => {
+    const { content, publishedProject, previewProject, secondPreview } =
+      createVisibilityMatrix();
+    publishedProject.lastUpdatedAt = "2026-07-10";
+    previewProject.lastUpdatedAt = "2026-07-11";
+    secondPreview.lastUpdatedAt = "2026-07-09";
+
+    expect(
+      selectAdjacentWorkProjects(content, publishedProject.slug, {
+        includePreview: true,
+      }),
+    ).toEqual({ previous: previewProject, next: secondPreview });
+    expect(
+      selectAdjacentWorkProjects(content, previewProject.slug),
+    ).toBeUndefined();
+    expect(
+      selectAdjacentWorkProjects(content, "not-a-project", {
+        includePreview: true,
+      }),
+    ).toBeUndefined();
+  });
+
+  it("withholds the moments narrative until two distinct moments are published", () => {
+    const content = cloneSeedBundle();
+    const first = makeMoment({ id: "first", publication: "published" });
+    const duplicate = makeMoment({ id: "same-event", publication: "published" });
+    const preview = makeMoment({ id: "preview", publication: "preview" });
+    const second = makeMoment({
+      id: "second",
+      publication: "published",
+      event: "A different event",
+      date: "2026-07-12",
+      place: "Jakarta, Indonesia",
+    });
+
+    expect(MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE).toBe(2);
+
+    content.moments = [first, duplicate, preview];
+    expect(selectMomentsNarrative(content)).toBeUndefined();
+
+    content.moments.push(second);
+    expect(selectMomentsNarrative(content)).toEqual([first, second]);
   });
 
   it("applies the same visibility rule to slug lookup and static params", () => {
