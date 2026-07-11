@@ -9,6 +9,7 @@ import {
   selectMomentsNarrative,
   selectProjectBySlug,
   selectProjectParams,
+  selectProjectSocialImage,
   selectPublishedMoments,
   selectPublishedProjects,
   selectRoutableMoments,
@@ -16,7 +17,12 @@ import {
   selectSiteShell,
   selectWorkProjects,
 } from "../../../src/content/queries";
-import { cloneSeedBundle, makeMoment, projectBySlug } from "./fixtures";
+import {
+  cloneSeedBundle,
+  makeMoment,
+  makeReadyImage,
+  projectBySlug,
+} from "./fixtures";
 
 function createVisibilityMatrix() {
   const content = cloneSeedBundle();
@@ -278,6 +284,21 @@ describe("public, preview, and draft route selectors", () => {
       previewProject.slug,
       "quorum",
     ]);
+    expect(
+      publicHomepage.flagshipHighlightClaims.map(({ projectSlug, claim }) => [
+        projectSlug,
+        claim.id,
+      ]),
+    ).toEqual([[publishedProject.slug, "fradium-wchl-2025"]]);
+    expect(
+      previewHomepage.flagshipHighlightClaims.map(
+        ({ projectSlug, claim }) => [projectSlug, claim.id],
+      ),
+    ).toEqual([
+      [publishedProject.slug, "fradium-wchl-2025"],
+      [previewProject.slug, "nova-lisk-recognition"],
+      ["quorum", "quorum-six-testnet-flows"],
+    ]);
     expect(publicHomepage.moments.map((moment) => moment.id)).toEqual([
       "published-moment",
     ]);
@@ -320,5 +341,24 @@ describe("public, preview, and draft route selectors", () => {
         asOf: "2026-07-10",
       }).currentlyBuilding,
     ).toHaveLength(1);
+  });
+});
+
+describe("project social image selector", () => {
+  it("resolves only the explicitly designated ready raster asset", () => {
+    const content = cloneSeedBundle();
+    const project = projectBySlug(content, "fradium");
+    const first = makeReadyImage({ id: "first-ready-image" });
+    const designated = makeReadyImage({ id: "designated-social-image" });
+    project.evidence = [first, designated];
+    project.socialImageAssetId = designated.id;
+
+    expect(selectProjectSocialImage(project)).toBe(designated);
+
+    designated.mediaKind = "svg";
+    expect(selectProjectSocialImage(project)).toBeUndefined();
+
+    project.socialImageAssetId = first.id;
+    expect(selectProjectSocialImage(project)).toBe(first);
   });
 });

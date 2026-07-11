@@ -9,6 +9,7 @@ import type {
   ContentBundle,
   ContentDiagnostic,
   MomentRecord,
+  PlannedAsset,
   ProjectRecord,
   ReadyImageAsset,
   ReadyVideoAsset,
@@ -101,6 +102,21 @@ export function makeReadyVideo(
   };
 }
 
+export function makePlannedAsset(
+  overrides: Partial<PlannedAsset> = {},
+): PlannedAsset {
+  return {
+    id: "test-planned-image",
+    status: "needs-capture",
+    slot: "test-planned-product-frame",
+    evidenceFunctions: ["product-reality"],
+    intendedEvidenceType: "product",
+    intendedMediaKind: "image",
+    acquisitionNotes: "Capture approved public evidence for this test fixture.",
+    ...overrides,
+  };
+}
+
 export function makeMoment(
   overrides: Partial<MomentRecord> = {},
 ): MomentRecord {
@@ -128,6 +144,9 @@ export function toBriefProject(
     slug: project.slug,
     title: project.title,
     publication: project.publication,
+    ...(project.socialImageAssetId
+      ? { socialImageAssetId: project.socialImageAssetId }
+      : {}),
     caseStudyState: "brief",
     lifecycle: project.lifecycle,
     origin: [...project.origin],
@@ -175,6 +194,11 @@ export function createTemporaryRepository(): {
   cpSync(resolve(REPOSITORY_ROOT, "content"), resolve(root, "content"), {
     recursive: true,
   });
+  cpSync(
+    resolve(REPOSITORY_ROOT, "public/media"),
+    resolve(root, "public/media"),
+    { recursive: true },
+  );
 
   return {
     root,

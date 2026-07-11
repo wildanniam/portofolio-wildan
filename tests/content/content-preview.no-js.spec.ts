@@ -14,6 +14,7 @@ test("full and brief projects plus private 404 remain readable without JavaScrip
   await expect(
     page.getByRole("heading", { level: 2, name: "Decision" }),
   ).toBeVisible();
+  await expect(page.locator("figure")).toHaveCount(3);
   await expect(
     page.locator('[data-case-study-component="SourceLink"]'),
   ).toContainText("Read the official Telkom University result.");
@@ -55,10 +56,32 @@ test("the portfolio composition and project links work without JavaScript", asyn
   await expect(
     page.getByRole("heading", { level: 1, name: "Wildan Syukri Niam" }),
   ).toBeVisible();
-  await expect(page.locator(".opg-project-ledger__title")).toHaveCount(4);
+  await expect(page.locator(".opg-project-explorer__project-link")).toHaveCount(4);
+  await expect(
+    page.getByRole("button", { name: /Preview evidence for/ }),
+  ).toHaveCount(4);
+  await expect(
+    page.getByRole("button", { name: "Preview evidence for Fradium" }),
+  ).toBeEnabled();
+  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(3);
 
   await page
-    .locator('a[href="/preview/open-proving-ground/content/fradium"]')
+    .getByRole("button", { name: "Preview evidence for Nova AI Wallet" })
+    .click();
+  await expect(page).toHaveURL(
+    /\/preview\/open-proving-ground\/site\?project=nova-ai#flagship-work-explorer-panel$/,
+  );
+  const novaPanel = page.locator(
+    '.opg-project-explorer__panel[data-project-slug="nova-ai"]',
+  );
+  await expect(novaPanel).toBeVisible();
+  await expect(novaPanel).toBeFocused();
+  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(0);
+
+  await page
+    .locator(
+      '.opg-project-explorer__project-link[href="/preview/open-proving-ground/content/fradium"]',
+    )
     .click();
   await expect(page).toHaveURL(/\/preview\/open-proving-ground\/content\/fradium$/);
   await expect(

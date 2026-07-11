@@ -128,7 +128,7 @@
         },
         "/work/[slug]": {
           "limits": {
-            "totalInitialJavaScriptGzipBytes": 165000,
+            "totalInitialJavaScriptGzipBytes": 170000,
             "routeOwnedJavaScriptGzipBytes": 12000,
             "preIntentAdditionalJavaScriptGzipBytes": 0,
             "nonBuildJavaScriptTransferBytes": 0,

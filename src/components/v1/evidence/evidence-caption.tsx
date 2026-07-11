@@ -1,10 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
 type EvidenceCaptionProps = ComponentPropsWithoutRef<"figcaption"> & {
   label: string;
-  source?: string;
+  source?: ReactNode;
+  supplement?: ReactNode;
 };
 
 export function EvidenceCaption({
@@ -12,6 +13,7 @@ export function EvidenceCaption({
   className,
   label,
   source,
+  supplement,
   ...props
 }: EvidenceCaptionProps) {
   return (
@@ -24,6 +26,9 @@ export function EvidenceCaption({
       <span className="opg-evidence-caption__copy">{children}</span>
       {source ? (
         <span className="opg-evidence-caption__source">{source}</span>
+      ) : null}
+      {supplement ? (
+        <div className="opg-evidence-caption__supplement">{supplement}</div>
       ) : null}
     </figcaption>
   );

@@ -40,6 +40,12 @@ describe("canonical V1 project inventory", () => {
       "paygate",
       "quorum",
     ]);
+    expect(content.homepage.flagshipHighlightClaimIds).toEqual({
+      fradium: "fradium-wchl-2025",
+      "nova-ai": "nova-lisk-recognition",
+      paygate: "paygate-instaward-2026",
+      quorum: "quorum-six-testnet-flows",
+    });
     expect(content.homepage.currentlyBuildingIds).toEqual([
       "paygate-active-2026",
     ]);

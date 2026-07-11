@@ -27,7 +27,7 @@ content/
 └── site/
     ├── profile.yaml
     ├── navigation.yaml
-    ├── homepage.yaml              # ordered project slug references only
+    ├── homepage.yaml              # flagship order + owned highlight-claim references
     └── currently-building.yaml
 
 public/media/
@@ -46,7 +46,7 @@ src/content/
 └── validate-content.ts
 ```
 
-`/work` is derived from every `ProjectRecord`; there is no second archive metadata source to drift out of sync. Non-flagship records can omit full case-study MDX. Homepage curation stores ordered slug references, never duplicated project facts.
+`/work` is derived from every `ProjectRecord`; there is no second archive metadata source to drift out of sync. Non-flagship records can omit full case-study MDX. Homepage curation stores ordered slug references and one project-owned highlight claim ID for each flagship, never duplicated project facts or claim copy.
 
 Original photographs and sensitive captures must live **outside this workspace and repository** in a private archive. The repository accepts only derivatives that pass this pipeline: crop -> redact -> strip EXIF -> optimize -> approve -> publish. `.gitignore` is not treated as a privacy boundary.
 
@@ -212,6 +212,7 @@ type ProjectRecord = {
   slug: string;
   title: string;
   publication: PublicationState;
+  socialImageAssetId?: string;
   caseStudyState: CaseStudyState;
   lifecycle: ProjectLifecycle;
   origin: ProjectOrigin[];
@@ -278,6 +279,13 @@ type CurrentlyBuildingRecord = {
   expiresAt?: string;
   link: LinkState;
 };
+
+type Homepage = {
+  flagshipProjectSlugs: string[];
+  flagshipHighlightClaimIds: Record<string, string>; // exact slug -> local claim coverage
+  featuredMomentIds: string[];
+  currentlyBuildingIds: string[];
+};
 ```
 
 ### Publication semantics
@@ -289,6 +297,9 @@ type CurrentlyBuildingRecord = {
 - Non-flagship archive projects may be `published + brief`.
 - A `published + brief` record receives a server-rendered `/work/{slug}` page from YAML facts and ready media; it participates in params/metadata/sitemap but requires no MDX or empty full-case-study chapters.
 - A published project or moment may reference only `ReadyAsset`; `PlannedAsset` is valid only for draft/preview authoring or internal backlog planning.
+- Every `published + full` project must set `socialImageAssetId` to project-owned,
+  ready raster image evidence. SVG, video, document, planned, and cross-record
+  references do not satisfy this gate.
 
 ## Claim discipline
 
@@ -346,7 +357,7 @@ If an external outcome cannot be verified, it is omitted or presented as a perso
 | Technical proof | Verification gate | A sanitized trace, test, transaction, deployment, source, or verification artifact. |
 | Early artifact | Preferred | Sketch, prototype, whiteboard, early UI, or meaningful code evolution. |
 | Human moment | Optional | Real project-related build, team, presentation, or competition photograph. |
-| Social image | Yes | Thumbnail-safe Open Graph crop with project title and authentic product media. |
+| Social image | Yes for a full publication | `socialImageAssetId` resolves to a project-owned, ready raster image with a thumbnail-safe Open Graph crop and authentic product media. |
 
 The page may publish without optional assets. The three required functions are product reality, system reasoning, and verification; they are not a quota of identical file types. It must not substitute generated fake proof for missing evidence.
 
@@ -451,6 +462,10 @@ Content validation fails when:
 - a published moment lacks event, date, place, or either a non-empty project context or an explicit journey-context label;
 - a duplicate evidence ID exists;
 - homepage project slug references are duplicated or fail to resolve in their declared content order;
+- `flagshipHighlightClaimIds` does not cover exactly the flagship slug set, or a
+  selected claim is unknown or owned by another project;
+- a published full project lacks `socialImageAssetId`, or it resolves outside the
+  project, to planned evidence, or to anything other than a ready raster image;
 - homepage, navigation, moment, or current-building records reference an unknown project slug;
 - a URL is malformed or a public link lacks verification metadata.
 

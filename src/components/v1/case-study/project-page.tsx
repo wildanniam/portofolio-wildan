@@ -4,6 +4,11 @@ import { ActionLink } from "@/components/v1/foundations/action-link";
 import { SiteContainer } from "@/components/v1/foundations/site-container";
 import type { FullProjectRecord } from "@/content/types";
 
+import {
+  partitionProjectEvidence,
+  ProjectEvidenceSequence,
+  ProjectOpeningEvidence,
+} from "./project-evidence-sequence";
 import { ProjectOpening } from "./project-opening";
 
 type ProjectPageProps = {
@@ -19,14 +24,28 @@ export function ProjectPage({
   preview = false,
   project,
 }: ProjectPageProps) {
+  const evidence = partitionProjectEvidence(project.evidence);
+
   return (
     <article className="opg-project-page" data-project-page data-project-state="full">
       <SiteContainer>
         <ProjectOpening backHref={backHref} preview={preview} project={project} />
 
+        {evidence.opening ? (
+          <ProjectOpeningEvidence
+            asset={evidence.opening}
+            project={project}
+          />
+        ) : null}
+
         <section aria-label="Case-study narrative" className="opg-project-narrative">
           <div className="opg-project-prose">{narrative}</div>
         </section>
+
+        <ProjectEvidenceSequence
+          project={project}
+          sequence={evidence.sequence}
+        />
 
         <footer className="opg-project-page__footer">
           <ActionLink direction="back" href={backHref}>

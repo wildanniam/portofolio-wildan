@@ -5,6 +5,8 @@ import type {
   Navigation,
   Profile,
   ProjectRecord,
+  ReadyImageAsset,
+  VerifiedClaim,
 } from "./types";
 
 export type ContentVisibility = {
@@ -19,6 +21,10 @@ export type HomepageSelection = {
   profile: Profile;
   navigation: Navigation;
   projects: ProjectRecord[];
+  flagshipHighlightClaims: Array<{
+    projectSlug: string;
+    claim: VerifiedClaim;
+  }>;
   moments: MomentRecord[];
   currentlyBuilding: CurrentlyBuildingRecord[];
 };
@@ -137,6 +143,19 @@ export function selectProjectBySlug(
   );
 }
 
+export function selectProjectSocialImage(
+  project: ProjectRecord,
+): ReadyImageAsset | undefined {
+  if (!project.socialImageAssetId) return undefined;
+
+  return project.evidence.find(
+    (asset): asset is ReadyImageAsset =>
+      asset.id === project.socialImageAssetId &&
+      asset.status === "ready" &&
+      asset.mediaKind === "image",
+  );
+}
+
 export function selectProjectParams(
   content: ContentBundle,
   visibility: ContentVisibility = {},
@@ -228,6 +247,12 @@ export function selectHomepage(
     const project = visibleProjects.get(slug);
     return project ? [project] : [];
   });
+  const flagshipHighlightClaims = projects.flatMap((project) => {
+    const claimId = content.homepage.flagshipHighlightClaimIds[project.slug];
+    const claim = project.claims.find((candidate) => candidate.id === claimId);
+
+    return claim ? [{ projectSlug: project.slug, claim }] : [];
+  });
   const moments = content.homepage.featuredMomentIds.flatMap((id) => {
     const moment = visibleMoments.get(id);
     return moment ? [moment] : [];
@@ -246,6 +271,7 @@ export function selectHomepage(
     profile: content.profile,
     navigation: selectNavigation(content.navigation, visibleProjects),
     projects,
+    flagshipHighlightClaims,
     moments,
     currentlyBuilding,
   };

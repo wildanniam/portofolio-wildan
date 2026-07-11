@@ -409,6 +409,39 @@ function validateProjectReferences(
   );
   validateAssetClaimReferences(project.evidence, localClaimIds, `${path}.evidence`, diagnostics);
 
+  if (project.socialImageAssetId) {
+    const socialImage = project.evidence.find(
+      (asset) => asset.id === project.socialImageAssetId,
+    );
+
+    if (!socialImage) {
+      addError(
+        diagnostics,
+        indexes.allAssetIds.has(project.socialImageAssetId)
+          ? "reference.project-social-image-ownership"
+          : "reference.project-social-image",
+        `${path}.socialImageAssetId`,
+        indexes.allAssetIds.has(project.socialImageAssetId)
+          ? `Social image "${project.socialImageAssetId}" belongs to another record`
+          : `Project evidence "${project.socialImageAssetId}" does not exist`,
+      );
+    } else if (!isReadyAsset(socialImage)) {
+      addError(
+        diagnostics,
+        "reference.project-social-image-readiness",
+        `${path}.socialImageAssetId`,
+        "A project social image must reference ready evidence",
+      );
+    } else if (socialImage.mediaKind !== "image") {
+      addError(
+        diagnostics,
+        "reference.project-social-image-kind",
+        `${path}.socialImageAssetId`,
+        "A project social image must reference a ready raster image",
+      );
+    }
+  }
+
   if (project.caseStudyState === "full") {
     project.teamContext.collaboratorIds.forEach((collaboratorId, index) => {
       checkReferencedId(
@@ -467,6 +500,15 @@ function validatePublishedProject(
       );
     }
     return;
+  }
+
+  if (!project.socialImageAssetId) {
+    addError(
+      diagnostics,
+      "publication.full-social-image-required",
+      `${path}.socialImageAssetId`,
+      "A published full case study needs a ready raster social image",
+    );
   }
 
   const fulfilledFunctions = new Set(readyAssets.flatMap((asset) => asset.evidenceFunctions));
@@ -701,6 +743,63 @@ function validateSiteReferences(
       "Project",
     );
   });
+
+  const flagshipSlugs = new Set(content.homepage.flagshipProjectSlugs);
+  const highlightClaimEntries = Object.entries(
+    content.homepage.flagshipHighlightClaimIds,
+  );
+
+  content.homepage.flagshipProjectSlugs.forEach((slug) => {
+    if (!Object.hasOwn(content.homepage.flagshipHighlightClaimIds, slug)) {
+      addError(
+        diagnostics,
+        "reference.homepage-highlight-coverage",
+        `$content.homepage.flagshipHighlightClaimIds[${JSON.stringify(slug)}]`,
+        `Flagship project "${slug}" needs exactly one highlight claim reference`,
+      );
+    }
+  });
+
+  highlightClaimEntries.forEach(([slug, claimId]) => {
+    const path = `$content.homepage.flagshipHighlightClaimIds[${JSON.stringify(slug)}]`;
+
+    if (!flagshipSlugs.has(slug)) {
+      addError(
+        diagnostics,
+        "reference.homepage-highlight-coverage",
+        path,
+        `Highlight project "${slug}" is not in flagshipProjectSlugs`,
+      );
+    }
+
+    const project = content.projects.find((candidate) => candidate.slug === slug);
+    if (!project) {
+      addError(
+        diagnostics,
+        "reference.homepage-highlight-project",
+        path,
+        `Project "${slug}" does not exist`,
+      );
+      return;
+    }
+
+    if (project.claims.some((claim) => claim.id === claimId)) return;
+
+    const owningProject = content.projects.find((candidate) =>
+      candidate.claims.some((claim) => claim.id === claimId),
+    );
+    addError(
+      diagnostics,
+      owningProject
+        ? "reference.homepage-highlight-ownership"
+        : "reference.homepage-highlight-claim",
+      path,
+      owningProject
+        ? `Claim "${claimId}" belongs to project "${owningProject.slug}", not "${slug}"`
+        : `Project claim "${claimId}" does not exist`,
+    );
+  });
+
   content.homepage.featuredMomentIds.forEach((id, index) => {
     checkReferencedId(
       diagnostics,

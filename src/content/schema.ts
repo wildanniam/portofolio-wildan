@@ -387,6 +387,7 @@ const projectCommonShape = {
   slug: ProjectSlugSchema,
   title: NonEmptyStringSchema,
   publication: PublicationStateSchema,
+  socialImageAssetId: IdentifierSchema.optional(),
   lifecycle: ProjectLifecycleSchema,
   origin: z
     .array(ProjectOriginSchema)
@@ -555,6 +556,7 @@ export const HomepageSchema = z
       .array(ProjectSlugSchema)
       .min(1)
       .refine(uniqueValues, "Homepage project references must be unique"),
+    flagshipHighlightClaimIds: z.record(ProjectSlugSchema, IdentifierSchema),
     featuredMomentIds: z
       .array(IdentifierSchema)
       .refine(uniqueValues, "Homepage moment references must be unique"),

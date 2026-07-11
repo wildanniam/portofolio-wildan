@@ -10,7 +10,7 @@
   "packageManager": "npm@11.16.0",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm run validate:content",
+    "prebuild": "npm run validate:content && npm run audit:media",
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
@@ -28,6 +28,7 @@
     "analyze:runtime": "node scripts/analyze-runtime-fixture.mjs",
     "analyze:content-tracing": "node scripts/assert-content-tracing.mjs",
     "analyze:bundle": "npm run build && node scripts/analyze-bundle-matrix.mjs",
+    "audit:media": "node --import tsx/esm scripts/audit-public-media.mjs",
     "lighthouse": "npm ci --prefix tools/lighthouse && npm audit --prefix tools/lighthouse --audit-level=high && node scripts/run-lighthouse.mjs",
     "quality:static": "npm run lint && npm run typecheck && npm run test:run",
     "shadcn": "shadcn"
@@ -88,6 +89,7 @@
     "@types/react-dom": "19.1.11",
     "eslint": "9.39.5",
     "eslint-config-next": "16.2.10",
+    "sharp": "0.34.5",
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
     "tsx": "4.23.0",
