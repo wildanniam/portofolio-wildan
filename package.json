@@ -23,7 +23,7 @@
     "test:content": "vitest run tests/unit/content",
     "test:content:e2e": "playwright test --config=playwright.content.config.ts && npm run test:content:runtime-gate",
     "test:content:runtime-gate": "node scripts/assert-preview-runtime-gate.mjs",
-    "validate:content": "node --import tsx/esm src/content/validate-content.ts",
+    "validate:content": "node --import tsx/esm scripts/validate-content.mjs",
     "analyze:runtime": "node scripts/analyze-runtime-fixture.mjs",
     "analyze:content-tracing": "node scripts/assert-content-tracing.mjs",
     "analyze:bundle": "npm run build && node scripts/analyze-bundle-matrix.mjs",

@@ -217,7 +217,9 @@ usage must be recorded first.
 - Zod `4.1.11` remains the domain validator.
 - `server-only` marks the filesystem boundary.
 - `tsx` is used only as the TypeScript CLI loader. Because the MDX dependency
-  chain is ESM-only, the command is `node --import tsx/esm`, not plain `tsx`.
+  chain is ESM-only, a small `.mjs` runner imports the TypeScript validator under
+  `node --import tsx/esm`; this also keeps Node 24 Linux from classifying the
+  TypeScript entry as CommonJS before the ESM loader runs.
 - The repository requires Node 24 and is not an Edge Runtime module.
 
 | Package | Pinned version | License | Purpose |
