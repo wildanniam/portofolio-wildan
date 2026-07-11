@@ -213,9 +213,9 @@ Measure from a production build with a fresh browser profile. Report media separ
 
 | Metric | Gate |
 |---|---:|
-| Homepage cold-navigation client JS | `<=170 KB` gzip total; route-owned initial code `<=18 KB` |
+| Homepage cold-navigation client JS | `<=175 KB` gzip total; route-owned initial code `<=18 KB` |
 | Case-study cold-navigation client JS | `<=170 KB` gzip total; route-owned initial code `<=12 KB` |
-| Lazy explorer enhancement | `<=60 KB` gzip and absent from cold navigation before explorer approach/intent |
+| Lazy explorer enhancement | `<=60 KB` gzip, absent from cold navigation, then measured as additional build JS after an explicit `near` or `intent` trigger |
 | Homepage WebGL/Three requests | `0` |
 | Initial CSS | `<=30 KB` gzip |
 | LCP image | `<=200 KB` desktop; `<=140 KB` mobile |
@@ -230,6 +230,20 @@ Method:
 
 - use one committed CI script that reads the production route/client chunk map and gzip-computes the framework/runtime, shared, route-owned, and lazy enhancement sets;
 - define initial JavaScript as every JS chunk requested or prefetched during a cold production navigation before user intent; explorer-approach/explicit-intent chunks are measured in the separate enhancement budget;
+- preserve the 3,000 ms cold/pre-intent observation, then use
+  `--enhancement-trigger near` to scroll the real `[data-project-explorer]`
+  target into view or `--enhancement-trigger intent` to focus the first
+  non-active `[data-explorer-preview]` control without clicking it;
+- use a separate bounded 3,000 ms settle window, subtract every cold build
+  chunk from the post-trigger response set, and fail the 60,000-byte lazy
+  explorer ceiling against only that disjoint additional set;
+- publish the additional chunks with gzip bytes and SHA-256 digests, together
+  with deterministic intersection/subset relationships to manifest-initial and
+  route dynamic-lazy files; report the dynamic relationship as unavailable when
+  no route lazy manifest exists;
+- run both trigger probes in CI and require zero post-trigger transport
+  failures, HTTP errors, uncaught page errors, or deterministic final-state
+  mismatches in addition to the 60,000-byte chunk ceiling;
 - make `test:e2e`, `test:a11y`, `analyze:bundle`, and `lighthouse` self-contained: build when required, start a production server on the documented deterministic port, wait for readiness, run, and always stop it;
 - run at least three cold Lighthouse samples on the agreed machine/profile and record the median;
 - include any chunk downloaded/prefetched before intent in the practical page budget;

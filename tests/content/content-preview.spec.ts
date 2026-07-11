@@ -124,7 +124,7 @@ test("full MDX and brief YAML routes render their intended structures", async ({
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
-test("the motion-free portfolio composition exposes all four flagships", async ({
+test("the server-first portfolio composition exposes all four flagships", async ({
   page,
 }, testInfo) => {
   const diagnostics = observeRuntimeDiagnostics(page);
@@ -178,12 +178,18 @@ test("the explorer keeps links and preview controls as separate keyboard actions
     '.opg-project-explorer__panel[data-project-slug="nova-ai"]',
   );
   await expect(novaPanel).toBeVisible();
-  await expect(novaPanel).toBeFocused();
+  await expect(novaButton).toBeFocused();
   await expect(novaPanel).toBeInViewport();
   const panelBounds = await novaPanel.boundingBox();
   expect(panelBounds).not.toBeNull();
   expect(panelBounds?.y).toBeGreaterThan(-1);
   expect(panelBounds?.y).toBeLessThan(800);
+  await expect(page).toHaveURL(
+    /\/preview\/open-proving-ground\/site\?project=nova-ai#flagship-work-explorer-panel$/,
+  );
+  await expect(page.locator("[data-explorer-status]")).toHaveText(
+    "Showing evidence for Nova AI Wallet.",
+  );
   await expect(
     page.locator(
       '.opg-project-explorer__panel[data-project-slug="nova-ai"] .opg-evidence-contact-sheet',

@@ -69,14 +69,18 @@ test("the portfolio composition and project links work without JavaScript", asyn
     .getByRole("button", { name: "Preview evidence for Nova AI Wallet" })
     .click();
   await expect(page).toHaveURL(
-    /\/preview\/open-proving-ground\/site\?project=nova-ai#flagship-work-explorer-panel$/,
+    /\/preview\/open-proving-ground\/site\?project=nova-ai#flagship-work-explorer-panel-nova-ai$/,
   );
   const novaPanel = page.locator(
     '.opg-project-explorer__panel[data-project-slug="nova-ai"]',
   );
   await expect(novaPanel).toBeVisible();
   await expect(novaPanel).toBeFocused();
-  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(0);
+  const fradiumFigures = page.locator("[data-project-explorer] figure");
+  await expect(fradiumFigures).toHaveCount(3);
+  await expect(fradiumFigures.first()).toBeHidden();
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+  await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
 
   await page
     .locator(

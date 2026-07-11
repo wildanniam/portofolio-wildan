@@ -28,6 +28,7 @@
     "analyze:runtime": "node scripts/analyze-runtime-fixture.mjs",
     "analyze:content-tracing": "node scripts/assert-content-tracing.mjs",
     "analyze:bundle": "npm run build && node scripts/analyze-bundle-matrix.mjs",
+    "analyze:bundle:explorer": "node scripts/analyze-explorer-bundle.mjs",
     "audit:media": "node --import tsx/esm scripts/audit-public-media.mjs",
     "lighthouse": "npm ci --prefix tools/lighthouse && npm audit --prefix tools/lighthouse --audit-level=high && node scripts/run-lighthouse.mjs",
     "quality:static": "npm run lint && npm run typecheck && npm run test:run",
@@ -43,6 +44,7 @@
     "unrs-resolver@1.11.1": true
   },
   "dependencies": {
+    "@gsap/react": "2.1.2",
     "@hookform/resolvers": "^5.2.2",
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/mdx": "3.1.1",

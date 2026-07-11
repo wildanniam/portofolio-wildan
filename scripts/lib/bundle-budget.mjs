@@ -6,6 +6,14 @@ const DEFAULT_METRIC_LABELS = {
   routeOwnedJavaScriptGzipBytes: "Route-owned JavaScript",
   lazyJavaScriptGzipBytes: "Lazy JavaScript",
   preIntentAdditionalJavaScriptGzipBytes: "Pre-intent additional JavaScript",
+  postTriggerAdditionalJavaScriptGzipBytes:
+    "Post-trigger additional JavaScript",
+  postTriggerUnexpectedFailedRequestCount:
+    "Post-trigger unexpected failures",
+  postTriggerHttpErrorResponseCount: "Post-trigger HTTP errors",
+  postTriggerPageErrorCount: "Post-trigger page errors",
+  postTriggerEnhancementStateMismatchCount:
+    "Post-trigger enhancement state mismatches",
   nonBuildJavaScriptTransferBytes: "Non-build JavaScript transfer",
   cssGzipBytes: "Initial CSS",
   initialMediaTransferBytes: "Initial media transfer",
@@ -22,6 +30,10 @@ const COUNT_METRICS = new Set([
   "httpErrorResponseCount",
   "pageErrorCount",
   "webglContextRequests",
+  "postTriggerUnexpectedFailedRequestCount",
+  "postTriggerHttpErrorResponseCount",
+  "postTriggerPageErrorCount",
+  "postTriggerEnhancementStateMismatchCount",
 ]);
 
 function assertFiniteNonNegativeNumber(value, label) {
@@ -49,7 +61,11 @@ export function formatMetric(metric, value) {
   return formatBytes(value);
 }
 
-export function evaluateBudget(metrics, limits, labels = DEFAULT_METRIC_LABELS) {
+export function evaluateBudget(
+  metrics,
+  limits,
+  labels = DEFAULT_METRIC_LABELS,
+) {
   if (!metrics || typeof metrics !== "object" || Array.isArray(metrics)) {
     throw new TypeError("metrics must be an object.");
   }
@@ -205,8 +221,7 @@ export function appManifestKeyToRoutePattern(manifestKey) {
     .split("/")
     .filter(Boolean)
     .filter(
-      (segment) =>
-        !/^\([^/]+\)$/.test(segment) && !segment.startsWith("@"),
+      (segment) => !/^\([^/]+\)$/.test(segment) && !segment.startsWith("@"),
     );
 
   return segments.length === 0 ? "/" : `/${segments.join("/")}`;
@@ -218,7 +233,11 @@ export function routeMatchesPattern(route, pattern) {
 
   let routeIndex = 0;
 
-  for (let patternIndex = 0; patternIndex < patternSegments.length; patternIndex += 1) {
+  for (
+    let patternIndex = 0;
+    patternIndex < patternSegments.length;
+    patternIndex += 1
+  ) {
     const segment = patternSegments[patternIndex];
     const isOptionalCatchAll = /^\[\[\.\.\.[^\]]+\]\]$/.test(segment);
     const isCatchAll = /^\[\.\.\.[^\]]+\]$/.test(segment);

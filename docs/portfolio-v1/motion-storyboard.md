@@ -1,8 +1,30 @@
 # Motion Storyboard — Fradium Golden Case Study
 
 Date: 11 July 2026
-Status: pre-development contract, not implementation
+Status: implemented preview checkpoint; pending Wildan visual approval and final Fradium verdict media
 Motion intensity: **7/10, concentrated in the opening and evidence explorer**
+
+## Implementation checkpoint — Issue #13
+
+The golden prototype now exists on the protected V1 preview as a progressive
+enhancement over complete server-rendered markup. Its measured implementation
+uses one CSS-sticky index, one ScrollTrigger, one scoped GSAP timeline, and one
+inert visual overlay whose geometry follows the live source frame before it
+expands. No spacer, pin wrapper, duplicated caption, or animated layout property
+is introduced.
+
+- Guard: at least `1120×760`, precise pointer, motion allowed, and Save-Data off.
+- Cold homepage JavaScript: 171,719 gzip bytes under the narrowly rebaselined
+  175,000-byte ceiling; route-owned initial code is 2,082 bytes.
+- Near/intent lazy enhancement: one 46,021-byte gzip chunk, zero pre-intent
+  bytes, zero overlap with the cold build set, and zero WebGL requests.
+- Browser coverage: cold loading, overlay invariants, immediate semantics,
+  keyboard focus, history, rapid interruption, exact viewport boundaries,
+  live Save-Data changes, lazy-load failure, reduced motion, mobile, CLS, axe,
+  and no-JavaScript fallback.
+- Remaining approval gate: Wildan reviews the motion checkpoint; the eventual
+  sanitized login-protected Fradium verdict capture replaces the temporary
+  public-beta lead evidence before Fradium is marked publishable.
 
 ## Visual sources
 
@@ -83,8 +105,8 @@ This handoff uses native page scroll. The hero is not pinned and there is no pag
 | C1 — selection | 0.12 | The product thumbnail and its caption become active. | Cobalt rule reaches the selected thumbnail; thumbnail moves `y: -4` and scales no more than `1.015`; others reduce emphasis without disappearing. |
 | C2 — detach | 0.28 | The selected thumbnail separates visually from the sheet. | A measured, visual-only overlay begins at the thumbnail's exact bounding box; source thumbnail remains reserved to prevent layout shift. The overlay is `aria-hidden="true"`, `inert`, and contains no IDs, links, buttons, or duplicate captions. |
 | C3 — expand | 0.28–0.58 | The real Fradium screenshot grows into the large evidence frame. | Transform-only translation and scale interpolate to the target frame. Surrounding captions reorganize through short crossfades, not animated layout properties. |
-| C4 — inspect | 0.58–0.76 | Full screenshot, role, project dates, lifecycle, and verified outcome are readable together. | Image settles from `scale: 1.01` to `1`. Caption groups enter in two restrained steps. |
-| C5 — proof | 0.76–0.90 | Architecture or technical proof becomes the next clear action. | Secondary evidence rail gains contrast; one connector rule indicates the next inspectable item. No automated carousel. |
+| C4 — inspect | 0.58–0.76 | The full screenshot expands inside the evidence column while the selected-project index remains visible beside it. | Image settles from `scale: 1.01` to `1`; the local frame never becomes a viewport-wide modal or covers the project controls. |
+| C5 — proof | 0.76–0.90 | Architecture or technical proof becomes the next clear action. | The expanded frame returns toward its reserved source and dissolves, revealing the secondary evidence, captions, and actions in normal flow. No automated carousel. |
 | C6 — release | 0.90–1.00 | The complete selected-work composition is visible. | Sticky state releases into normal document flow; no snap and no surprise horizontal scroll. |
 
 ### Project switching

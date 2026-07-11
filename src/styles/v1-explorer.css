@@ -55,6 +55,10 @@
   min-width: 0;
 }
 
+[data-portfolio-v1] .opg-project-explorer__panels {
+  min-width: 0;
+}
+
 [data-portfolio-v1] .opg-project-explorer__row {
   display: grid;
   gap: var(--space-3) var(--space-4);
@@ -151,6 +155,24 @@
   border-top: 1px solid var(--rule-strong);
   min-width: 0;
   padding-block: var(--space-6);
+}
+
+[data-portfolio-v1]
+  .opg-project-explorer__panel[data-motion-entering="true"] {
+  animation: opg-project-panel-enter var(--duration-preview) var(--ease-standard)
+    both;
+}
+
+@keyframes opg-project-panel-enter {
+  from {
+    opacity: 0.58;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 [data-portfolio-v1] .opg-project-explorer__panel-heading > p {
@@ -407,6 +429,30 @@
   padding-top: var(--space-3);
 }
 
+[data-portfolio-v1] .opg-project-explorer__motion-shield {
+  background: var(--media-matte);
+  border: 1px solid var(--rule-strong);
+  box-shadow: 0 12px 40px rgb(17 19 21 / 10%);
+  inset: 0 auto auto 0;
+  overflow: clip;
+  pointer-events: auto;
+  position: fixed;
+  z-index: var(--layer-motion-overlay);
+}
+
+[data-portfolio-v1] .opg-project-explorer__motion-overlay {
+  height: 100%;
+  pointer-events: none;
+  width: 100%;
+}
+
+[data-portfolio-v1] .opg-project-explorer__motion-overlay img {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
+
 @media (min-width: 720px) {
   [data-portfolio-v1] .opg-project-explorer__facts {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -440,6 +486,35 @@
   [data-portfolio-v1] .opg-project-explorer__panel {
     border-top: 0;
     padding-block: var(--space-7) 0;
+  }
+}
+
+@media (min-width: 1040px) and (max-width: 1119px) {
+  [data-portfolio-v1] .opg-evidence-contact-sheet > ol {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  [data-portfolio-v1] .opg-evidence-contact-sheet__item[data-lead="true"] {
+    grid-column: auto;
+  }
+}
+
+@media (min-width: 1120px) and (min-height: 760px) and (pointer: fine) {
+  [data-portfolio-v1] .opg-evidence-contact-sheet__item[data-lead="true"] {
+    grid-column: auto;
+  }
+
+  [data-portfolio-v1]
+    .opg-evidence-contact-sheet__item:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+
+  [data-portfolio-v1]
+    .opg-project-explorer[data-motion-mode="sticky"]
+    .opg-project-explorer__index-group {
+    align-self: start;
+    position: sticky;
+    top: var(--space-4);
   }
 }
 
@@ -490,5 +565,12 @@
 
   [data-portfolio-v1] .opg-evidence-contact-sheet__item[data-lead="true"] {
     grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-portfolio-v1]
+    .opg-project-explorer__panel[data-motion-entering="true"] {
+    animation: none;
   }
 }

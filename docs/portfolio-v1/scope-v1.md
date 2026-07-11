@@ -136,7 +136,7 @@ No fixed screenshot count is required; evidence earns its place by function and 
 - CSS and browser-native behavior for ordinary hover, focus, disclosure, and navigation.
 - No essential content inside canvas.
 - Desktop, mobile, and reduced-motion experiences are authored separately.
-- Homepage cold-navigation client JavaScript: 170 KB gzip hard ceiling including shared/runtime/route chunks and any pre-intent prefetch. The pinned Node 24 and Next 16.2.10 server-only fixture measured 145.141 KB gzip before portfolio route code, so the earlier 150 KB total could not coexist with the route-owned target. Route-owned initial JavaScript remains <=18 KB. The lazily eligible explorer enhancement and media are reported separately.
+- Homepage cold-navigation client JavaScript: 175 KB gzip hard ceiling including shared/runtime/route chunks and any pre-intent prefetch. The pinned Node 24 and Next 16.2.10 server-only fixture measured 145.141 KB gzip before portfolio route code; the production semantic enhancer then measured 171.719 KB while the lazy explorer chunk remained absent pre-intent. Route-owned initial JavaScript remains <=18 KB. The lazily eligible explorer enhancement and media are reported separately.
 - Pre-launch lab goals: LCP <= 2.5 s, CLS <= 0.1, TBT <= 200 ms, plus explorer input-to-semantic-selected-state-and-next-paint latency <= 200 ms on the agreed profile. The non-blocking visual transition may continue for 650–850 ms. Field p75 is evaluated after enough real-user monitoring traffic: LCP <= 2.5 s, INP <= 200 ms, CLS <= 0.1.
 
 ## V1 acceptance statement

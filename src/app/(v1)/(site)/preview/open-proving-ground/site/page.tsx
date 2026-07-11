@@ -7,7 +7,7 @@ import { getHomepage } from "@/content/queries.server";
 export const metadata: Metadata = {
   title: "Portfolio V1 composition preview",
   description:
-    "A private, motion-free composition proof for Wildan Syukri Niam's portfolio V1.",
+    "A private, progressively enhanced composition proof for Wildan Syukri Niam's portfolio V1.",
   robots: {
     follow: false,
     index: false,

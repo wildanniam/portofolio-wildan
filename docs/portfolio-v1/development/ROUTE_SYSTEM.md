@@ -15,7 +15,7 @@ validated content repository and the later Fradium and motion work.
 | `/work/[slug]` | Shared full/brief template. The public query returns only `published` records, so current preview slugs return the V1 404. |
 | `/contact` | V1 direct-contact route using email and links whose content state is `public`; no form or public API. |
 | `/moments` | V1 route withheld until at least two distinct moments are `published`. |
-| `/preview/open-proving-ground/site` | Credential-protected, noindex, motion-free homepage composition with the four approved flagships. |
+| `/preview/open-proving-ground/site` | Credential-protected, noindex, server-first homepage composition with the four approved flagships and a lazily eligible Fradium evidence transition. |
 | `/preview/open-proving-ground/content/[slug]` | Credential-protected full/brief shared case-study proof. |
 
 The existing foundation checkpoint remains at
@@ -69,7 +69,7 @@ validated repository MDX through the fixed component map. Brief records render
 their authored context, outcome, role scope, and collaborator credit directly
 from YAML.
 
-The motion-free homepage and archive use an editorial project ledger rather
+The server-rendered homepage and archive use an editorial project ledger rather
 than cards. Preview project URLs are injected by the route, so a preview record
 never points at a public `/work/[slug]` route. No current route renders planned,
 private, or missing media as a placeholder.

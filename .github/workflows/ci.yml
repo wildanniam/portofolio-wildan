@@ -94,6 +94,9 @@ jobs:
       - name: Build and enforce bundle budgets
         run: npm run analyze:bundle
 
+      - name: Build and enforce V1 explorer enhancement budget
+        run: npm run analyze:bundle:explorer
+
       - name: Run browser smoke tests
         run: npm run test:e2e
 

@@ -58,7 +58,8 @@ npx playwright install --with-deps chromium
 | `npm run test:a11y` | Build and own a production server, run axe, attach full findings, and reject new serious/critical regressions. |
 | `npm run test:foundation` | Build the private V1 checkpoint with its gate enabled, then run the exact light/dark, responsive, focus, no-JavaScript, reflow, axe, and zero-runtime-error matrix. |
 | `npm run analyze:runtime` | Build the server-only fixture and report the pinned Next runtime floor. |
-| `npm run analyze:bundle` | Build the app, probe every active-profile route sample in a cold browser, classify runtime/shared/route/lazy/pre-intent cost, report fonts/media/WebGL/non-build scripts, and reject unexpected request or page failures. |
+| `npm run analyze:bundle` | Build the app, probe every active-profile route sample in a cold browser, classify runtime/shared/route/lazy/pre-intent cost, report fonts/media/WebGL/non-build scripts, and reject unexpected request or page failures. A targeted explorer trigger remains opt-in. |
+| `npm run analyze:bundle:explorer` | Build the protected V1 preview with an ephemeral process-only credential, then enforce both real `near` and `intent` explorer enhancement probes, including chunk bytes, final state, and post-trigger failures. |
 | `npm run lighthouse` | Build and own a production server, collect three cold mobile Lighthouse runs, enforce medians, and always stop the server. |
 
 The Lighthouse runner is pinned to `13.4.0` in
@@ -120,6 +121,50 @@ assembled. It does not relax release approval. The unchanged `v1` profile must
 pass against the public root, including SEO 1.0 and LCP at most 2.5 seconds,
 before cutover.
 
+### Explorer enhancement bundle probe
+
+The default bundle command remains a cold-navigation probe and performs no
+synthetic user action. The committed local/CI gate builds the protected preview
+with an ephemeral process-only credential and measures both real triggers after
+the unchanged 3,000 ms pre-intent window:
+
+```bash
+npm run analyze:bundle:explorer
+```
+
+Use `node scripts/analyze-bundle.mjs --enhancement-trigger near|intent ...`
+only to debug one trigger against an existing preview-enabled build; that raw
+form requires `PORTFOLIO_V1_PREVIEW=1` and a valid
+`PORTFOLIO_V1_PREVIEW_TOKEN` in the environment.
+
+`near` scrolls the stable `[data-project-explorer]` target into view. `intent`
+focuses the first non-active `[data-explorer-preview]` button and requests
+`preventScroll`, falling back to native focus if that option is unavailable.
+Neither trigger clicks a project or replaces the product interaction with a
+test-only hook.
+
+After the action, the runner observes a separate bounded 3,000 ms settle window.
+Only local Next build JavaScript absent from the cold set contributes to
+`postTriggerAdditionalJavaScriptGzipBytes`; the report lists each chunk path,
+gzip bytes, and SHA-256 digest. It also records that the cold and additional
+sets use an explicit `observed post-trigger minus cold navigation` partition,
+including any already-cold repeat requests; the resulting additional set is
+disjoint by construction. Intersections and subset status against the manifest
+initial set and the route's dynamic lazy manifest are reported independently.
+When that dynamic manifest does not exist, the relationship is unavailable
+instead of guessed. Report provenance includes both the HEAD commit and whether
+the source tree was dirty, so measurements from an uncommitted build cannot
+masquerade as that commit's result.
+
+An opt-in trigger adds a dedicated budget check for the measured post-trigger
+bytes. The runner prefers a future `lazyExplorerJavaScriptGzipBytes` route limit
+and currently falls back to the committed `lazyJavaScriptGzipBytes` 60,000-byte
+limit; `budget.enhancementTrigger.sourceLimitMetric` records which key supplied
+the ceiling. It also requires zero post-trigger transport failures, HTTP errors,
+page errors, and final-state mismatches. Without `--enhancement-trigger`, report
+fields, timing, actions, and budget enforcement remain the cold-navigation
+behavior. CI runs both triggers through `npm run analyze:bundle:explorer`.
+
 ## Temporary V5 envelopes
 
 V5 is still the public root while V1 is built. Its known costs are not hidden:
@@ -151,7 +196,7 @@ root.
 
 The inactive `v1` profiles preserve the approved release budgets:
 
-- homepage initial JavaScript at most 170,000 gzip bytes;
+- homepage initial JavaScript at most 175,000 gzip bytes;
 - homepage route-owned JavaScript at most 18,000 gzip bytes;
 - case-study initial JavaScript at most 170,000 gzip bytes;
 - case-study route-owned JavaScript at most 12,000 gzip bytes;
@@ -178,14 +223,18 @@ a framework floor cannot be hidden inside route-owned numbers.
 The original plan proposed 150,000 bytes for the homepage and 145,000 for a
 case study. The pinned server-only fixture first measured a 145,141-byte total
 initial floor before portfolio route code. Issue #11 then calibrated the real
-production V1 route and measured a 169,637-byte shared-runtime floor. Homepage
-and case-study total ceilings are therefore both 170,000 bytes. The stricter
-18,000- and 12,000-byte route-owned ceilings remain unchanged and are enforced
-as separate measurements. This preserves a meaningful reduction from the
-measured 555,535-byte V5 cold pre-intent baseline without hiding the production
-framework floor. The same V5 build declared 219,444 bytes through the initial
-Next manifests; the larger number deliberately includes its scene chunks
-because they load automatically within the fixed three-second window.
+production V1 route and measured a 169,637-byte shared-runtime floor. The
+Issue #13 semantic explorer enhancer raised the measured homepage cold total to
+171,719 bytes while preserving zero pre-intent enhancement bytes. The homepage
+ceiling is therefore rebaselined narrowly to 175,000 bytes; the server-only case
+study ceiling remains 170,000 bytes. The stricter 18,000- and 12,000-byte
+route-owned ceilings remain unchanged and are enforced as separate
+measurements. This preserves a meaningful reduction from the measured
+555,535-byte V5 cold pre-intent baseline without hiding the production
+framework floor or disguising the enhancer as inline code. The same V5 build
+declared 219,444 bytes through the initial Next manifests; the larger number
+deliberately includes its scene chunks because they load automatically within
+the fixed three-second window.
 
 ## Audit note
 

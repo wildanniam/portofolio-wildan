@@ -8,10 +8,12 @@ import type {
   ExplorerVideoMediaDto,
 } from "@/content/explorer-dto";
 
+import { ProjectExplorerEnhancer } from "./project-explorer-enhancer";
+
 type ProjectExplorerIslandProps = {
   defaultSlug?: string;
   explorerId: string;
-  formAction?: string;
+  formAction: string;
   projects: readonly ExplorerProjectDto[];
 };
 
@@ -279,9 +281,11 @@ function EvidenceContactSheet({
 }
 
 function ProjectPanel({
+  hidden,
   panelId,
   project,
 }: {
+  hidden: boolean;
   panelId: string;
   project: ExplorerProjectDto;
 }) {
@@ -291,7 +295,10 @@ function ProjectPanel({
     <article
       aria-labelledby={titleId}
       className="opg-project-explorer__panel"
+      data-explorer-panel
       data-project-slug={project.slug}
+      data-project-title={project.title}
+      hidden={hidden}
       id={panelId}
       tabIndex={-1}
     >
@@ -360,12 +367,19 @@ export function ProjectExplorerIsland({
   if (!activeProject) return null;
 
   return (
-    <div className="opg-project-explorer" data-enhanced="false">
+    <div
+      className="opg-project-explorer"
+      data-active-project={activeProject.slug}
+      data-enhanced="false"
+      data-motion-state="idle"
+      id={`${explorerId}-interactive`}
+    >
       <div className="opg-project-explorer__layout">
         <form
           action={formAction}
           aria-label="Project evidence previews"
           className="opg-project-explorer__index-group"
+          data-explorer-form
           method="get"
           role="group"
         >
@@ -376,6 +390,7 @@ export function ProjectExplorerIsland({
             {projects.map((project, index) => {
               const isActive = project.slug === activeProject.slug;
               const projectLinkId = `${explorerId}-${project.slug}-project`;
+              const projectPanelId = `${panelId}-${project.slug}`;
 
               return (
                 <li
@@ -398,15 +413,19 @@ export function ProjectExplorerIsland({
                     {project.title}
                   </a>
                   <button
-                    aria-controls={panelId}
+                    aria-controls={projectPanelId}
                     aria-label={`Preview evidence for ${project.title}`}
                     aria-pressed={isActive}
                     className="opg-project-explorer__preview-button"
+                    data-explorer-preview
+                    formAction={`${formAction.replace(/#.*$/, "")}#${projectPanelId}`}
                     name="project"
                     type="submit"
                     value={project.slug}
                   >
-                    {isActive ? "Previewing" : "Preview"}
+                    <span data-explorer-preview-label>
+                      {isActive ? "Previewing" : "Preview"}
+                    </span>
                   </button>
                   <p>{project.oneLiner}</p>
                 </li>
@@ -415,8 +434,30 @@ export function ProjectExplorerIsland({
           </ol>
         </form>
 
-        <ProjectPanel panelId={panelId} project={activeProject} />
+        <div
+          className="opg-project-explorer__panels"
+          data-explorer-panels
+          id={panelId}
+          tabIndex={-1}
+        >
+          {projects.map((project) => (
+            <ProjectPanel
+              hidden={project.slug !== activeProject.slug}
+              key={project.slug}
+              panelId={`${panelId}-${project.slug}`}
+              project={project}
+            />
+          ))}
+        </div>
       </div>
+      <p
+        aria-atomic="true"
+        aria-live="polite"
+        className="opg-visually-hidden"
+        data-explorer-status
+        role="status"
+      />
+      <ProjectExplorerEnhancer explorerId={explorerId} />
     </div>
   );
 }

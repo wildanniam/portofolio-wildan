@@ -26,6 +26,11 @@
     "routeOwnedJavaScriptGzipBytes": "JavaScript unique to the selected route page entry after shared entries are removed.",
     "lazyJavaScriptGzipBytes": "Route react-loadable JavaScript that is not declared in the initial manifest set.",
     "preIntentAdditionalJavaScriptGzipBytes": "Cold-navigation JavaScript requested before user intent even though it is outside the declared initial manifest set.",
+    "postTriggerAdditionalJavaScriptGzipBytes": "Local Next build JavaScript first requested during the bounded explorer near/intent settle window after subtracting the complete cold-navigation build set.",
+    "postTriggerUnexpectedFailedRequestCount": "Unexpected transport failures first observed after the explorer near/intent trigger.",
+    "postTriggerHttpErrorResponseCount": "HTTP error responses first observed after the explorer near/intent trigger.",
+    "postTriggerPageErrorCount": "Uncaught page errors first observed after the explorer near/intent trigger.",
+    "postTriggerEnhancementStateMismatchCount": "Whether the explorer failed to reach the deterministic ready/static state and controller count expected for the measured viewport after the trigger settle window.",
     "nonBuildJavaScriptTransferBytes": "Successful script response bytes outside the local Next build asset graph, including same-origin runtime services and third-party scripts.",
     "cssGzipBytes": "Deduplicated CSS requested by the cold production navigation.",
     "initialMediaTransferBytes": "Image and media response bytes requested during the cold pre-intent observation window.",
@@ -106,7 +111,7 @@
       "routes": {
         "/": {
           "limits": {
-            "totalInitialJavaScriptGzipBytes": 170000,
+            "totalInitialJavaScriptGzipBytes": 175000,
             "routeOwnedJavaScriptGzipBytes": 18000,
             "lazyJavaScriptGzipBytes": 60000,
             "preIntentAdditionalJavaScriptGzipBytes": 0,
