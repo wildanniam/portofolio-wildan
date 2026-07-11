@@ -7,7 +7,6 @@ import {
   BadgeCheck,
   Braces,
   CircleDollarSign,
-  Cpu,
   ExternalLink,
   FileCheck2,
   Github,
@@ -177,97 +176,151 @@ function MetricsRail() {
   );
 }
 
+const vectorProjectLinks: Record<string, { slug: string; title: string; accent: Project["accent"] }[]> = {
+  "AI Agents": [
+    { slug: "specheal", title: "SpecHeal", accent: "rose" },
+    { slug: "nova-ai-wallet", title: "Nova", accent: "violet" },
+    { slug: "crucible", title: "Crucible", accent: "blue" },
+  ],
+  "Web3 Trust": [
+    { slug: "fradium", title: "Fradium", accent: "mint" },
+    { slug: "nova-ai-wallet", title: "Nova", accent: "violet" },
+  ],
+  "On-chain Intelligence": [
+    { slug: "fradium", title: "Fradium", accent: "mint" },
+    { slug: "crucible", title: "Crucible", accent: "blue" },
+  ],
+  "Agentic Payments": [
+    { slug: "agentpay", title: "AgentPay", accent: "cyan" },
+    { slug: "paygate-stellar", title: "PayGate", accent: "amber" },
+  ],
+};
+
 function ResearchDeck() {
   return (
     <section id="research" className="relative px-4 py-20 md:px-8 md:py-28">
-      <div className="absolute inset-x-0 top-12 mx-auto h-72 max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(115,231,255,0.16),transparent_62%)] blur-3xl" />
+      <div className="absolute inset-x-0 top-12 mx-auto h-72 max-w-5xl rounded-full bg-[radial-gradient(circle,rgba(115,231,255,0.12),transparent_62%)] blur-3xl" />
       <div className="relative mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="Research vectors"
           title="Four command channels for autonomous systems"
-          description="Each research vector is connected to shipped work: agents that use tools, wallets that explain risk, on-chain intelligence, and payment rails for autonomous software."
+          description="Each vector is connected to shipped proof: agents that reason with tools, wallets that explain risk, on-chain intelligence, and payment rails for autonomous software."
         />
         <div className="mt-16 grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
-          <motion.div {...reveal} className="relative min-h-[35rem] overflow-hidden rounded-[8px] border border-white/10 bg-[#06100d]/70 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_40px_140px_rgba(0,0,0,0.28)]">
-            <div className="absolute inset-0 [background:radial-gradient(circle_at_50%_45%,rgba(115,231,255,0.18),transparent_34%),radial-gradient(circle_at_62%_58%,rgba(158,255,201,0.1),transparent_28%)]" />
-            <div className="absolute inset-8 rounded-full border border-[color:var(--signal-cyan)]/14" />
-            <div className="absolute inset-20 rounded-full border border-[color:var(--signal-mint)]/12" />
-            <div className="absolute left-1/2 top-14 h-[78%] w-px -translate-x-1/2 bg-gradient-to-b from-transparent via-[color:var(--signal-cyan)]/24 to-transparent" />
-            <div className="absolute left-14 top-1/2 h-px w-[78%] -translate-y-1/2 bg-gradient-to-r from-transparent via-[color:var(--signal-mint)]/22 to-transparent" />
-            <div className="relative flex h-full min-h-[31rem] items-center justify-center">
-              <div className="relative grid size-52 place-items-center rounded-full border border-white/12 bg-black/24 shadow-[0_0_120px_rgba(115,231,255,0.16)]">
-                <div className="absolute inset-5 rounded-full border border-[color:var(--signal-cyan)]/25" />
-                <Cpu className="size-14 text-[color:var(--signal-cyan)]" />
-                <span className="absolute -bottom-8 font-mono text-[10px] uppercase tracking-[0.28em] text-white/40">
-                  research kernel
-                </span>
+
+          {/* Research Manifest */}
+          <motion.div
+            {...reveal}
+            className="relative overflow-hidden rounded-[8px] border border-white/10 bg-[#060f0c]/80 p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06),0_40px_140px_rgba(0,0,0,0.28)]"
+          >
+            <div className="absolute inset-0 [background:radial-gradient(circle_at_30%_20%,rgba(115,231,255,0.07),transparent_40%)]" />
+            <div className="relative">
+              <p className="font-mono text-[10px] uppercase tracking-[0.32em] text-white/36">
+                Research manifest
+              </p>
+              <p className="mt-3 text-lg font-semibold leading-snug text-[color:var(--ink)]">
+                Four recurring vectors.<br />All active across six builds.
+              </p>
+              <div className="mt-5 h-px bg-gradient-to-r from-[color:var(--signal-cyan)]/40 via-white/[0.06] to-transparent" />
+              <div className="mt-6 space-y-5">
+                {researchVectors.map((vector, index) => {
+                  const tone = accentValues[vector.color as Project["accent"]];
+                  const proofLinks = vectorProjectLinks[vector.title] ?? [];
+                  return (
+                    <div key={vector.title} className="group">
+                      <div className="flex items-center gap-3">
+                        <span className="w-5 shrink-0 font-mono text-[10px] text-white/28">0{index + 1}</span>
+                        <div className="h-px flex-1 bg-white/[0.08] transition duration-300 group-hover:bg-white/[0.14]" />
+                        <div className="flex items-center gap-2">
+                          <div className="size-1.5 rounded-full" style={{ backgroundColor: tone }} />
+                          <span className="text-sm font-medium text-[color:var(--ink)]">{vector.title}</span>
+                        </div>
+                      </div>
+                      <div className="ml-8 mt-2 flex flex-wrap gap-1.5">
+                        {proofLinks.map((project) => (
+                          <a
+                            key={project.slug}
+                            href="#work"
+                            className="rounded-[6px] border px-2 py-0.5 font-mono text-[10px] uppercase tracking-[0.14em] opacity-60 transition duration-200 hover:opacity-100"
+                            style={{
+                              borderColor: `${accentValues[project.accent]}40`,
+                              color: accentValues[project.accent],
+                              backgroundColor: `${accentValues[project.accent]}0e`,
+                            }}
+                          >
+                            {project.title}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              {researchVectors.map((vector, index) => {
-                const tone = accentValues[vector.color as Project["accent"]];
-                const placements = [
-                  "left-[10%] top-[12%]",
-                  "right-[8%] top-[22%]",
-                  "left-[13%] bottom-[18%]",
-                  "right-[10%] bottom-[13%]",
-                ];
-                return (
-                  <div
-                    key={vector.title}
-                    className={cn("absolute w-36 rounded-[8px] border bg-black/22 p-3 backdrop-blur-sm", placements[index])}
-                    style={{ borderColor: `${tone}55`, boxShadow: `0 0 40px ${tone}16` }}
-                  >
-                    <vector.icon className="size-5" style={{ color: tone }} />
-                    <p className="mt-3 text-sm font-medium text-[color:var(--ink)]">{vector.title}</p>
-                    <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-white/36">
-                      channel 0{index + 1}
-                    </p>
-                  </div>
-                );
-              })}
+              <div className="mt-8 h-px bg-gradient-to-r from-[color:var(--signal-cyan)]/30 via-white/[0.06] to-transparent" />
+              <div className="mt-4 flex items-center justify-between">
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/28">
+                  6 builds · all vectors active
+                </p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/28">
+                  2025–2026
+                </p>
+              </div>
             </div>
           </motion.div>
 
+          {/* Command Channel Cards */}
           <div className="grid gap-4 md:grid-cols-2">
             {researchVectors.map((vector, index) => {
               const tone = accentValues[vector.color as Project["accent"]];
+              const proofLinks = vectorProjectLinks[vector.title] ?? [];
               return (
                 <motion.article
                   key={vector.title}
                   {...reveal}
-                  transition={{ ...reveal.transition, delay: index * 0.05 }}
-                  className="group relative min-h-[17rem] overflow-hidden rounded-[8px] border border-white/10 bg-[#07100d]/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition duration-500 hover:-translate-y-1"
-                  style={{ "--vector-tone": tone, "--vector-glow": `${tone}33` } as React.CSSProperties}
+                  transition={{ ...reveal.transition, delay: index * 0.06 }}
+                  className="group relative flex min-h-[18rem] flex-col overflow-hidden rounded-[8px] border border-white/10 bg-[#07100d]/72 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition duration-500 hover:-translate-y-0.5"
+                  style={{ "--vector-tone": tone, "--vector-glow": `${tone}22` } as React.CSSProperties}
                 >
-                  <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 [background:radial-gradient(circle_at_32%_0%,var(--vector-glow),transparent_46%)]" />
-                  <div className="absolute -right-10 -top-12 size-36 rounded-full border border-[color:var(--vector-tone)]/20" />
-                  <div className="absolute right-4 top-4 font-mono text-[10px] text-white/25">0{index + 1}</div>
-                  <div className="relative flex h-full flex-col">
-                    <div className="flex items-center gap-3">
-                      <div className="grid size-12 place-items-center rounded-[8px] border border-[color:var(--vector-tone)]/35 bg-[color:var(--vector-tone)]/10">
-                        <vector.icon className="size-6 text-[color:var(--vector-tone)]" />
-                      </div>
-                      <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/40">
+                  <div className="absolute inset-0 opacity-0 transition duration-500 group-hover:opacity-100 [background:radial-gradient(circle_at_0%_0%,var(--vector-glow),transparent_52%)]" />
+                  <div className="relative flex flex-1 flex-col">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.24em] text-white/28">
+                        ch-0{index + 1}
+                      </span>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/24">
                         {vector.eyebrow}
-                      </p>
+                      </span>
                     </div>
-                    <h3 className="mt-8 text-2xl font-semibold text-[color:var(--ink)]">
-                      {vector.title}
-                    </h3>
-                    <p className="mt-4 text-sm leading-6 text-[color:var(--muted-ink)]">
+                    <div className="mt-4 flex items-start gap-3">
+                      <vector.icon className="mt-0.5 size-5 shrink-0" style={{ color: tone }} />
+                      <h3 className="text-xl font-semibold leading-tight text-[color:var(--ink)]">
+                        {vector.title}
+                      </h3>
+                    </div>
+                    <p className="mt-4 flex-1 text-sm leading-6 text-[color:var(--muted-ink)]">
                       {vector.summary}
                     </p>
-                    <div className="mt-auto flex flex-wrap gap-2 pt-6">
-                      {vector.links.map((link) => (
-                        <span
-                          key={link}
-                          className="rounded-[8px] border border-white/10 bg-white/[0.035] px-2.5 py-1 text-[11px] text-white/58"
+                    <div className="mt-5 flex flex-wrap gap-1.5">
+                      {proofLinks.map((project) => (
+                        <a
+                          key={project.slug}
+                          href="#work"
+                          className="rounded-[6px] border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition duration-200 hover:opacity-90"
+                          style={{
+                            borderColor: `${accentValues[project.accent]}45`,
+                            color: accentValues[project.accent],
+                            backgroundColor: `${accentValues[project.accent]}0f`,
+                          }}
                         >
-                          {link}
-                        </span>
+                          {project.title}
+                        </a>
                       ))}
                     </div>
                   </div>
-                  <div className="absolute inset-x-5 bottom-4 h-px bg-gradient-to-r from-transparent via-[color:var(--vector-tone)]/60 to-transparent" />
+                  <div
+                    className="absolute inset-x-0 bottom-0 h-px opacity-0 transition duration-500 group-hover:opacity-100"
+                    style={{ background: `linear-gradient(to right, transparent, ${tone}60, transparent)` }}
+                  />
                 </motion.article>
               );
             })}

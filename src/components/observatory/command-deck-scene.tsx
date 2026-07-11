@@ -7,6 +7,16 @@ import { Bloom, EffectComposer } from "@react-three/postprocessing";
 import * as THREE from "three";
 import { projects, type Project } from "@/data/portfolio";
 
+// R3F v9.x creates new THREE.Clock() internally; THREE.Clock was deprecated in Three.js r183.
+// Filter the warning here until @react-three/fiber migrates to THREE.Timer.
+if (typeof window !== "undefined") {
+  const _warn = console.warn.bind(console);
+  console.warn = (...args: Parameters<typeof console.warn>) => {
+    if (typeof args[0] === "string" && args[0].startsWith("THREE.Clock:")) return;
+    _warn(...args);
+  };
+}
+
 const HERO_PROJECTS = ["fradium", "agentpay", "nova-ai-wallet", "specheal", "paygate-stellar"];
 const CORE_ORIGIN = new THREE.Vector3(0, 0, 0);
 
