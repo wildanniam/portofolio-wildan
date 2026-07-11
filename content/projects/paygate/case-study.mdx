@@ -1,0 +1,78 @@
+> PayGate follows one machine-paid request from an HTTP 402 challenge to payment, protected delivery, evidence, and withdrawal.
+
+## Problem and stakes
+
+Most API billing is designed for a person who creates an account, selects a subscription, and enters a card. That model breaks when the buyer is an AI agent or another machine client that needs one response now.
+
+A machine-native flow has more work behind it than returning HTTP 402. The provider needs payment identity, amount and recipient checks, replay protection, upstream access control, a reliable retry state, accounting, and a withdrawal path. If any boundary is vague, a request can appear paid without being delivered, forwarded without valid payment, or credited twice.
+
+## My role and the team
+
+I am PayGate's Founder & Full-Stack Developer. I defined the product, built the provider experience and APIs, implemented the paid proxy and persistence model, integrated Stellar MPP and the Soroban escrow, and developed the security, test, evidence, deployment, and documentation paths around it.
+
+ArgaAAL contributed a focused V1 testnet-beta hardening change across authentication persistence, dependency hygiene, documentation, and generated-artifact cleanup. PayGate is my product, and that contribution remains part of its record.
+
+## Constraint
+
+One paid request crosses a machine client, HTTP challenge, payment network, replay store, contract credit, encrypted upstream credential, provider server, receipt, and dashboard. A successful payment and a successful upstream response are not the same event.
+
+The current product is deliberately testnet scoped. It proves the technical lifecycle before mainnet operations, automatic refunds, production customer support, and independent security review are claimed.
+
+## Decision
+
+### Make activation a protection test
+
+PayGate does not activate an endpoint merely because a provider saved a secret. It first sends an invalid secret and requires the upstream to reject it, then sends the generated secret and requires success. This tests whether the provider actually installed the guard.
+
+### Carry one payment identity across the system
+
+The PayGate payment ID travels as the MPP external ID and is bound through unique database constraints, replay records, transaction evidence, and idempotent contract credit. The design makes duplicate credentials and transaction hashes rejectable and gives the final receipt a traceable origin.
+
+### Separate payment from delivery state
+
+A paid request that fails before forwarding stays retryable instead of creating another charge. Once a request reaches the forwarded state, the same credential cannot be used to call the upstream again. Automatic refund and expiry policy remain explicit future work rather than invisible behavior.
+
+### Keep withdrawal under developer custody
+
+PayGate prepares and records the intended withdrawal, but Freighter performs the signature. The server validates the source and expected transaction hash instead of receiving a developer private key.
+
+## System behavior
+
+- A provider signs a Freighter challenge and registers a priced GET or JSON endpoint.
+- PayGate creates a proxy URL and encrypted upstream secret in a pending setup state.
+- Invalid-secret rejection and valid-secret success activate the endpoint.
+- An unpaid machine request receives HTTP 402 with request and payment identifiers.
+- The client pays testnet USDC through Stellar MPP and retries with its credential.
+- PayGate validates the binding, amount, currency, recipient, transaction, and replay state.
+- The Soroban escrow records an idempotent credit and the proxy forwards to the protected upstream.
+- The response includes a receipt, while the dashboard exposes request, payment, credit, revenue, fee, and withdrawal evidence.
+
+## Evidence sequence
+
+- A deployed product loop will show registration, protection verification, 402, paid retry, JSON delivery, receipt, and dashboard update.
+- A lifecycle diagram will map the client, MPP, replay store, Soroban escrow, upstream guard, receipt, and withdrawal boundary.
+- A testnet ledger will connect payment, contract credit, developer withdrawal, and platform-fee withdrawal to the same evidence model.
+- A hardening record will connect SSRF controls, replay defense, rate limits, bounded responses, transaction intent, secret scanning, and CI to the risks they address.
+- A credited grant frame will preserve the Stellar Indonesia announcement and official Instawards context without implying a partnership.
+
+Every visual remains planned until a sanitized, approved public derivative exists. Demonstration balances and placeholder hashes will not be promoted as product evidence.
+
+## Outcome and validation
+
+PayGate was awarded a $5,000 SCF Instaward. Stellar Indonesia publicly congratulated the team, and the official SCF rules provide the program context. The award provides funding and selection context for continued execution; it is not a claim of partnership, mainnet launch, revenue, or completed sprint milestones.
+
+The product is publicly deployed and its repository records wallet-authenticated provider setup, a protected upstream, testnet payment, contract credit, withdrawal, automated smoke coverage, and passing workflow evidence. Those signals make PayGate an active build rather than a concept deck.
+
+## Where it stands
+
+PayGate is an actively shipped Stellar testnet product. It supports one precise provider and buyer path for paid GET and JSON APIs, and it exposes the request states that are usually hidden behind payment marketing.
+
+Mainnet operation, production customer scale, automatic retry workers, refund policy, and independent security certification remain ahead. The dashboard can contain demonstration data, so the case study will distinguish real sanitized receipts from illustrative product states.
+
+## What I'd improve next
+
+- Preserve a clean deployed replay on trypaygate.com from registration through withdrawal.
+- Define retry expiry, automatic recovery, and refund behavior for paid-but-undelivered requests.
+- Add durable public documentation and an explicit repository license.
+- Continue mainnet and compliance research without presenting testnet proof as production readiness.
+- Gather real, consented provider feedback and usage evidence during the funded sprint.

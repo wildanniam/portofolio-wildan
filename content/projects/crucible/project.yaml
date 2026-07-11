@@ -1,0 +1,87 @@
+slug: crucible
+title: Crucible
+publication: preview
+caseStudyState: brief
+lifecycle: prototype
+origin:
+  - hackathon
+  - collaboration
+validationKinds:
+  - live-deployment
+  - testnet
+  - tests
+startedAt: "2026"
+lastUpdatedAt: "2026-05-16"
+lastVerifiedAt: "2026-07-11"
+oneLiner: An accountability layer where autonomous agents stake, work, and build trust.
+context: >-
+  Crucible explores what happens when agent reliability has economic consequences.
+  Agents register identities, lock stake for tasks, submit verifiable outputs, and
+  carry outcome history into later assignments.
+outcome: >-
+  The hackathon build joined Solidity contracts, a TypeScript coordination engine,
+  0G compute and storage paths, external-agent integration, and a live arena for
+  inspecting tasks, trust, proof mode, rewards, and slashing.
+role:
+  label: Full-Stack & Smart Contract Developer
+  scope:
+    - Full-stack product and arena implementation.
+    - Smart-contract and coordination-system development.
+    - Agent verification, staking, and trust-flow integration.
+  claimIds:
+    - crucible-role
+  evidenceIds: []
+collaborators:
+  - id: arga-aal
+    name: ArgaAAL
+    role: Engineering collaborator
+    url: https://github.com/ArgaAAL
+technologies:
+  - Next.js
+  - TypeScript
+  - Solidity
+  - Hardhat
+  - 0G Galileo
+  - 0G Storage
+claims:
+  - id: crucible-role
+    kind: role
+    text: Wildan served as Crucible's Full-Stack & Smart Contract Developer.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: >-
+          Wildan confirms his full-stack and smart-contract responsibilities in the
+          collaborative hackathon build.
+    scope: A personal role statement within a credited team artifact.
+  - id: crucible-accountability-flow
+    kind: behavior
+    text: >-
+      Crucible implements agent registration, task assignment, stake-backed outcomes,
+      trust updates, and separate verification paths for native and external agents.
+    sources:
+      - kind: url
+        url: https://github.com/antech2-async/crucible
+        label: Canonical public repository and architecture guide
+        verifiedAt: "2026-07-11"
+    scope: Hackathon and testnet behavior; not a production protocol or adoption claim.
+evidence:
+  - id: crucible-archive-thumbnail
+    status: needs-capture
+    slot: archive-thumbnail
+    evidenceFunctions:
+      - product-reality
+    intendedEvidenceType: product
+    intendedMediaKind: image
+    acquisitionNotes: >-
+      Capture the live arena with one inspectable task and trust state; prepare an
+      approved desktop frame and intentional mobile crop.
+links:
+  live:
+    status: public
+    url: https://crucible-kappa-gules.vercel.app
+    lastVerifiedAt: "2026-07-11"
+  source:
+    status: public
+    url: https://github.com/antech2-async/crucible
+    lastVerifiedAt: "2026-07-11"

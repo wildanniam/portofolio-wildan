@@ -48,6 +48,9 @@ jobs:
       - name: Build production application
         run: npm run build
 
+      - name: Verify content trace isolation
+        run: npm run analyze:content-tracing
+
       - name: Reject high or critical advisories
         run: npm audit --audit-level=high
 
@@ -99,6 +102,9 @@ jobs:
 
       - name: Run editorial foundation matrix
         run: npm run test:foundation
+
+      - name: Run content compatibility matrix
+        run: npm run test:content:e2e
 
       - name: Upload Playwright diagnostics
         if: ${{ !cancelled() }}

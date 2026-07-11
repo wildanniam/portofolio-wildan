@@ -75,7 +75,7 @@ Required automated cases:
 
 - every project and moment record parses successfully;
 - `draft` records never enter public queries/routes/navigation/metadata/sitemap;
-- `preview` records appear only with `PORTFOLIO_V1_PREVIEW=1`, always `noindex`, and remain absent from production navigation/sitemap;
+- `preview` records appear only with `PORTFOLIO_V1_PREVIEW=1`; the review namespace rejects missing/invalid `PORTFOLIO_V1_PREVIEW_TOKEN` credentials, sends `private, no-store` and `noindex`, and remains absent from production navigation/sitemap;
 - `published` flagships are `full` and reference only ready assets; published non-flagships may be `brief`;
 - duplicate slug/ID fails;
 - homepage reference to an unknown slug fails;
@@ -109,9 +109,9 @@ Required:
 
 - `/`, `/work`, `/work/fradium`, `/work/nova-ai`, `/work/paygate`, `/work/quorum`, and `/contact` return 200 when publishable;
 - every `published + brief` project appears in `/work`, static params, metadata, and sitemap, and its `/work/{slug}` renders a server-only brief without empty MDX chapters or flagship motion;
-- unknown, draft, and preview-with-env-off case-study slugs return the intended not-found behavior; preview-with-env-on may return 200 but remains `noindex`;
+- unknown, draft, and preview-with-env-off case-study slugs return the intended not-found behavior; env-on preview without valid credentials fails closed, while valid credentials may return 200 but remain `private, no-store` and `noindex`;
 - `/moments` follows its gate;
-- `/preview/open-proving-ground` returns 404 with the preview env disabled, returns 200 plus `noindex` when enabled, never appears in navigation/sitemap, and is absent after root cutover;
+- `/preview/open-proving-ground` returns 404 with the preview env disabled, rejects missing/invalid credentials, returns 200 plus `private, no-store` and `noindex` with valid env/token credentials, never appears in navigation/sitemap, and is absent after root cutover;
 - navigation works from a direct deep link, not only from homepage state;
 - browser back/forward restores useful state without replaying an aggressive intro;
 - every route has one `h1`, ordered headings, landmarks, title, description, canonical URL, and Open Graph image;

@@ -20,6 +20,7 @@ for pre-existing user work are recorded in the
 - [V1 scope and route lock](./scope-v1.md)
 - [Design contract](./development/DESIGN.md)
 - [Foundation component contracts](./development/FOUNDATION_COMPONENTS.md)
+- [Implemented content system](./development/CONTENT_SYSTEM.md)
 - [Typography source and license record](./typography-source.md)
 - [Target architecture](./development/ARCHITECTURE.md)
 - [Development plan](./development/DEVELOPMENT_PLAN.md)

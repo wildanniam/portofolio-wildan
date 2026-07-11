@@ -283,7 +283,7 @@ type CurrentlyBuildingRecord = {
 ### Publication semantics
 
 - `draft` is authoring-only and never appears in public queries, routes, navigation, metadata, or sitemap.
-- `preview` is available only when `PORTFOLIO_V1_PREVIEW=1`, always carries `noindex`, and is excluded from production navigation and sitemap.
+- `preview` is available only when `PORTFOLIO_V1_PREVIEW=1`; the temporary review namespace additionally requires a 32+ character `PORTFOLIO_V1_PREVIEW_TOKEN` through HTTP Basic Authentication. It always carries `private, no-store` and `noindex`, and is excluded from production navigation and sitemap.
 - `published` is publicly routable and may be curated into `/`, `/work`, and sitemap.
 - V1 release requires Fradium, Nova AI Wallet, PayGate, and Quorum to be `published + full`.
 - Non-flagship archive projects may be `published + brief`.

@@ -1,0 +1,261 @@
+slug: paygate
+title: PayGate
+publication: preview
+caseStudyState: full
+lifecycle: active
+origin:
+  - independent
+  - grant
+  - collaboration
+validationKinds:
+  - grant
+  - live-deployment
+  - testnet
+  - tests
+  - transaction
+startedAt: "2026-04-24"
+lastUpdatedAt: "2026-06-28"
+lastVerifiedAt: "2026-07-11"
+oneLiner: Turning ordinary APIs into machine-paid endpoints on Stellar testnet.
+problem: >-
+  API billing usually assumes a human who creates an account, chooses a plan, and
+  enters a card. AI agents need a machine-readable price challenge, a way to pay
+  for one request, a safe retry with proof, and a JSON response. API owners would
+  otherwise have to assemble verification, replay protection, upstream access,
+  accounting, settlement, and withdrawal themselves.
+intendedUsers:
+  - Indie API builders and startup teams operating useful GET and JSON endpoints.
+  - Backend developers who want per-call monetization without building a payment gateway from scratch.
+  - AI agents and machine clients that can answer an HTTP 402 challenge with Stellar payment credentials.
+teamContext:
+  summary: >-
+    Wildan founded PayGate and owns its product and full-stack implementation.
+    ArgaAAL contributed a focused V1 testnet-beta hardening change.
+  collaboratorIds:
+    - arga-aal
+  ownershipBoundary: >-
+    Founder and implementation ownership remains compatible with explicit credit
+    for ArgaAAL's focused hardening contribution; the project is not described as
+    built entirely alone.
+role:
+  label: Founder & Full-Stack Developer
+  scope:
+    - Product direction and provider experience.
+    - React application, API routes, and persistence model.
+    - HTTP 402 proxy, Stellar MPP verification, and Soroban escrow integration.
+    - Security hardening, automated evidence, deployment, and developer documentation.
+  claimIds:
+    - paygate-role
+  evidenceIds:
+    - paygate-implementation-proof
+collaborators:
+  - id: arga-aal
+    name: ArgaAAL
+    role: V1 testnet-beta hardening contributor
+    url: https://github.com/ArgaAAL
+constraints:
+  - >-
+    A single paid request crosses an HTTP client, payment verifier, persistent replay
+    store, Soroban ledger, secret-protected upstream, and provider dashboard.
+  - >-
+    Payment success and upstream delivery are different states; a paid request may
+    fail before delivery and must not be charged again on a safe retry.
+  - >-
+    The current product is testnet scoped. Mainnet operations, automatic refunds,
+    customer scale, and independent security certification remain future work.
+decisions:
+  - title: Make activation prove upstream protection
+    rationale: >-
+      A publicly reachable upstream would make the paid proxy cosmetic. PayGate
+      probes with an invalid secret and requires rejection, then probes with the
+      generated secret and requires success before activating an endpoint.
+    consequence: >-
+      Activation proves that PayGate is the intended access path rather than merely
+      recording a provider's configuration claim.
+    evidenceIds:
+      - paygate-product-flow
+  - title: Bind payment identity across every boundary
+    rationale: >-
+      One PayGate payment ID is carried through the MPP external ID, database
+      constraints, replay store, transaction record, and idempotent contract credit.
+    consequence: >-
+      A receipt can be traced and duplicate credentials or transaction hashes can be
+      rejected, while reconciliation remains an explicit system boundary.
+    evidenceIds:
+      - paygate-system-map
+      - paygate-testnet-ledger
+  - title: Keep developer custody at withdrawal
+    rationale: >-
+      PayGate prepares the intended transaction, but Freighter holds the signing
+      decision and the server checks the source and expected transaction hash.
+    consequence: >-
+      The backend does not receive the developer's private key, at the cost of an
+      additional explicit wallet step.
+    evidenceIds:
+      - paygate-system-map
+      - paygate-testnet-ledger
+systemFlow:
+  - A provider signs a Freighter wallet-auth challenge and registers a priced GET or JSON endpoint.
+  - PayGate creates a proxy URL and encrypted upstream secret in a pending setup state.
+  - Invalid-secret rejection and valid-secret success activate the endpoint.
+  - An unpaid machine request receives HTTP 402 with request and payment identifiers.
+  - The client pays testnet USDC through Stellar MPP and retries with the credential.
+  - PayGate validates the bound payment, amount, recipient, transaction, and replay state.
+  - The Soroban escrow records an idempotent credit and PayGate forwards the secret-protected request.
+  - The response includes a receipt; the dashboard exposes request, payment, credit, split, and withdrawal evidence.
+technologies:
+  - React 18
+  - Vite 7
+  - TypeScript
+  - Node.js
+  - Vercel Functions
+  - Zod
+  - Supabase Postgres
+  - Upstash Redis
+  - Stellar MPP
+  - Stellar SDK
+  - Freighter
+  - Rust
+  - Soroban
+  - Playwright
+  - GitHub Actions
+claims:
+  - id: paygate-role
+    kind: role
+    text: Wildan is PayGate's Founder & Full-Stack Developer.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: Wildan confirms that he founded PayGate and owns its full-stack development.
+      - kind: url
+        url: https://x.com/Indo_Stellar/status/2075550378553421994
+        label: Stellar Indonesia announcement with PayGate founder reference
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Founder and implementation ownership with explicit credit for ArgaAAL's
+      focused beta-hardening contribution.
+  - id: paygate-instaward-2026
+    kind: grant
+    text: PayGate was awarded a $5,000 SCF Instaward.
+    sources:
+      - kind: url
+        url: https://x.com/Indo_Stellar/status/2075550378553421994
+        label: Stellar Indonesia announcement
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://stellar.gitbook.io/scf-handbook/scf-awards/instawards/official-rules
+        label: Official SCF Instawards rules
+        verifiedAt: "2026-07-11"
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: Wildan confirms PayGate received the award.
+    scope: Awarded funding; not a claim of partnership, mainnet launch, revenue, or sprint completion.
+  - id: paygate-machine-payment-flow
+    kind: behavior
+    text: >-
+      PayGate issues an HTTP 402 challenge, verifies a bound Stellar testnet payment,
+      records an escrow credit, forwards to a protected upstream, and returns a
+      receipt with explicit request states.
+    sources:
+      - kind: url
+        url: https://github.com/wildanniam/paygate-stellar
+        label: Canonical public repository and evidence package
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Verified testnet behavior for GET and JSON endpoints; not a claim of mainnet,
+      subscriptions, buyer accounts, POST forwarding, or guaranteed delivery.
+  - id: paygate-active-testnet
+    kind: lifecycle
+    text: PayGate is an actively shipped Stellar testnet product.
+    sources:
+      - kind: url
+        url: https://trypaygate.com
+        label: Public PayGate deployment
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://github.com/wildanniam/paygate-stellar
+        label: Canonical public repository
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Active build and testnet operation; not a claim of mainnet readiness,
+      production customer scale, revenue, or independent certification.
+evidence:
+  - id: paygate-product-flow
+    status: needs-capture
+    intendedEvidenceType: product
+    intendedMediaKind: video
+    evidenceFunctions:
+      - product-reality
+    slot: hero-paid-request-loop
+    acquisitionNotes: >-
+      Capture the deployed registration, protected-upstream probe, unpaid 402, paid
+      retry, JSON response, receipt, and dashboard state. Redact generated secrets,
+      wallet details, and provider data; include a poster and mobile fallback.
+  - id: paygate-system-map
+    status: needs-capture
+    intendedEvidenceType: architecture
+    intendedMediaKind: svg
+    evidenceFunctions:
+      - system-reasoning
+    slot: payment-lifecycle-diagram
+    acquisitionNotes: >-
+      Export an editorial request-state map across client, MPP, replay store,
+      Soroban escrow, protected upstream, receipt, ledger, and Freighter withdrawal.
+  - id: paygate-testnet-ledger
+    status: needs-capture
+    intendedEvidenceType: transaction
+    intendedMediaKind: image
+    evidenceFunctions:
+      - verification
+    slot: testnet-proof-ledger
+    acquisitionNotes: >-
+      Build a sanitized proof contact sheet from the verified transfer, contract
+      credit, developer withdrawal, platform-fee withdrawal, and matching request
+      identifiers. Label testnet and self-recorded versus external proof.
+  - id: paygate-implementation-proof
+    status: needs-capture
+    intendedEvidenceType: test-result
+    intendedMediaKind: image
+    evidenceFunctions:
+      - verification
+    slot: hardening-record
+    acquisitionNotes: >-
+      Present representative issue-to-control evidence for upstream guard, SSRF,
+      replay, rate limiting, bounded responses, transaction intent, secret scan,
+      smoke tests, and the passing workflow.
+  - id: paygate-grant-outcome
+    status: needs-capture
+    intendedEvidenceType: document
+    intendedMediaKind: image
+    evidenceFunctions:
+      - verification
+    slot: grant-outcome
+    acquisitionNotes: >-
+      Create a durable, credited frame from the Stellar Indonesia announcement and
+      official program context without implying a Stellar partnership.
+limitations:
+  - PayGate is testnet scoped; mainnet and production customer operations are not claimed.
+  - Payment may precede upstream delivery, and automatic refund or retry-worker policy remains unresolved.
+  - Dashboard demonstration numbers and placeholder hashes are not valid usage evidence.
+  - No independent security certification or production compliance review is claimed.
+next:
+  - Capture a clean deployed end-to-end replay on trypaygate.com.
+  - Define automatic retry, expiry, and refund behavior for paid-but-undelivered requests.
+  - Add durable public product documentation and an explicit repository license.
+  - Gather truthful beta-user and usage evidence as the funded sprint progresses.
+links:
+  live:
+    status: public
+    url: https://trypaygate.com
+    lastVerifiedAt: "2026-07-11"
+  source:
+    status: public
+    url: https://github.com/wildanniam/paygate-stellar
+    lastVerifiedAt: "2026-07-11"
+  docs:
+    status: public
+    url: https://github.com/wildanniam/paygate-stellar/tree/main/docs
+    lastVerifiedAt: "2026-07-11"
+  demo:
+    status: unavailable
+    note: Publish the approved deployed replay after redaction and evidence labeling.

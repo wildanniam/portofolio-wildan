@@ -1,7 +1,7 @@
 # GitHub Issue Breakdown
 
 Date: 11 July 2026
-Status: **approved backlog; Issues #1, #3, and #5 are in implementation**
+Status: **approved backlog; Issues #1, #3, #5, and #7 are in implementation**
 
 The implementation should use the standard issue-driven workflow. These are high-signal delivery slices, not activity placeholders. Replace `TBD` with the real GitHub issue number before creating a branch, and link each PR with `Closes #N`.
 
@@ -129,7 +129,8 @@ Verification:
 
 **Suggested title:** `feat: add typed project, evidence, and moments content system`
 **Risk:** standard
-**Suggested branch:** `codex/TBD-content-repository`
+**GitHub issue:** [#7](https://github.com/wildanniam/portofolio-wildan/issues/7)
+**Implementation branch:** `codex/7-content-repository`
 
 Dependency: issue 01. It may proceed alongside issue 02 after the toolchain harness is merged.
 
@@ -164,6 +165,8 @@ Verification:
 - positive and negative schema tests;
 - referential-integrity tests;
 - published/draft/preview route-query tests;
+- full/brief/no-JavaScript compatibility routes and same-build runtime gate;
+- output-trace isolation for repository content;
 - lint, typecheck, build.
 
 ## 04 — Build the semantic shell, work archive, and case-study routes
@@ -186,7 +189,7 @@ Scope:
 - implement `ProjectBriefPage` for published non-flagship records;
 - add a static, motion-free homepage skeleton in the locked sequence;
 - gate `/moments` until publishable;
-- add `/preview/open-proving-ground`, available only when `PORTFOLIO_V1_PREVIEW=1`, with `noindex` and no navigation/sitemap entry.
+- add `/preview/open-proving-ground`, available only when `PORTFOLIO_V1_PREVIEW=1` and valid secret-backed Basic credentials are present, with `private, no-store`, `noindex`, and no navigation/sitemap entry.
 
 Acceptance:
 
@@ -196,7 +199,7 @@ Acceptance:
 - headings, landmarks, canonical URLs, and metadata are correct;
 - a project route uses the shared template rather than project-specific layout code.
 - draft project routes remain absent publicly; preview routes work only under the preview environment until real evidence is ready;
-- env-off preview returns 404, env-on preview returns 200 with `noindex`, and the legacy root has visual parity.
+- env-off preview returns 404, missing/invalid credentials fail closed, valid env/token credentials return 200 with `private, no-store` and `noindex`, and the legacy root has visual parity.
 
 Verification:
 

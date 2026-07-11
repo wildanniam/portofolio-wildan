@@ -176,7 +176,7 @@ export function FoundationShowcase() {
             This private checkpoint validates the visual grammar only. It is not
             linked from the current portfolio and is excluded from indexing.
           </p>
-          <code>PORTFOLIO_V1_PREVIEW=1</code>
+          <code>Credential-protected preview</code>
         </SiteContainer>
       </footer>
     </>
