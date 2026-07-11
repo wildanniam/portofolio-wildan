@@ -1,6 +1,7 @@
 slug: paygate
 title: PayGate
 publication: preview
+socialImageAssetId: paygate-product-flow
 caseStudyState: full
 lifecycle: active
 origin:
@@ -181,58 +182,173 @@ claims:
       production customer scale, revenue, or independent certification.
 evidence:
   - id: paygate-product-flow
-    status: needs-capture
-    intendedEvidenceType: product
-    intendedMediaKind: video
+    status: ready
+    slot: hero-paid-request-loop
+    evidenceType: product
     evidenceFunctions:
       - product-reality
-    slot: hero-paid-request-loop
-    acquisitionNotes: >-
-      Capture the deployed registration, protected-upstream probe, unpaid 402, paid
-      retry, JSON response, receipt, and dashboard state. Redact generated secrets,
-      wallet details, and provider data; include a poster and mobile fallback.
+    src: /media/projects/paygate/product-flow.webp
+    width: 1440
+    height: 900
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/paygate/product-flow-mobile.webp
+      width: 390
+      height: 844
+      crop:
+        mode: focal
+        aspectRatio: "4:3"
+        focalPoint:
+          x: 0.5
+          y: 0.28
+    caption: >-
+      PayGate's deployed product surface makes the core transformation visible:
+      an ordinary API becomes a paid endpoint with explicit 402, MPP-paid, and
+      delivered states. The displayed values explain the mechanism, not usage traction.
+    provenance:
+      kind: owned
+      creator: PayGate / Wildan Syukri Niam
+      rightsNote: >-
+        Product screenshot from the canonical PayGate repository visual audit,
+        authored and approved for portfolio evidence.
+      capturedAt: "2026-06-28"
+    claimIds:
+      - paygate-active-testnet
+    mediaKind: image
+    alt: >-
+      PayGate product page showing an API URL transformed into a paid endpoint
+      through 402 Required, MPP Paid, and 200 OK states.
   - id: paygate-system-map
-    status: needs-capture
-    intendedEvidenceType: architecture
-    intendedMediaKind: svg
+    status: ready
+    slot: payment-lifecycle-diagram
+    evidenceType: architecture
     evidenceFunctions:
       - system-reasoning
-    slot: payment-lifecycle-diagram
-    acquisitionNotes: >-
-      Export an editorial request-state map across client, MPP, replay store,
-      Soroban escrow, protected upstream, receipt, ledger, and Freighter withdrawal.
+    src: /media/projects/paygate/payment-lifecycle.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      One request identity crosses the 402 challenge, MPP verification, replay store,
+      idempotent Soroban credit, protected upstream, receipt, and developer-signed
+      withdrawal boundary.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial diagram derived from the canonical PayGate implementation
+        and evidence packet.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - paygate-machine-payment-flow
+    mediaKind: svg
+    alt: >-
+      Six-stage PayGate lifecycle from agent call and HTTP 402 through MPP payment,
+      Soroban credit, protected delivery, and receipt.
+    longDescription: >-
+      The diagram follows a machine request across payment and delivery boundaries.
+      It also shows that paid-but-undelivered requests remain retryable without a
+      second charge, while Freighter keeps the provider withdrawal signature.
   - id: paygate-testnet-ledger
-    status: needs-capture
-    intendedEvidenceType: transaction
-    intendedMediaKind: image
-    evidenceFunctions:
-      - verification
+    status: ready
     slot: testnet-proof-ledger
-    acquisitionNotes: >-
-      Build a sanitized proof contact sheet from the verified transfer, contract
-      credit, developer withdrawal, platform-fee withdrawal, and matching request
-      identifiers. Label testnet and self-recorded versus external proof.
+    evidenceType: transaction
+    evidenceFunctions:
+      - verification
+    src: /media/projects/paygate/testnet-ledger.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      Four public Stellar testnet transactions preserve the settlement trail from
+      USDC transfer to escrow credit, developer withdrawal, and platform-fee
+      withdrawal. Each movement remains separately inspectable.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial ledger derived from PayGate's canonical public settlement
+        evidence and Stellar Expert transaction links.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - paygate-machine-payment-flow
+    mediaKind: svg
+    alt: >-
+      PayGate testnet ledger listing a USDC escrow transfer, contract credit,
+      developer withdrawal, and platform-fee withdrawal with shortened hashes.
+    longDescription: >-
+      The ledger records 0.10 testnet USDC entering escrow, an idempotent 90/10
+      credit, 0.09 USDC developer withdrawal, and 0.01 USDC platform-fee withdrawal.
+      It explicitly does not claim mainnet readiness.
   - id: paygate-implementation-proof
-    status: needs-capture
-    intendedEvidenceType: test-result
-    intendedMediaKind: image
-    evidenceFunctions:
-      - verification
+    status: ready
     slot: hardening-record
-    acquisitionNotes: >-
-      Present representative issue-to-control evidence for upstream guard, SSRF,
-      replay, rate limiting, bounded responses, transaction intent, secret scan,
-      smoke tests, and the passing workflow.
-  - id: paygate-grant-outcome
-    status: needs-capture
-    intendedEvidenceType: document
-    intendedMediaKind: image
+    evidenceType: test-result
     evidenceFunctions:
       - verification
+    src: /media/projects/paygate/hardening-ledger.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      The hardening ledger pairs concrete risks with controls and executable checks:
+      upstream protection, SSRF defense, replay storage, rate limits, bounded
+      forwarding, transaction intent, secret scanning, and the passing workflow.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial ledger based on the public PayGate security workflow,
+        smoke scripts, database constraints, and Soroban contract tests.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - paygate-role
+      - paygate-active-testnet
+    mediaKind: svg
+    alt: >-
+      PayGate hardening ledger mapping six risk groups to controls and repository
+      checks, followed by the composed beta workflow.
+    longDescription: >-
+      Each row connects a risk to implementation evidence: upstream bypass to
+      two-sided secret probes, SSRF to URL and DNS guards, replay to durable IDs,
+      abuse to limits, withdrawal substitution to intent binding, and regression to
+      secret scans plus CI. It is documented hardening, not an independent audit.
+  - id: paygate-grant-outcome
+    status: ready
     slot: grant-outcome
-    acquisitionNotes: >-
-      Create a durable, credited frame from the Stellar Indonesia announcement and
-      official program context without implying a Stellar partnership.
+    evidenceType: document
+    evidenceFunctions:
+      - verification
+    src: /media/projects/paygate/instaward-record.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      PayGate received a verified $5,000 SCF Instaward. The case study links the
+      Stellar Indonesia announcement and official SCF rules directly, while keeping
+      the boundary clear: funded execution, not a partnership or mainnet claim.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original citation plate authored from attributable public claim sources;
+        it does not reproduce the X interface or third-party brand artwork.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - paygate-instaward-2026
+    mediaKind: svg
+    alt: >-
+      Editorial record stating PayGate was awarded a $5,000 SCF Instaward beside
+      Stellar Indonesia and official SCF source labels.
+    longDescription: >-
+      The plate presents $5,000 in awarded execution funding and names two direct
+      public sources. It states that the award does not imply a Stellar partnership,
+      mainnet launch, revenue, or customer scale.
 limitations:
   - PayGate is testnet scoped; mainnet and production customer operations are not claimed.
   - Payment may precede upstream delivery, and automatic refund or retry-worker policy remains unresolved.

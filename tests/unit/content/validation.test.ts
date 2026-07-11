@@ -174,9 +174,12 @@ describe("project publication gates", () => {
   it("blocks a published brief without ready media", () => {
     const content = cloneSeedBundle();
     const project = projectBySlug(content, "nova-ai");
-    content.projects[content.projects.indexOf(project)] = toBriefProject(project, {
+    const brief = toBriefProject(project, {
       publication: "published",
+      evidence: [makePlannedAsset()],
     });
+    delete brief.socialImageAssetId;
+    content.projects[content.projects.indexOf(project)] = brief;
 
     expect(diagnosticCodes(content)).toEqual(
       expect.arrayContaining([
@@ -194,6 +197,7 @@ describe("project publication gates", () => {
       publication: "published",
       evidence: [readyEvidence],
     });
+    delete brief.socialImageAssetId;
     brief.role.evidenceIds = [];
     content.projects[content.projects.indexOf(project)] = brief;
     const source = content.sources.projects.find(

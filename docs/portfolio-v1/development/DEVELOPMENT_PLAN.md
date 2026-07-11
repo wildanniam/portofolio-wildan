@@ -235,6 +235,26 @@ Exit gate:
 - owner-attested responsibilities use the approved role labels;
 - hackathon context is visible but never framed as an apology.
 
+Implementation checkpoint — Issue #15:
+
+- 13 ready evidence assets now cover the remaining three flagships: authentic
+  product surfaces, system maps, source/testnet/hardening ledgers, a settlement
+  correction, the Nova award photograph, and an original PayGate Instaward
+  citation plate;
+- all three use the existing explorer, case-study template, metadata selector,
+  no-JavaScript fallback, and one lazy GSAP module with no project-specific React
+  component or timeline;
+- a media-load race exposed by switching into a previously hidden project is now
+  handled before ScrollTrigger creates its visual overlay;
+- the homepage stays at 167.69 KiB initial JavaScript with zero pre-intent
+  enhancement bytes; the lazy enhancement measures 45.13 KiB after the new
+  load-safe lifecycle;
+- content validation, 21-file media audit, responsive/no-JavaScript browser tests,
+  axe across all flagship surfaces, and desktop/mobile visual checkpoints pass;
+- records remain `preview` until checkpoint D approves the exact derivatives;
+  Nova's award photo additionally needs final photographer credit and public-release
+  consent.
+
 ### Phase 5 — Complete homepage and moments system
 
 Purpose: finish the portfolio narrative around the flagship work.

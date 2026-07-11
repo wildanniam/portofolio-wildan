@@ -93,4 +93,39 @@ describe("canonical V1 project inventory", () => {
       ]),
     );
   });
+
+  it("keeps the three remaining flagship evidence packages ready in preview", () => {
+    const content = loadContentBundle({ repositoryRoot: REPOSITORY_ROOT });
+    const flagships = ["nova-ai", "paygate", "quorum"].map((slug) => {
+      const project = content.projects.find((candidate) => candidate.slug === slug);
+      expect(project, slug).toBeDefined();
+      return project!;
+    });
+
+    for (const project of flagships) {
+      expect(project.publication, project.slug).toBe("preview");
+      expect(project.socialImageAssetId, project.slug).toBeDefined();
+      expect(
+        project.evidence.every((asset) => asset.status === "ready"),
+        project.slug,
+      ).toBe(true);
+
+      const readyFunctions = new Set(
+        project.evidence.flatMap((asset) =>
+          asset.status === "ready" ? asset.evidenceFunctions : [],
+        ),
+      );
+      expect(readyFunctions, project.slug).toEqual(
+        new Set(["product-reality", "system-reasoning", "verification"]),
+      );
+
+      const socialImage = project.evidence.find(
+        (asset) => asset.id === project.socialImageAssetId,
+      );
+      expect(socialImage, project.slug).toMatchObject({
+        mediaKind: "image",
+        status: "ready",
+      });
+    }
+  });
 });

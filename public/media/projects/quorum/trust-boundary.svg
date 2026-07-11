@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title description">
+  <title id="title">Quorum event and settlement trust boundaries</title>
+  <desc id="description">An editorial architecture diagram showing mutable event data in Postgres, prepared and inspected Stellar contract intent, explicit Freighter approval, QuorumCore and QuorumPassNFT finality, an idempotent event index, evidence surfaces, collaborator withdrawal, and a separate optional cash-out continuation.</desc>
+  <defs>
+    <style>
+      .canvas{fill:#f4f5f3}.surface{fill:#fff}.soft{fill:#e5f5f7}.matte{fill:#111315}.ink{fill:#111315}.text{fill:#2b3035}.muted{fill:#596068}.light{fill:#f4f5f3}.accent{fill:#16798b}.rule{stroke:#c9ced3}.rule-strong{stroke:#20252a}.rule-accent{stroke:#16798b}.sans{font-family:Geist,Arial,sans-serif}.mono{font-family:"Geist Mono","SFMono-Regular",Consolas,monospace}.hairline{stroke-width:1;vector-effect:non-scaling-stroke}.strong{stroke-width:2;vector-effect:non-scaling-stroke}.arrow{fill:none;stroke:#16798b;stroke-width:2;vector-effect:non-scaling-stroke;marker-end:url(#arrow)}
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 8 4 0 8Z" fill="#16798b"/></marker>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#c9ced3" opacity=".35"/></pattern>
+  </defs>
+  <rect class="canvas" width="1600" height="1000"/><rect x="48" y="48" width="1504" height="904" fill="url(#grid)"/><rect x="48" y="48" width="1504" height="904" fill="none" class="rule-strong hairline"/>
+  <text x="88" y="103" class="mono accent" font-size="18" font-weight="600" letter-spacing="1.4">QUORUM / TRUST BOUNDARIES</text>
+  <text x="88" y="178" class="sans ink" font-size="68" font-weight="600" letter-spacing="-3.2">Each fact keeps one source of truth.</text>
+  <text x="88" y="221" class="sans text" font-size="22">Product data, wallet intent, contract accounting, and indexed evidence stay deliberately separate.</text>
+  <text x="1512" y="103" text-anchor="end" class="mono muted" font-size="15">STELLAR TESTNET / JUL 2026</text>
+  <line x1="88" y1="260" x2="1512" y2="260" class="rule-strong hairline"/>
+
+  <rect x="88" y="302" width="296" height="212" class="surface rule-strong strong"/>
+  <text x="116" y="346" class="mono accent" font-size="14">PRODUCT LAYER</text><text x="116" y="391" class="sans ink" font-size="27" font-weight="600">Next.js + session</text><text x="116" y="432" class="sans text" font-size="18">Event content, resources,</text><text x="116" y="461" class="sans text" font-size="18">capacity, collaborator terms</text><rect x="116" y="482" width="240" height="8" class="soft"/>
+  <path d="M384 408H424" class="arrow"/>
+  <rect x="440" y="302" width="296" height="212" class="surface rule-strong strong"/>
+  <text x="468" y="346" class="mono accent" font-size="14">INTENT LAYER</text><text x="468" y="391" class="sans ink" font-size="27" font-weight="600">Inspect prepared XDR</text><text x="468" y="432" class="sans text" font-size="18">Signer, network, contract,</text><text x="468" y="461" class="sans text" font-size="18">function, encoded arguments</text><rect x="468" y="482" width="240" height="8" class="soft"/>
+  <path d="M736 408H776" class="arrow"/>
+  <rect x="792" y="302" width="296" height="212" class="matte rule-strong strong"/>
+  <text x="820" y="346" class="mono light" font-size="14">AUTHORIZATION LAYER</text><text x="820" y="391" class="sans light" font-size="27" font-weight="600">Freighter approval</text><text x="820" y="432" class="sans light" font-size="18">Explicit user signature</text><text x="820" y="461" class="sans light" font-size="18">Signed intent revalidated</text><rect x="820" y="482" width="240" height="8" class="accent"/>
+  <path d="M1088 408H1128" class="arrow"/>
+  <rect x="1144" y="302" width="368" height="212" class="surface rule-accent strong"/>
+  <text x="1172" y="346" class="mono accent" font-size="14">CONTRACT LAYER</text><text x="1172" y="391" class="sans ink" font-size="27" font-weight="600">Core + non-transferable pass</text><text x="1172" y="432" class="sans text" font-size="18">Exact payment, capacity, split balances,</text><text x="1172" y="461" class="sans text" font-size="18">withdrawal, uniqueness, check-in</text><rect x="1172" y="482" width="312" height="8" class="soft"/>
+
+  <path d="M1328 514V554" class="arrow"/>
+  <rect x="792" y="570" width="720" height="210" class="surface rule-strong strong"/>
+  <text x="820" y="614" class="mono accent" font-size="14">FINALITY + EVIDENCE LAYER</text><text x="820" y="659" class="sans ink" font-size="27" font-weight="600">Confirmed result → idempotent index → readable proof</text>
+  <line x1="820" y1="682" x2="1484" y2="682" class="rule hairline"/>
+  <text x="820" y="723" class="sans text" font-size="18">Event proof</text><text x="1032" y="723" class="sans text" font-size="18">Pass receipt</text><text x="1220" y="723" class="sans text" font-size="18">Collaborator ledger</text><text x="820" y="756" class="mono muted" font-size="13">CURSOR + UNIQUE HASHES KEEP REPLAYS IDEMPOTENT</text>
+  <path d="M792 675H752" class="arrow"/>
+  <rect x="88" y="570" width="648" height="210" class="soft rule-accent strong"/>
+  <text x="116" y="614" class="mono accent" font-size="14">SEPARATE SETTLEMENT CONTINUATION</text><text x="116" y="659" class="sans ink" font-size="27" font-weight="600">Contract withdrawal ≠ cash-out.</text>
+  <text x="116" y="704" class="sans text" font-size="18">01 / Contract settles to collaborator wallet</text><text x="116" y="738" class="sans text" font-size="18">02 / Wallet may continue to MoneyGram-compatible sandbox flow</text>
+  <line x1="88" y1="830" x2="1512" y2="830" class="rule-strong hairline"/>
+  <text x="88" y="872" class="sans muted" font-size="16">The index makes execution readable; it never replaces contract finality as the accounting source of truth.</text>
+  <text x="1512" y="872" text-anchor="end" class="mono muted" font-size="13">POSTGRES • FREIGHTER • SOROBAN • INDEXER</text>
+  <text x="88" y="911" class="sans muted" font-size="15">Scope: live Stellar testnet hackathon build. Final off-ramp transfer and pickup remain a next proof milestone.</text>
+</svg>

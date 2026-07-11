@@ -24,6 +24,12 @@ test("wide motion stays cold, loads at the explorer, and removes its inert overl
 }, testInfo) => {
   const diagnostics = observeRuntimeDiagnostics(page);
   const scriptResponses = observeScriptPaths(page);
+  const mediaResponses: string[] = [];
+  page.on("response", (response) => {
+    if (response.request().resourceType() === "image") {
+      mediaResponses.push(new URL(response.url()).pathname);
+    }
+  });
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto(route);
 
@@ -55,6 +61,11 @@ test("wide motion stays cold, loads at the explorer, and removes its inert overl
   await expect(root).toHaveAttribute("data-motion-profile", "desktop-sticky");
   await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
   expect(scriptResponses.some((script) => !coldScripts.has(script))).toBe(true);
+  expect(
+    mediaResponses.filter((path) =>
+      /\/media\/projects\/(?:nova-ai|paygate|quorum)\//.test(path),
+    ),
+  ).toEqual([]);
 
   await page.evaluate(() => {
     const sheet = document.querySelector<HTMLElement>(
@@ -277,16 +288,27 @@ test("rapid selection interrupts the travel visual and leaves one clean final st
   await expect(page.locator("[data-explorer-status]")).toHaveText(
     "Showing evidence for Quorum.",
   );
-  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+  const quorumOverlay = page.locator("[data-motion-overlay]");
+  await expect(quorumOverlay).toHaveCount(1);
+  await expect(quorumOverlay.locator("img")).toHaveAttribute(
+    "src",
+    /\/media\/projects\/quorum\/discover-surface\.webp$/,
+  );
+  const quorumOverlayBounds = await quorumOverlay.boundingBox();
+  expect(quorumOverlayBounds).not.toBeNull();
+  expect(quorumOverlayBounds?.width).toBeGreaterThan(100);
+  expect(quorumOverlayBounds?.height).toBeGreaterThan(100);
   await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(1);
-  await expect(root).toHaveAttribute("data-motion-phase", "idle");
+  await expect(root).not.toHaveAttribute("data-motion-phase", "idle");
   await expect
     .poll(() =>
       page.locator("[data-explorer-panel]").evaluateAll((panels) =>
-        panels.every((panel) => {
+        panels
+          .filter((panel) => panel.hasAttribute("hidden"))
+          .every((panel) => {
           const style = (panel as HTMLElement).style;
           return !style.opacity && !style.transform && !style.visibility;
-        }),
+          }),
       ),
     )
     .toBe(true);
@@ -316,14 +338,18 @@ test("rapid selection interrupts the travel visual and leaves one clean final st
   await expect
     .poll(() =>
       page
-        .locator('[data-lead="true"] .opg-evidence-contact-sheet__media')
+        .locator(
+          '[data-explorer-panel][data-project-slug="fradium"] ' +
+            '[data-lead="true"] .opg-evidence-contact-sheet__media',
+        )
         .evaluate((frame) => Number(getComputedStyle(frame).opacity)),
     )
     .toBeLessThan(0.01);
   const alignmentDelta = async () =>
     page.evaluate(() => {
       const source = document.querySelector<HTMLElement>(
-        '[data-lead="true"] .opg-evidence-contact-sheet__media',
+        '[data-explorer-panel][data-project-slug="fradium"] ' +
+          '[data-lead="true"] .opg-evidence-contact-sheet__media',
       );
       const shield = document.querySelector<HTMLElement>(
         "[data-motion-shield]",
@@ -491,6 +517,62 @@ test("a failed lazy chunk leaves the semantic explorer usable", async ({
   );
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
   expect(pageErrors).toEqual([]);
+});
+
+test("a newly selected project waits for its lead image before creating motion", async ({
+  page,
+}, testInfo) => {
+  const diagnostics = observeRuntimeDiagnostics(page);
+  let held = false;
+  let releaseImage: (() => void) | undefined;
+  const imageGate = new Promise<void>((resolve) => {
+    releaseImage = resolve;
+  });
+  await page.route("**/media/projects/quorum/discover-surface.webp", async (route) => {
+    held = true;
+    await imageGate;
+    await route.continue();
+  });
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(route);
+
+  const root = page.locator(rootSelector);
+  await root.scrollIntoViewIfNeeded();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+
+  await page
+    .getByRole("button", { name: "Preview evidence for Quorum" })
+    .click();
+  await expect.poll(() => held).toBe(true);
+  await expect(root).toHaveAttribute("data-motion-state", "loading-media");
+  await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
+
+  releaseImage?.();
+  await expect(root).toHaveAttribute("data-motion-state", "ready-wide");
+  await page.evaluate(() => {
+    const panel = document.querySelector<HTMLElement>(
+      '[data-explorer-panel][data-project-slug="quorum"]',
+    );
+    const sheet = panel?.querySelector<HTMLElement>(
+      ".opg-evidence-contact-sheet",
+    );
+    if (!sheet) throw new Error("Expected the Quorum evidence sheet.");
+    const sheetTop = sheet.getBoundingClientRect().top + window.scrollY;
+    const start = sheetTop - window.innerHeight * 0.72;
+    const end = sheetTop + sheet.offsetHeight - window.innerHeight * 0.28;
+    window.scrollTo({
+      behavior: "auto",
+      top: start + (end - start) * 0.45,
+    });
+  });
+
+  const overlay = page.locator("[data-motion-overlay]");
+  await expect(overlay).toHaveCount(1);
+  const bounds = await overlay.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds?.width).toBeGreaterThan(100);
+  expect(bounds?.height).toBeGreaterThan(100);
+  await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
 test("route replacement during travel restores at most one clean controller", async ({

@@ -3,7 +3,10 @@
 Date: 11 July 2026
 Purpose: define what already exists, what is safe to publish, and what must be captured or created before each premium case study is complete.
 
-This is an inventory only. External asset sourcing and new asset creation remain deferred until the dedicated asset phase.
+This inventory now includes the Issue #15 preview implementation. Nova AI Wallet,
+PayGate, and Quorum each have authentic raster evidence plus original editorial
+diagrams derived from their reviewed repositories. No community template,
+generated product screenshot, or decorative 3D asset was needed for this package.
 
 Wildan's first 13 gallery photographs have now been accepted as usable candidates and catalogued in [Gallery Photo Intake](./gallery-photo-intake.md). Their editorial order, GPS/EXIF handling, redaction notes, and derivative requirements are locked there; no original has entered the repository.
 
@@ -11,17 +14,20 @@ Wildan's first 13 gallery photographs have now been accepted as usable candidate
 
 | Project | Existing authentic material | Main asset task | Required next package | Media status |
 |---|---|---|---|---|
-| Fradium | Large screenshot set, extension captures, architecture/user-flow images, product demos, pitch, beta slides, Chrome listing, official award source, and Wildan's team award photo. | Refresh older terminology and create a visual record of Wildan's leader/full-stack scope. | Fresh desktop/mobile capture set, 12–15s pre-send-risk loop, redrawn architecture, leadership/build contact sheet, WCHL photo treatment, sanitized current canister/proof frame. | Strong foundation |
-| Nova AI Wallet | Authentic award photos, product overview, architecture and roadmap slides, beta-testing collage, landing product renders, and brand assets. | Preserve the hackathon artifact at its best; a fresh runtime demo is optional enhancement, not permission to tell the story. | Curated prompt-to-signature sequence, optional 8–15s loop, standardized product screens, source-aware architecture, and exact award/team captions. | Strong hackathon archive |
-| PayGate | Rich responsive landing and app screenshots, historical iteration captures, SVG brand assets, Mermaid flows, public testnet transaction proof, verified Stellar Indonesia announcement, and founder video. | Capture the currently shipping product and make the $5K Instaward moment visually durable. | Stable-domain paid-request replay, product loop, architecture/request-state diagrams, sanitized receipts, founder/Instaward frame, and clear collaborator credit. | Active acquisition |
-| Quorum | Live landing and app routes, brand SVGs, source Mermaid diagrams, browser QA records, machine-readable contract/testnet evidence. | Preserve the strongest hackathon states and explain unfinished experiments as next iterations. | Product-flow capture, architecture/settlement-correction diagrams, real proof frames, team photos/credit, and optional MoneyGram continuation frame. | Strong technical archive |
+| Fradium | Public-beta desktop/mobile capture, hybrid risk-flow diagram, verification ledger, source links, and larger private evidence inventory. | Replace the current beta surface with a sanitized authenticated verdict capture and final social image. | Approved 12–15s or still verdict evidence, public-release approval, then atomic publication flip. | Preview package ready; final hero blocked on owner capture |
+| Nova AI Wallet | 1600×900 authentic sprint overview, agent/signing-boundary diagram, source ledger, and owner-supplied high-resolution award photo. | Preserve the completed sprint at its best while keeping live, recorded, and historical states distinct. | Confirm photographer credit and team/public-release consent; an 8–15s canonical loop remains optional enhancement. | Preview package ready; photo approval pending |
+| PayGate | Responsive deployed product surface, request lifecycle, four-transaction testnet ledger, hardening ledger, and original $5K Instaward citation plate. | Keep extending the active product without turning demonstration UI into traction evidence. | Optional stable-domain paid-request replay and real sanitized receipt as the funded sprint progresses. | Preview package ready |
+| Quorum | Deployed discovery surface, trust-boundary map, six-flow verification ledger, and settlement-correction decision plate. | Keep the hackathon artifact ambitious and inspectable while treating hosted-feed and off-ramp work as next milestones. | Optional stable replay after hosted evidence-feed repair and later MoneyGram-compatible continuation proof. | Preview package ready |
 
 ## Recommended hero media
 
 - **Fradium:** the current pre-send risk-verdict moment, not the marketing landing page.
-- **Nova AI Wallet:** a real prompt-to-evidence-card state with user-controlled signing visible.
-- **PayGate:** the 402-to-paid-request mechanism paired with a real testnet receipt.
-- **Quorum:** a real event settlement/evidence surface; the generic landing planet/grid visual is supporting brand media, not the case-study hero.
+- **Nova AI Wallet:** the authentic sprint overview is the approved preview lead; a
+  prompt-to-evidence-card recording can replace it later without template changes.
+- **PayGate:** the deployed 402-to-paid-request mechanism is the preview lead, paired
+  downstream with the public testnet ledger.
+- **Quorum:** the deployed discovery surface is the preview lead; the generic landing
+  planet/grid visual and fictional testimonials are excluded.
 
 ## Recommended evidence-frame sequence by project
 
@@ -77,6 +83,16 @@ Wildan's first 13 gallery photographs have now been accepted as usable candidate
 
 ## Shared creation backlog
 
+Implemented through the shared evidence system in Issue #15:
+
+- editorial architecture and lifecycle diagram language;
+- verification, transaction, hardening, and decision-correction ledgers;
+- responsive project screenshot derivatives;
+- evidence caption, provenance, long-description, and social-image bindings;
+- lazy hidden-panel media behavior and load-safe motion handoff.
+
+Remaining shared backlog:
+
 These assets can use a single system rather than project-specific art direction:
 
 - editorial architecture-diagram template;
@@ -102,4 +118,4 @@ These assets can use a single system rather than project-specific art direction:
 
 ## Release rule
 
-A case study can be structurally implemented before this backlog is complete, but it is not visually final until it has authentic evidence for product reality, system reasoning, and verification; a limitations frame; and all relevant rights/provenance metadata. No fixed screenshot count is required.
+A case study can be structurally implemented before this backlog is complete, but it is not visually final until it has authentic evidence for product reality, system reasoning, and verification; a limitations frame; and all relevant rights/provenance metadata. Nova, PayGate, and Quorum now satisfy the three evidence functions in protected preview. They remain `preview` until checkpoint D approves the exact derivatives, and Nova also requires final award-photo credit/consent. No fixed screenshot count is required.

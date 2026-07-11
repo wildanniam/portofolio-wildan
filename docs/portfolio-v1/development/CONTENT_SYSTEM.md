@@ -11,6 +11,9 @@ file explains how that contract is enforced in code.
 
 - Full preview case studies: Fradium, Nova AI Wallet, PayGate, and Quorum.
 - Brief preview archive records: AgentPay, SpecHeal, and Crucible.
+- Ready flagship evidence: 16 canonical assets across the four case studies, plus
+  five responsive raster derivatives; Nova, PayGate, and Quorum contributed 13
+  ready evidence records in Issue #15.
 - Published projects: none until approved media clears the evidence gates.
 - Published moments: none until documentary-photo intake is complete.
 - Private photo masters: outside the repository.
@@ -165,10 +168,11 @@ The nine required H2 chapters are:
 8. Where it stands
 9. What I'd improve next
 
-Next's MDX runtime receives one fixed component map. An allow-listed `SourceLink`
-is exercised in the Fradium source so the compatibility proof covers both AST
-validation and actual Server Component rendering. The final case-study issue may
-refine visual presentation without expanding the authoring runtime.
+Next's MDX runtime receives one fixed component map. The allow-listed `SourceLink`
+now places attributable outcome sources directly beside the Fradium and Nova
+awards, PayGate Instaward, and Quorum testnet record while preserving the same AST
+validation and Server Component boundary. No project-specific runtime component
+was added for the flagship expansion.
 
 `EvidenceFigure` remains a target component in the architecture but is deliberately
 not authorable yet. It will enter the runtime allowlist only when it can resolve a

@@ -148,6 +148,9 @@ Functional:
 - each preview button updates selected state and its controlled panel;
 - the first selection updates semantic state and the next painted frame immediately even when the lazy GSAP chunk has not finished loading; motion may enhance only after it is ready;
 - rapid selection cannot leave a stale image, caption, selection state, or overlay;
+- inactive hidden project panels do not request their lazy media on cold navigation;
+- a newly selected panel waits for its lead image to load before deriving geometry
+  or mounting a travel overlay;
 - resizing across desktop/tablet/mobile destroys and recreates only the correct enhancement context;
 - scroll/sticky release does not trap or jump the page;
 - off-screen/inactive motion and video pause as designed;

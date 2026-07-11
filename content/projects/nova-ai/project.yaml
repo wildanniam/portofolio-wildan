@@ -1,6 +1,7 @@
 slug: nova-ai
 title: Nova AI Wallet
 publication: preview
+socialImageAssetId: nova-agent-flow
 caseStudyState: full
 lifecycle: prototype
 origin:
@@ -181,47 +182,135 @@ claims:
       not present Nova as an actively operated production wallet.
 evidence:
   - id: nova-agent-flow
-    status: needs-capture
-    intendedEvidenceType: prototype
-    intendedMediaKind: video
+    status: ready
+    slot: hero-agent-loop
+    evidenceType: prototype
     evidenceFunctions:
       - product-reality
-    slot: hero-agent-loop
-    acquisitionNotes: >-
-      Reconstruct a sanitized recorded path from prompt to tool selection, evidence
-      card, transaction review, and explicit wallet confirmation. Supply a still
-      poster and a reduced-motion step sequence.
+    src: /media/projects/nova-ai/product-overview.webp
+    width: 1600
+    height: 900
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/nova-ai/product-overview-mobile.webp
+      width: 800
+      height: 450
+      crop:
+        mode: intrinsic
+    caption: >-
+      Nova's authentic sprint presentation pairs the public landing surface with
+      the agent workspace the team built. It records the completed product idea,
+      not a claim that every historical integration is still operating today.
+    provenance:
+      kind: owned
+      creator: Nova AI team
+      rightsNote: >-
+        Project-owned presentation asset from the canonical team repository,
+        reproduced with collaborator credit for this portfolio case study.
+    mediaKind: image
+    alt: >-
+      Nova AI sprint presentation showing its dark purple landing page beside a
+      light wallet-agent workspace with portfolio balances and action cards.
   - id: nova-system-map
-    status: needs-capture
-    intendedEvidenceType: architecture
-    intendedMediaKind: svg
+    status: ready
+    slot: agent-boundary-diagram
+    evidenceType: architecture
     evidenceFunctions:
       - system-reasoning
-    slot: agent-boundary-diagram
-    acquisitionNotes: >-
-      Draw the active CopilotKit path through frontend action, Next.js route, chain
-      client or predictor, evidence card, and user-operated wallet signature.
+    src: /media/projects/nova-ai/agent-boundary.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      The active path maps a user prompt through CopilotKit actions, Next.js routes,
+      chain or model services, and a purpose-built review state. A connected wallet
+      remains the final signing boundary.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial diagram derived from reviewed public repository paths
+        and authored for this portfolio.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - nova-user-signing-boundary
+    mediaKind: svg
+    alt: >-
+      Five-stage Nova diagram from user prompt through CopilotKit, Next.js routes,
+      evidence UI, and separate connected-wallet authorization.
+    longDescription: >-
+      The diagram separates two outcomes. Read actions return chain or model evidence
+      to a dedicated interface card. Write actions only prepare a proposal; network
+      checks, review, and the final signature happen in the user's connected wallet.
   - id: nova-source-proof
-    status: needs-capture
-    intendedEvidenceType: source
-    intendedMediaKind: image
-    evidenceFunctions:
-      - verification
+    status: ready
     slot: implementation-proof
-    acquisitionNotes: >-
-      Create a source-and-runtime contact sheet from representative authored files,
-      commit history, and the live predictor health/result response. Do not use
-      synthetic transaction records as proof.
-  - id: nova-award-outcome
-    status: needs-capture
-    intendedEvidenceType: moment
-    intendedMediaKind: image
+    evidenceType: source
     evidenceFunctions:
       - verification
+    src: /media/projects/nova-ai/source-ledger.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      The public repository contains 82 commits and a substantial TypeScript surface;
+      62 commits are associated with Wildan's verified identity across agent,
+      generative UI, payment, data, deployment, and documentation paths.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial ledger derived from the canonical public repository and
+        the 2026-07-11 evidence audit.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - nova-role
+      - nova-sprint-state
+    mediaKind: svg
+    alt: >-
+      Nova repository ledger summarizing 82 commits, 187 tracked files, roughly
+      20,445 TypeScript lines, and Wildan's representative authored surfaces.
+    longDescription: >-
+      The ledger shows Wildan associated with 62 of 82 commits and names his work
+      across the CopilotKit runtime, action registry, transaction and prediction
+      cards, Paylink, Prisma, Redis rate limits, deployment fixes, and documentation.
+      It preserves collaborator credit and makes no adoption claim.
+  - id: nova-award-outcome
+    status: ready
     slot: team-outcome
-    acquisitionNotes: >-
-      Prepare a rights-reviewed derivative of the authentic repository award photo
-      with the exact 1st Notable Mention and 1st Social Media Challenge caption.
+    evidenceType: moment
+    evidenceFunctions:
+      - verification
+    src: /media/projects/nova-ai/award-team.webp
+    width: 1200
+    height: 900
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/nova-ai/award-team-mobile.webp
+      width: 800
+      height: 600
+      crop:
+        mode: intrinsic
+    caption: >-
+      Nova's team at the Lisk Builders Challenge 3 outcome: 1st Notable Mention and
+      1st Social Media Challenge. The exact recognition is also documented by
+      Telkom University's institutional report.
+    provenance:
+      kind: owned
+      creator: Nova AI team archive
+      rightsNote: >-
+        High-resolution team photograph supplied by Wildan for portfolio preview;
+        final photographer credit and public-release consent remain an approval gate.
+    claimIds:
+      - nova-lisk-recognition
+    mediaKind: image
+    alt: >-
+      Four Nova AI teammates at the Lisk Builders Challenge holding 1st Notable
+      Mention and Social Media Challenge award boards.
 limitations:
   - Nova is a hackathon artifact, not a production or custodial wallet.
   - The public chat runtime was degraded during the 2026-07-11 audit.

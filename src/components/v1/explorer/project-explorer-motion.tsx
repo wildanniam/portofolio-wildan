@@ -138,6 +138,26 @@ export function ProjectExplorerMotion({
       let selectionTargets: HTMLElement[] = [];
       let scrollTrigger: ScrollTrigger | null = null;
       let scrollVisual: ScrollVisual | null = null;
+      let pendingLead:
+        | {
+            image: HTMLImageElement;
+            onError: () => void;
+            onLoad: () => void;
+          }
+        | null = null;
+      let pendingLeadFrame: number | null = null;
+
+      const clearPendingLead = () => {
+        if (pendingLead) {
+          pendingLead.image.removeEventListener("error", pendingLead.onError);
+          pendingLead.image.removeEventListener("load", pendingLead.onLoad);
+          pendingLead = null;
+        }
+        if (pendingLeadFrame !== null) {
+          window.cancelAnimationFrame(pendingLeadFrame);
+          pendingLeadFrame = null;
+        }
+      };
 
       const clearSelectionStyles = () => {
         if (selectionTargets.length === 0) return;
@@ -163,7 +183,9 @@ export function ProjectExplorerMotion({
         const panel = currentPanel(root);
         if (!panel) return null;
         const source = leadVisual(panel);
-        if (!source) return null;
+        if (!source || !source.complete || source.naturalHeight <= 0) {
+          return null;
+        }
 
         const sourceFrame =
           source.closest<HTMLElement>(".opg-evidence-contact-sheet__media") ??
@@ -267,6 +289,7 @@ export function ProjectExplorerMotion({
       };
 
       const destroyScrollTrigger = () => {
+        clearPendingLead();
         scrollTrigger?.kill();
         scrollTrigger = null;
         clearScrollVisual();
@@ -287,10 +310,42 @@ export function ProjectExplorerMotion({
         const sheet = panel.querySelector<HTMLElement>(
           ".opg-evidence-contact-sheet",
         );
-        if (!sheet || !leadVisual(panel)) {
+        const source = leadVisual(panel);
+        if (!sheet || !source) {
           root.dataset.motionState = "ready-static";
           root.dataset.motionProfile = "desktop-static";
           root.dataset.stickyActive = "false";
+          return;
+        }
+
+        if (!source.complete || source.naturalHeight <= 0) {
+          const expectedSlug = panel.dataset.projectSlug;
+          const onLoad = () => {
+            clearPendingLead();
+            pendingLeadFrame = window.requestAnimationFrame(() => {
+              pendingLeadFrame = null;
+              if (currentPanel(root)?.dataset.projectSlug === expectedSlug) {
+                setupScrollTrigger();
+              }
+            });
+          };
+          const onError = () => {
+            clearPendingLead();
+            if (currentPanel(root)?.dataset.projectSlug === expectedSlug) {
+              root.dataset.motionState = "ready-static";
+              root.dataset.motionProfile = "desktop-static";
+              root.dataset.stickyActive = "false";
+              root.dataset.motionPhase = "idle";
+            }
+          };
+
+          pendingLead = { image: source, onError, onLoad };
+          source.addEventListener("load", onLoad, { once: true });
+          source.addEventListener("error", onError, { once: true });
+          root.dataset.motionState = "loading-media";
+          root.dataset.motionProfile = "desktop-static";
+          root.dataset.stickyActive = "false";
+          root.dataset.motionPhase = "idle";
           return;
         }
 

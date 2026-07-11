@@ -49,16 +49,18 @@ Implementation exposed a risk: contract withdrawal and MoneyGram cash-out had be
 
 ## Evidence sequence
 
-- A stable deployed flow will follow one event through setup, purchase or claim, pass, resource, check-in, ledger, withdrawal, and explorer confirmation.
-- A trust-boundary map will show browser intent, session, Postgres, XDR validation, Freighter, both contracts, finality, indexing, and evidence.
-- A verification ledger will pair the six Horizon-confirmed flows with deployment records and 26 contract tests while labeling external and self-recorded proof.
-- A before-and-after settlement plate will reconstruct the correction from contract settlement to wallet, then from wallet to MoneyGram-compatible cash-out.
+- The deployed discovery surface shows event context, capacity, format, and testnet status before checkout.
+- The trust-boundary map follows browser intent, session data, XDR validation, Freighter, both contracts, finality, indexing, and readable evidence.
+- The verification ledger pairs six Horizon-confirmed flows with deployed contracts and 26 self-recorded contract tests.
+- The before-and-after settlement plate reconstructs the correction from contract settlement to wallet, then from wallet to a separately tracked off-ramp continuation.
 
-The evidence sequence will distinguish Horizon-confirmed network proof, repository artifacts, and the current hosted state, so each layer can be inspected on its own terms.
+The evidence sequence distinguishes Horizon-confirmed network proof, repository artifacts, and the current hosted state so each layer can be inspected on its own terms.
 
 ## Outcome and validation
 
 Quorum deployed QuorumCore and QuorumPassNFT on Stellar testnet. Six signed flows recorded in the repository were independently confirmed successful through Horizon: paid-event publish, paid checkout, free-event publish, free claim, check-in, and collaborator withdrawal.
+
+<SourceLink href="https://github.com/wildanniam/Quorum/blob/main/docs/LIVE_TESTNET_EVIDENCE.json">Inspect the canonical testnet evidence record.</SourceLink>
 
 The public application, runtime contract-status endpoint, and hosted Stellar client-domain document were reachable during the audit. This validates network execution and delivery, not market traction, mainnet readiness, or an external security audit.
 

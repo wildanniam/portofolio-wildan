@@ -63,7 +63,7 @@ test("the portfolio composition and project links work without JavaScript", asyn
   await expect(
     page.getByRole("button", { name: "Preview evidence for Fradium" }),
   ).toBeEnabled();
-  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(3);
+  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(16);
 
   await page
     .getByRole("button", { name: "Preview evidence for Nova AI Wallet" })
@@ -76,9 +76,13 @@ test("the portfolio composition and project links work without JavaScript", asyn
   );
   await expect(novaPanel).toBeVisible();
   await expect(novaPanel).toBeFocused();
-  const fradiumFigures = page.locator("[data-project-explorer] figure");
+  const fradiumFigures = page.locator(
+    '.opg-project-explorer__panel[data-project-slug="fradium"] figure',
+  );
   await expect(fradiumFigures).toHaveCount(3);
   await expect(fradiumFigures.first()).toBeHidden();
+  await expect(novaPanel.locator("figure")).toHaveCount(4);
+  await expect(novaPanel.locator("figure").first()).toBeVisible();
   await expect(page.locator("[data-motion-overlay]")).toHaveCount(0);
   await expect(page.locator("[data-explorer-motion-controller]")).toHaveCount(0);
 

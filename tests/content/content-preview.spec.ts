@@ -2,7 +2,7 @@ import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
 
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 
 import {
   expectNoRuntimeFailures,
@@ -15,14 +15,42 @@ const screenshotDirectory = resolve(
   ".quality-reports/content/screenshots",
 );
 const projects = [
-  ["agentpay", "AgentPay"],
-  ["crucible", "Crucible"],
-  ["fradium", "Fradium"],
-  ["nova-ai", "Nova AI Wallet"],
-  ["paygate", "PayGate"],
-  ["quorum", "Quorum"],
-  ["specheal", "SpecHeal"],
+  ["agentpay", "AgentPay", 0],
+  ["crucible", "Crucible", 0],
+  ["fradium", "Fradium", 3],
+  ["nova-ai", "Nova AI Wallet", 4],
+  ["paygate", "PayGate", 5],
+  ["quorum", "Quorum", 4],
+  ["specheal", "SpecHeal", 0],
 ] as const;
+
+async function loadVisibleLazyImages(page: Page): Promise<void> {
+  const viewportHeight = page.viewportSize()?.height ?? 900;
+  const documentHeight = await page.evaluate(
+    () => document.documentElement.scrollHeight,
+  );
+
+  for (
+    let y = 0;
+    y < documentHeight;
+    y += Math.max(320, Math.floor(viewportHeight * 0.75))
+  ) {
+    await page.evaluate((top) => window.scrollTo({ behavior: "auto", top }), y);
+    await page.waitForTimeout(35);
+  }
+  await page.evaluate(() => window.scrollTo({ behavior: "auto", top: 0 }));
+  await expect
+    .poll(() =>
+      page.locator("img").evaluateAll((images) =>
+        images.every(
+          (image) =>
+            (image as HTMLImageElement).complete &&
+            (image as HTMLImageElement).naturalWidth > 0,
+        ),
+      ),
+    )
+    .toBe(true);
+}
 
 test("preview namespace rejects unauthenticated production requests", async ({}, testInfo) => {
   const baseURL = testInfo.project.use.baseURL;
@@ -58,7 +86,7 @@ test("all canonical preview projects are server-rendered and non-indexable", asy
 }, testInfo) => {
   const diagnostics = observeRuntimeDiagnostics(page);
 
-  for (const [slug, title] of projects) {
+  for (const [slug, title, evidenceCount] of projects) {
     const response = await page.goto(`${root}/${slug}`);
     expect(response?.status(), slug).toBe(200);
     expect(response?.headers()["cache-control"], slug).toContain("no-store");
@@ -74,9 +102,7 @@ test("all canonical preview projects are server-rendered and non-indexable", asy
       "content",
       /nofollow/i,
     );
-    await expect(page.locator("figure")).toHaveCount(
-      slug === "fradium" ? 3 : 0,
-    );
+    await expect(page.locator("figure")).toHaveCount(evidenceCount);
     await expect(page.locator("canvas")).toHaveCount(0);
   }
 
@@ -147,7 +173,7 @@ test("the server-first portfolio composition exposes all four flagships", async 
     ),
   ).toHaveCount(1);
   await expect(page.getByText("Building PayGate on Stellar")).toBeVisible();
-  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(3);
+  await expect(page.locator("[data-project-explorer] figure")).toHaveCount(16);
   await expect(page.locator("canvas, [data-placeholder-media]")).toHaveCount(0);
 
   await expectNoRuntimeFailures(diagnostics, testInfo);
@@ -194,7 +220,8 @@ test("the explorer keeps links and preview controls as separate keyboard actions
     page.locator(
       '.opg-project-explorer__panel[data-project-slug="nova-ai"] .opg-evidence-contact-sheet',
     ),
-  ).toHaveCount(0);
+  ).toHaveCount(1);
+  await expect(novaPanel.locator("figure")).toHaveCount(4);
 
   const fradiumButton = page.getByRole("button", {
     name: "Preview evidence for Fradium",
@@ -208,10 +235,15 @@ test("the explorer keeps links and preview controls as separate keyboard actions
   await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
-test("the Fradium slice has no blocking axe findings", async ({ page }, testInfo) => {
+test("the flagship preview surfaces have no blocking axe findings", async ({
+  page,
+}, testInfo) => {
   for (const route of [
     "/preview/open-proving-ground/site",
     `${root}/fradium`,
+    `${root}/nova-ai`,
+    `${root}/paygate`,
+    `${root}/quorum`,
   ]) {
     await page.goto(route);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
@@ -237,6 +269,58 @@ test("the Fradium slice has no blocking axe findings", async ({ page }, testInfo
     ).toEqual([]);
   }
 });
+
+for (const viewport of [
+  { name: "desktop", width: 1440, height: 900 },
+  { name: "mobile", width: 390, height: 844 },
+] as const) {
+  test(`${viewport.name} remaining flagship case studies stay bounded`, async ({
+    page,
+  }, testInfo) => {
+    mkdirSync(screenshotDirectory, { recursive: true });
+    await page.setViewportSize({ width: viewport.width, height: viewport.height });
+
+    for (const [slug, title, evidenceCount, sourceCount] of [
+      ["nova-ai", "Nova AI Wallet", 4, 1],
+      ["paygate", "PayGate", 5, 2],
+      ["quorum", "Quorum", 4, 1],
+    ] as const) {
+      await page.goto(`${root}/${slug}`);
+      await expect(
+        page.getByRole("heading", { level: 1, name: title }),
+      ).toBeVisible();
+      await expect(page.locator("figure")).toHaveCount(evidenceCount);
+      await expect(
+        page.locator('[data-case-study-component="SourceLink"]'),
+      ).toHaveCount(sourceCount);
+      await expect(page.locator("img").first()).toHaveJSProperty(
+        "complete",
+        true,
+      );
+      await loadVisibleLazyImages(page);
+      const overflow = await page.evaluate(
+        () =>
+          document.documentElement.scrollWidth -
+          document.documentElement.clientWidth,
+      );
+      expect(overflow, `${slug} horizontal overflow`).toBeLessThanOrEqual(1);
+
+      const screenshotPath = resolve(
+        screenshotDirectory,
+        `${slug}-${viewport.name}.png`,
+      );
+      await page.screenshot({
+        animations: "disabled",
+        fullPage: true,
+        path: screenshotPath,
+      });
+      await testInfo.attach(`${slug}-${viewport.name}`, {
+        contentType: "image/png",
+        path: screenshotPath,
+      });
+    }
+  });
+}
 
 for (const viewport of [
   { name: "desktop", width: 1440, height: 900 },
