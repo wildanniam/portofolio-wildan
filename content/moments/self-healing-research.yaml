@@ -1,0 +1,47 @@
+id: self-healing-research
+title: Research becomes a system question
+event: Software Engineering proposal seminar
+date: "2026-01-07"
+place: School of Computing, Telkom University, Bandung, Indonesia
+mode: portrait
+context:
+  kind: journey
+  label: Applied software-engineering research
+people:
+  - Wildan Syukri Niam
+caption: >-
+  A proposal milestone for Wildan's work on LLM-assisted self-healing test
+  automation and more reliable Katalon-based CI/CD pipelines.
+reflection: >-
+  The research thread and the hackathon projects are related by a working habit:
+  make an uncertain system observable before asking AI to act on it.
+claims:
+  - id: moment-self-healing-proposal
+    kind: interpretation
+    text: >-
+      Wildan presented a proposal on LLM-assisted self-healing test automation and
+      CI/CD reliability.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-12"
+        note: >-
+          Wildan supplied the seminar photograph showing the proposal title and
+          identifies it as part of his software-engineering research journey.
+    scope: Personal academic milestone; not a claim that the research has been published or deployed.
+claimIds:
+  - moment-self-healing-proposal
+assets:
+  - id: self-healing-research-photo
+    status: needs-redaction
+    slot: research-portrait
+    evidenceFunctions:
+      - verification
+    intendedEvidenceType: moment
+    intendedMediaKind: image
+    acquisitionNotes: >-
+      Prepare the approved 4:5 derivative from IMG_5499.HEIC. Keep the proposal
+      title readable and the School of Computing setting intact.
+    redactionNotes: >-
+      Remove all metadata and redact the student number on the laptop. Confirm the
+      second person's name, role, photo credit, and release before publication.
+publication: preview

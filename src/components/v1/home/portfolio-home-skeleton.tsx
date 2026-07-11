@@ -2,6 +2,7 @@ import { ActionLink } from "@/components/v1/foundations/action-link";
 import { EditorialGrid } from "@/components/v1/foundations/editorial-grid";
 import { SiteContainer } from "@/components/v1/foundations/site-container";
 import { ProjectExplorer } from "@/components/v1/explorer/project-explorer";
+import { MomentsSection } from "@/components/v1/moments/moments-section";
 import {
   defaultProjectHref,
   type ProjectHrefResolver,
@@ -12,6 +13,7 @@ import type { HomepageSelection } from "@/content/queries";
 
 type PortfolioHomeSkeletonProps = {
   explorerFormAction: string;
+  momentsHref?: string;
   projectHref?: ProjectHrefResolver;
   selectedProjectSlug: string | undefined;
   selection: HomepageSelection;
@@ -28,6 +30,7 @@ function publicProfileLink(label: string, link: LinkState): PublicProfileLink | 
 
 export function PortfolioHomeSkeleton({
   explorerFormAction,
+  momentsHref,
   projectHref,
   selectedProjectSlug,
   selection,
@@ -96,28 +99,14 @@ export function PortfolioHomeSkeleton({
           projects={explorerProjects}
         />
 
-        {moments.length > 0 ? (
-          <section aria-labelledby="moments-heading" className="opg-home-section">
-            <div className="opg-home-section__heading">
-              <h2 id="moments-heading">Build moments</h2>
-              <p>Selected documentary records from the work and the people around it.</p>
-            </div>
-            <ol className="opg-moment-ledger">
-              {moments.map((moment) => (
-                <li key={moment.id}>
-                  <div>
-                    <h3>{moment.title}</h3>
-                    <p>{moment.caption}</p>
-                  </div>
-                  <p className="opg-moment-ledger__meta">
-                    {moment.event}<br />
-                    {moment.date}, {moment.place}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </section>
-        ) : null}
+        <MomentsSection
+          archiveHref={momentsHref}
+          className="opg-home-section"
+          heading="Build moments"
+          intro="Selected documentary records from the work and the people around it."
+          moments={moments}
+          variant="home"
+        />
 
         {currentlyBuilding.length > 0 ? (
           <section

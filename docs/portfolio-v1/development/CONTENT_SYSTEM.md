@@ -15,7 +15,10 @@ file explains how that contract is enforced in code.
   five responsive raster derivatives; Nova, PayGate, and Quorum contributed 13
   ready evidence records in Issue #15.
 - Published projects: none until approved media clears the evidence gates.
-- Published moments: none until documentary-photo intake is complete.
+- Preview moments: six curated documentary records with planned assets and local
+  claim provenance; none is published until the exact derivative and human metadata
+  clear review.
+- Published moments: none.
 - Private photo masters: outside the repository.
 
 Preview status is intentional. It lets the real copy, roles, sources, system
@@ -44,6 +47,7 @@ src/content/
 ├── repository.node.ts       # only filesystem implementation
 ├── repository.server.ts     # server-only cached wrapper
 ├── queries.ts               # pure visibility and curation selectors
+├── moment-policy.ts         # shared narrative identity, gate, and route order
 ├── queries.server.ts        # env-gated route API
 ├── dto.ts                   # explicit browser-safe projections
 └── validate-content.ts      # deterministic CLI entrypoint
@@ -135,12 +139,21 @@ Cross-record validation covers:
 - public link verification metadata;
 - project date order and verification freshness;
 - published brief/full/moment gates;
+- explicit moment modes (`lead`, `contact-sheet`, `evidence`, `portrait`), raster
+  documentary-photo cardinality, non-empty alt text, lead mobile crops, and
+  project context for evidence-mode moments;
 - ready asset, mobile derivative, and video poster file presence;
 - public third-party asset license entries;
 - source metadata and canonical moment filenames.
 
 Diagnostics are sorted by path, code, severity, and message so local and CI
 output remains stable.
+
+Moment routes and navigation share one normalized `date + event + place` narrative
+identity. Two distinct published narrative points open the public `/moments` gate;
+records that share a point remain in deterministic newest-first/ID order rather
+than disappearing through UI-side deduplication. Homepage order remains explicitly
+curated by `featuredMomentIds`.
 
 ## Restricted MDX
 

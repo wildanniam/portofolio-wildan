@@ -24,9 +24,14 @@ export const REPOSITORY_ROOT = fileURLToPath(
 );
 
 export function cloneSeedBundle(): ContentBundle {
-  return structuredClone(
+  const content = structuredClone(
     loadContentBundle({ repositoryRoot: REPOSITORY_ROOT }),
   );
+  // Moment tests construct their own small visibility/publication matrices. Keep
+  // that fixture deterministic even as the real editorial intake grows.
+  content.moments = [];
+  content.homepage.featuredMomentIds = [];
+  return content;
 }
 
 export function projectBySlug(
@@ -122,6 +127,7 @@ export function makeMoment(
 ): MomentRecord {
   return {
     id: "test-moment",
+    mode: "lead",
     title: "A documented builder moment",
     event: "Test event",
     date: "2026-07-11",

@@ -25,6 +25,7 @@ import type {
   MobileAssetDerivativeSchema,
   MomentContextSchema,
   MomentRecordSchema,
+  MomentShowcaseModeSchema,
   NavigationItemSchema,
   NavigationSchema,
   PlannedAssetSchema,
@@ -80,6 +81,7 @@ export type BriefProjectRecord = z.infer<typeof BriefProjectRecordSchema>;
 export type FullProjectRecord = z.infer<typeof FullProjectRecordSchema>;
 export type ProjectRecord = z.infer<typeof ProjectRecordSchema>;
 export type MomentContext = z.infer<typeof MomentContextSchema>;
+export type MomentShowcaseMode = z.infer<typeof MomentShowcaseModeSchema>;
 export type MomentRecord = z.infer<typeof MomentRecordSchema>;
 export type CurrentlyBuildingRecord = z.infer<typeof CurrentlyBuildingRecordSchema>;
 export type Profile = z.infer<typeof ProfileSchema>;

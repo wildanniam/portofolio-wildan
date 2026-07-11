@@ -190,10 +190,15 @@ describe("public, preview, and draft route selectors", () => {
     ).toBeUndefined();
   });
 
-  it("withholds the moments narrative until two distinct moments are published", () => {
+  it("gates on distinct normalized points while retaining every record in deterministic order", () => {
     const content = cloneSeedBundle();
     const first = makeMoment({ id: "first", publication: "published" });
-    const duplicate = makeMoment({ id: "same-event", publication: "published" });
+    const duplicate = makeMoment({
+      id: "same-event",
+      publication: "published",
+      event: "  TEST   EVENT ",
+      place: " BANDUNG,   INDONESIA ",
+    });
     const preview = makeMoment({ id: "preview", publication: "preview" });
     const second = makeMoment({
       id: "second",
@@ -209,7 +214,33 @@ describe("public, preview, and draft route selectors", () => {
     expect(selectMomentsNarrative(content)).toBeUndefined();
 
     content.moments.push(second);
-    expect(selectMomentsNarrative(content)).toEqual([first, second]);
+    expect(selectMomentsNarrative(content)).toEqual([
+      second,
+      first,
+      duplicate,
+    ]);
+  });
+
+  it("allows explicitly visible preview moments to satisfy the preview route gate", () => {
+    const content = cloneSeedBundle();
+    const published = makeMoment({
+      id: "published",
+      publication: "published",
+      date: "2026-07-10",
+    });
+    const preview = makeMoment({
+      id: "preview",
+      publication: "preview",
+      event: "Preview event",
+      date: "2026-07-12",
+      place: "Jakarta, Indonesia",
+    });
+    content.moments = [published, preview];
+
+    expect(selectMomentsNarrative(content)).toBeUndefined();
+    expect(
+      selectMomentsNarrative(content, { includePreview: true }),
+    ).toEqual([preview, published]);
   });
 
   it("applies the same visibility rule to slug lookup and static params", () => {

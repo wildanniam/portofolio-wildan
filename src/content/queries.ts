@@ -8,6 +8,11 @@ import type {
   ReadyImageAsset,
   VerifiedClaim,
 } from "./types";
+import {
+  hasMinimumMomentNarrative,
+  MINIMUM_MOMENTS_FOR_NARRATIVE,
+  orderMomentsForNarrative,
+} from "./moment-policy";
 
 export type ContentVisibility = {
   includePreview?: boolean;
@@ -39,7 +44,8 @@ export type AdjacentWorkProjects = {
   next?: ProjectRecord;
 };
 
-export const MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE = 2;
+export const MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE =
+  MINIMUM_MOMENTS_FOR_NARRATIVE;
 
 function selectNavigation(
   navigation: Navigation,
@@ -183,26 +189,19 @@ export function selectRoutableMoments(
 }
 
 /**
- * The public moments narrative stays withheld until it has enough distinct,
+ * The public moments narrative stays withheld until it has enough distinct
  * published material to read as a sequence rather than an isolated claim.
- * Preview and draft moments deliberately do not contribute to this gate.
+ * An explicitly preview-visible route may use preview records, while draft
+ * records never contribute. Duplicate narrative points remain in route order.
  */
 export function selectMomentsNarrative(
   content: ContentBundle,
+  visibility: ContentVisibility = {},
 ): MomentRecord[] | undefined {
-  const seenNarrativePoints = new Set<string>();
-  const moments = selectPublishedMoments(content).filter((moment) => {
-    const narrativePoint = [moment.date, moment.event, moment.place]
-      .map((value) => value.trim().toLowerCase())
-      .join("\u0000");
+  const moments = selectRoutableMoments(content, visibility);
 
-    if (seenNarrativePoints.has(narrativePoint)) return false;
-    seenNarrativePoints.add(narrativePoint);
-    return true;
-  });
-
-  return moments.length >= MINIMUM_PUBLISHED_MOMENTS_FOR_NARRATIVE
-    ? moments
+  return hasMinimumMomentNarrative(moments)
+    ? orderMomentsForNarrative(moments)
     : undefined;
 }
 

@@ -314,7 +314,7 @@ Verification:
 
 **Suggested title:** `feat: complete homepage narrative and moments showcase`
 **Risk:** standard; personal-media handling requires care
-**Suggested branch:** `codex/TBD-homepage-moments`
+**Implemented branch:** `codex/17-homepage-moments`
 
 Dependency: issue 06. It may overlap with issue 07 after the shared slice is approved.
 
@@ -327,6 +327,11 @@ Scope:
 - add Currently Building, non-flagship archive links, About, and direct contact;
 - verify email, GitHub, LinkedIn, and résumé links;
 - publish `/moments` only if the narrative gate passes.
+
+Implementation note: the schema, shared narrative policy, SSR components, preview
+route, responsive layout, records, and private crop/redaction workflow are complete.
+Tracked public derivatives and the publication flip remain an explicit approval
+checkpoint rather than being smuggled into a protected-page build.
 
 Acceptance:
 

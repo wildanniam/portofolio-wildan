@@ -125,6 +125,12 @@ export const PlannedAssetStatusSchema = z.enum([
   "private",
   "missing",
 ]);
+export const MomentShowcaseModeSchema = z.enum([
+  "lead",
+  "contact-sheet",
+  "evidence",
+  "portrait",
+]);
 
 export const PublicLinkStateSchema = z
   .object({
@@ -473,6 +479,7 @@ export const MomentContextSchema = z.discriminatedUnion("kind", [
 export const MomentRecordSchema = z
   .object({
     id: IdentifierSchema,
+    mode: MomentShowcaseModeSchema,
     title: NonEmptyStringSchema,
     event: NonEmptyStringSchema,
     date: VerificationDateSchema,

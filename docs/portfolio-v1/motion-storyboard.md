@@ -138,14 +138,18 @@ Case-study figures remain in normal flow and no case-study sequence is sticky in
 
 ## Scene E — moments in the build
 
-This scene is asset-ready but remains publication-gated until the selected derivatives have approved captions, rights/consent, redactions, metadata removal, and focal crops.
+This scene is implemented as a server-rendered editorial sequence but remains
+publication-gated until the selected derivatives have approved captions,
+rights/consent, redactions, metadata removal, and focal crops.
 
 When enabled:
 
 1. Rights-cleared related photographs form a real contact sheet only when multiple images improve the story; one exceptional lead image can stand alone.
-2. One selected photograph may expand to a lead frame.
+2. A `lead`, `evidence`, `portrait`, or real multi-image `contact-sheet` mode is
+   chosen by content rather than inferred from image orientation.
 3. Event, date, project, factual caption, and short reflection appear beside it.
-4. The selected photo can change by click, keyboard, or swipe.
+4. The V1 sequence stays in normal document flow. It needs no lightbox, carousel,
+   swipe handler, GSAP timeline, or client island; native scrolling is the interaction.
 5. The sequence never manufactures depth with fake Polaroid stacks or synthetic event imagery.
 
 Photo movement must respect crop focal points stored in content metadata. Portrait and landscape sources use authored layouts rather than being forced into one rectangle.

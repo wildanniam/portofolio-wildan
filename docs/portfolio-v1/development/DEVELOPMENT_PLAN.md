@@ -259,6 +259,16 @@ Implementation checkpoint — Issue #15:
 
 Purpose: finish the portfolio narrative around the flagship work.
 
+Implementation status (Issue #17):
+
+- the explicit four-mode schema, shared narrative gate/order, six curated preview
+  records, SSR gallery components, homepage/archive composition, authenticated
+  preview route, responsive styling, and publication validation are implemented;
+- a reusable local workflow produces seven sRGB, metadata-free, redacted,
+  byte-bounded review crops without copying masters into tracked files;
+- the public derivatives and `/moments` publication flip remain at checkpoint E
+  until exact dates/places, credits, rights/consent, captions, and crops are approved.
+
 Work:
 
 - retain the approved opening thesis/layout and complete its immediate Work, GitHub, Contact, and résumé links;

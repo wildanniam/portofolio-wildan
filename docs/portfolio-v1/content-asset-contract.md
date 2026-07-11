@@ -254,6 +254,7 @@ type ProjectRecord = {
 
 type MomentRecord = {
   id: string;
+  mode: "lead" | "contact-sheet" | "evidence" | "portrait";
   title: string;
   event: string;
   date: string;

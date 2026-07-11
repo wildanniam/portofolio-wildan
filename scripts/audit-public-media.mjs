@@ -2,6 +2,7 @@ import { loadContentBundle } from "../src/content/repository.node.ts";
 import {
   auditReadyAssetFiles,
   detectFfprobe,
+  DOCUMENTARY_MEDIA_BUDGETS,
   probeVideoWithFfprobe,
 } from "./lib/media-audit.mjs";
 
@@ -15,6 +16,7 @@ const readyAssets = [
         asset,
         owner: `project:${project.slug}`,
         isSocialImage: project.socialImageAssetId === asset.id,
+        budgets: undefined,
       })),
   ),
   ...content.moments.flatMap((moment) =>
@@ -24,6 +26,7 @@ const readyAssets = [
         asset,
         owner: `moment:${moment.id}`,
         isSocialImage: false,
+        budgets: DOCUMENTARY_MEDIA_BUDGETS,
       })),
   ),
 ];
@@ -38,12 +41,13 @@ const failures = [];
 const warnings = [];
 const summaries = [];
 
-for (const { asset, owner, isSocialImage } of readyAssets) {
+for (const { asset, owner, isSocialImage, budgets } of readyAssets) {
   const result = await auditReadyAssetFiles({
     repositoryRoot,
     asset,
     owner,
     isSocialImage,
+    budgets,
     probeVideo,
     requireFfprobe,
   });

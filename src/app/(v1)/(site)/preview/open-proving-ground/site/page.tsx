@@ -33,6 +33,7 @@ export default async function PortfolioCompositionPreviewPage({
   return (
     <PortfolioHomeSkeleton
       explorerFormAction="/preview/open-proving-ground/site#flagship-work-explorer-panel"
+      momentsHref="/preview/open-proving-ground/moments"
       projectHref={(project) =>
         `/preview/open-proving-ground/content/${project.slug}`
       }

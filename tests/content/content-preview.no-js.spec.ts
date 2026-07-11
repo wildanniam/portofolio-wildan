@@ -96,3 +96,22 @@ test("the portfolio composition and project links work without JavaScript", asyn
     page.getByRole("heading", { level: 1, name: "Fradium" }),
   ).toBeVisible();
 });
+
+test("the documentary sequence remains readable without JavaScript or public media placeholders", async ({
+  page,
+}) => {
+  const response = await page.goto("/preview/open-proving-ground/moments");
+
+  expect(response?.status()).toBe(200);
+  await expect(page.getByRole("heading", { level: 1, name: "Moments." })).toBeVisible();
+  await expect(page.locator(".opg-moments-sequence > li")).toHaveCount(6);
+  await expect(page.getByRole("heading", { level: 3 })).toHaveText([
+    "Second place, after the recovery loop held together",
+    "A student journey beyond the build room",
+    "A completed sprint, with the result in frame",
+    "Research becomes a system question",
+    "Learning in public",
+    "A global result, held by the whole team",
+  ]);
+  await expect(page.locator("figure, [data-placeholder-media], canvas")).toHaveCount(0);
+});

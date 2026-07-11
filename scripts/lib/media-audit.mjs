@@ -24,6 +24,12 @@ export const DEFAULT_MEDIA_BUDGETS = Object.freeze({
   document: 2 * 1024 * 1024,
 });
 
+export const DOCUMENTARY_MEDIA_BUDGETS = Object.freeze({
+  ...DEFAULT_MEDIA_BUDGETS,
+  image: 200 * 1024,
+  mobileImage: 140 * 1024,
+});
+
 const RASTER_FORMATS = new Set(["avif", "gif", "jpeg", "png", "webp"]);
 const VISUAL_EXTENSION_FORMATS = new Map([
   [".avif", "avif"],

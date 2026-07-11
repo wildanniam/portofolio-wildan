@@ -8,6 +8,12 @@ flagshipHighlightClaimIds:
   nova-ai: nova-lisk-recognition
   paygate: paygate-instaward-2026
   quorum: quorum-six-testnet-flows
-featuredMomentIds: []
+featuredMomentIds:
+  - learning-in-public
+  - fradium-wchl-team
+  - self-healing-research
+  - nova-lisk-team
+  - specheal-refactory-team
+  - serambi-bank-indonesia
 currentlyBuildingIds:
   - paygate-active-2026

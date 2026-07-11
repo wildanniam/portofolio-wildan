@@ -8,14 +8,18 @@ PayGate, and Quorum each have authentic raster evidence plus original editorial
 diagrams derived from their reviewed repositories. No community template,
 generated product screenshot, or decorative 3D asset was needed for this package.
 
-Wildan's first 13 gallery photographs have now been accepted as usable candidates and catalogued in [Gallery Photo Intake](./gallery-photo-intake.md). Their editorial order, GPS/EXIF handling, redaction notes, and derivative requirements are locked there; no original has entered the repository.
+Wildan's first 13 gallery photographs have now been accepted as usable candidates
+and catalogued in [Gallery Photo Intake](./gallery-photo-intake.md). Six preview
+moment records and one separate About portrait crop are represented in the Issue
+#17 private review package. The original files and generated review derivatives
+remain outside tracked/public media.
 
 ## Readiness matrix
 
 | Project | Existing authentic material | Main asset task | Required next package | Media status |
 |---|---|---|---|---|
 | Fradium | Public-beta desktop/mobile capture, hybrid risk-flow diagram, verification ledger, source links, and larger private evidence inventory. | Replace the current beta surface with a sanitized authenticated verdict capture and final social image. | Approved 12–15s or still verdict evidence, public-release approval, then atomic publication flip. | Preview package ready; final hero blocked on owner capture |
-| Nova AI Wallet | 1600×900 authentic sprint overview, agent/signing-boundary diagram, source ledger, and owner-supplied high-resolution award photo. | Preserve the completed sprint at its best while keeping live, recorded, and historical states distinct. | Confirm photographer credit and team/public-release consent; an 8–15s canonical loop remains optional enhancement. | Preview package ready; photo approval pending |
+| Nova AI Wallet | 1600×900 authentic sprint overview, agent/signing-boundary diagram, source ledger, and owner-selected high-resolution award photo. | Preserve the completed sprint at its best while keeping live, recorded, and historical states distinct. | Record photographer credit, the fourth visible person's identity, and remaining visible-person release metadata; an 8–15s canonical loop remains optional enhancement. | Preview package ready; photo metadata pending |
 | PayGate | Responsive deployed product surface, request lifecycle, four-transaction testnet ledger, hardening ledger, and original $5K Instaward citation plate. | Keep extending the active product without turning demonstration UI into traction evidence. | Optional stable-domain paid-request replay and real sanitized receipt as the funded sprint progresses. | Preview package ready |
 | Quorum | Deployed discovery surface, trust-boundary map, six-flow verification ledger, and settlement-correction decision plate. | Keep the hackathon artifact ambitious and inspectable while treating hosted-feed and off-ramp work as next milestones. | Optional stable replay after hosted evidence-feed repair and later MoneyGram-compatible continuation proof. | Preview package ready |
 
@@ -102,7 +106,8 @@ These assets can use a single system rather than project-specific art direction:
 - desktop/mobile product-capture checklist;
 - silent-loop capture and compression preset;
 - Open Graph template;
-- photo metadata, consent, focal-crop, and derivative workflow;
+- final photo credit/consent intake and approval; the focal-crop, sRGB,
+  metadata-removal, redaction, review-sheet, and byte-budget workflow is implemented;
 - case-study poster and reduced-motion fallback frame.
 
 ## Asset safety rules

@@ -1,0 +1,51 @@
+id: serambi-bank-indonesia
+title: A student journey beyond the build room
+event: SERAMBI 2026
+date: "2026-03-09"
+place: Bank Indonesia West Java Representative Office, Bandung, Indonesia
+mode: portrait
+context:
+  kind: journey
+  label: Learning beyond campus
+people:
+  - Wildan Syukri Niam
+caption: >-
+  At Bank Indonesia's West Java office during SERAMBI 2026, part of the broader
+  student journey around technology, institutions, and the systems people depend on.
+reflection: >-
+  This record intentionally makes no scholarship or organizer claim. It is a place
+  marker for the rooms that widened the context around the engineering work.
+claims:
+  - id: moment-serambi-program-context
+    kind: interpretation
+    text: >-
+      The photograph was captured at Bank Indonesia's West Java office during the
+      national SERAMBI 2026 program period.
+    sources:
+      - kind: url
+        url: https://www.bi.go.id/en/publikasi/ruang-media/news-release/Pages/sp_283926.aspx
+        label: Official Bank Indonesia SERAMBI 2026 program release
+        verifiedAt: "2026-07-12"
+      - kind: owner-attestation
+        confirmedAt: "2026-07-12"
+        note: >-
+          Wildan supplied the photograph and its capture-date metadata; the visible
+          building and event banners identify the setting.
+    scope: Program-period and place context only; not a scholarship, employment, or organizer claim.
+claimIds:
+  - moment-serambi-program-context
+assets:
+  - id: serambi-bank-indonesia-photo
+    status: needs-redaction
+    slot: journey-portrait
+    evidenceFunctions:
+      - verification
+    intendedEvidenceType: moment
+    intendedMediaKind: image
+    acquisitionNotes: >-
+      Prepare the approved 4:5 derivative from IMG_0313 2.HEIC, preserving Wildan,
+      the Bank Indonesia facade, and the SERAMBI banners.
+    redactionNotes: >-
+      Strip GPS and all metadata and crop the credential out while keeping the
+      lanyard as event context. Confirm the exact visit story and photographer credit.
+publication: preview

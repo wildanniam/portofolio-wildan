@@ -5,6 +5,7 @@ import { siteConfig } from "@/lib/site-config";
 import "@/styles/v1-foundations.css";
 import "@/styles/v1-routes.css";
 import "@/styles/v1-explorer.css";
+import "@/styles/v1-moments.css";
 
 const title = `${siteConfig.name} - ${siteConfig.role}`;
 

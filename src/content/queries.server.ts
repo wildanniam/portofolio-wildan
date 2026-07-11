@@ -100,8 +100,11 @@ export function getPublishedMoments() {
   return selectPublishedMoments(getContentBundle());
 }
 
-export function getMomentsNarrative() {
-  return selectMomentsNarrative(getContentBundle());
+export function getMomentsNarrative(options: PreviewQueryOptions = {}) {
+  return selectMomentsNarrative(
+    getContentBundle(),
+    visibilityFor(options),
+  );
 }
 
 export function getContactProfile() {

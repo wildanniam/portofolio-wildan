@@ -20,6 +20,26 @@ function diagnosticCodes(input: unknown): string[] {
   return validationDiagnostics(input).map((diagnostic) => diagnostic.code);
 }
 
+function makeDocumentaryPhoto(
+  id: string,
+  overrides: Partial<ReadyImageAsset> = {},
+): ReadyImageAsset {
+  return makeReadyImage({
+    id,
+    evidenceType: "moment",
+    evidenceFunctions: ["verification"],
+    provenance: {
+      kind: "documentary-photo",
+      source: "Wildan's original camera file",
+      credit: "Wildan Syukri Niam",
+      rights: "owned",
+      consent: "confirmed",
+      capturedAt: "2026-05-13",
+    },
+    ...overrides,
+  });
+}
+
 describe("claim provenance rules", () => {
   it("accepts owner attestation for a truthful personal role", () => {
     const content = cloneSeedBundle();
@@ -353,19 +373,9 @@ describe("moment publication gates", () => {
 
   it("accepts a published moment with a ready, rights-cleared documentary photo", () => {
     const content = cloneSeedBundle();
-    const documentaryPhoto: ReadyImageAsset = makeReadyImage({
-      id: "documentary-moment-photo",
-      evidenceType: "moment",
-      evidenceFunctions: ["verification"],
-      provenance: {
-        kind: "documentary-photo",
-        source: "Wildan's original camera file",
-        credit: "Wildan Syukri Niam",
-        rights: "owned",
-        consent: "confirmed",
-        capturedAt: "2026-05-13",
-      },
-    });
+    const documentaryPhoto = makeDocumentaryPhoto(
+      "documentary-moment-photo",
+    );
     content.moments = [
       makeMoment({
         publication: "published",
@@ -373,6 +383,185 @@ describe("moment publication gates", () => {
       }),
     ];
 
+    expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("requires published moment media to be raster photographs with factual alt text", () => {
+    const content = cloneSeedBundle();
+    const vector = makeDocumentaryPhoto("vector-moment-photo", {
+      mediaKind: "svg",
+    });
+    const decorative = makeDocumentaryPhoto("decorative-moment-photo", {
+      alt: "   ",
+    });
+    content.moments = [
+      makeMoment({
+        id: "vector-moment",
+        mode: "portrait",
+        publication: "published",
+        assets: [vector],
+      }),
+      makeMoment({
+        id: "decorative-moment",
+        mode: "portrait",
+        publication: "published",
+        assets: [decorative],
+      }),
+    ];
+
+    expect(diagnosticCodes(content)).toEqual(
+      expect.arrayContaining([
+        "publication.moment-raster-photo-required",
+        "publication.moment-alt-required",
+      ]),
+    );
+  });
+
+  it("enforces mode-specific photo cardinality", () => {
+    const content = cloneSeedBundle();
+    content.moments = [
+      makeMoment({
+        id: "small-contact-sheet",
+        mode: "contact-sheet",
+        publication: "published",
+        assets: [makeDocumentaryPhoto("contact-photo-one")],
+      }),
+      makeMoment({
+        id: "large-contact-sheet",
+        mode: "contact-sheet",
+        publication: "published",
+        assets: Array.from({ length: 7 }, (_, index) =>
+          makeDocumentaryPhoto(`large-contact-photo-${index + 1}`),
+        ),
+      }),
+      makeMoment({
+        id: "double-portrait",
+        mode: "portrait",
+        publication: "published",
+        assets: [
+          makeDocumentaryPhoto("portrait-photo-one"),
+          makeDocumentaryPhoto("portrait-photo-two"),
+        ],
+      }),
+    ];
+
+    const codes = diagnosticCodes(content);
+    expect(
+      codes.filter(
+        (code) => code === "publication.moment-contact-sheet-cardinality",
+      ),
+    ).toHaveLength(2);
+    expect(codes).toContain("publication.moment-single-photo-cardinality");
+  });
+
+  it("requires an intentional mobile derivative for a lead photograph", () => {
+    const content = cloneSeedBundle();
+    content.moments = [
+      makeMoment({
+        mode: "lead",
+        publication: "published",
+        assets: [
+          makeDocumentaryPhoto("lead-without-mobile", {
+            mobile: undefined,
+          }),
+        ],
+      }),
+    ];
+
+    expect(diagnosticCodes(content)).toContain(
+      "publication.moment-lead-mobile-required",
+    );
+  });
+
+  it("requires evidence-mode moments to reference a project", () => {
+    const content = cloneSeedBundle();
+    content.moments = [
+      makeMoment({
+        mode: "evidence",
+        publication: "published",
+        assets: [makeDocumentaryPhoto("journey-evidence-photo")],
+      }),
+    ];
+
+    expect(diagnosticCodes(content)).toContain(
+      "publication.moment-evidence-project-context",
+    );
+
+    content.moments[0].context = {
+      kind: "project",
+      projectSlugs: ["fradium"],
+    };
+    expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("requires a profile portrait to come from a published portrait moment", () => {
+    const content = cloneSeedBundle();
+    const photo = makeDocumentaryPhoto("profile-documentary-photo");
+    const moment = makeMoment({
+      mode: "portrait",
+      publication: "preview",
+      assets: [photo],
+    });
+    content.moments = [moment];
+    content.profile.portraitAssetId = photo.id;
+
+    expect(diagnosticCodes(content)).toContain(
+      "publication.profile-portrait-owner",
+    );
+
+    moment.publication = "published";
+    moment.mode = "lead";
+    expect(diagnosticCodes(content)).toContain(
+      "publication.profile-portrait-mode",
+    );
+
+    moment.mode = "portrait";
+    expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("rejects project evidence as the profile portrait owner", () => {
+    const content = cloneSeedBundle();
+    const projectPhoto = projectBySlug(content, "fradium").evidence.find(
+      (asset) => asset.status === "ready" && asset.mediaKind === "image",
+    );
+    expect(projectPhoto).toBeDefined();
+    if (!projectPhoto) return;
+    content.profile.portraitAssetId = projectPhoto.id;
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.profile-portrait-owner",
+    );
+  });
+
+  it("uses the normalized route gate without dropping duplicate records", () => {
+    const content = cloneSeedBundle();
+    content.navigation.primary.push({
+      id: "moments",
+      label: "Moments",
+      href: "/moments",
+    });
+    content.moments = [
+      makeMoment({
+        id: "first-route-moment",
+        mode: "portrait",
+        publication: "published",
+        assets: [makeDocumentaryPhoto("first-route-photo")],
+      }),
+      makeMoment({
+        id: "normalized-duplicate-route-moment",
+        mode: "portrait",
+        event: " TEST   EVENT ",
+        place: " BANDUNG,   INDONESIA ",
+        publication: "published",
+        assets: [makeDocumentaryPhoto("second-route-photo")],
+      }),
+    ];
+
+    expect(diagnosticCodes(content)).toContain(
+      "publication.moments-route-gate",
+    );
+
+    content.moments[1].place = "Jakarta, Indonesia";
     expect(() => validateContentBundle(content, () => true)).not.toThrow();
   });
 });
@@ -456,6 +645,15 @@ describe("schema and referential acceptance matrix", () => {
         projectBySlug(content, "fradium").evidence.push(image);
       },
       ".evidence",
+    ],
+    [
+      "required moment showcase mode",
+      (content: ReturnType<typeof cloneSeedBundle>) => {
+        const moment = makeMoment();
+        delete (moment as Partial<typeof moment>).mode;
+        content.moments = [moment];
+      },
+      "$content.moments",
     ],
     [
       "normalized focal coordinates",

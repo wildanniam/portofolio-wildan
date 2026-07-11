@@ -80,4 +80,12 @@ describe("server preview query gate", () => {
     process.env.PORTFOLIO_V1_PREVIEW = "1";
     expect(getMomentsNarrative()).toBeUndefined();
   });
+
+  it("requires both preview gates before querying a preview moments narrative", () => {
+    delete process.env.PORTFOLIO_V1_PREVIEW;
+    expect(getMomentsNarrative({ preview: true })).toBeUndefined();
+
+    process.env.PORTFOLIO_V1_PREVIEW = "1";
+    expect(getMomentsNarrative({ preview: false })).toBeUndefined();
+  });
 });

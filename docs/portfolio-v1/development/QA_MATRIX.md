@@ -206,6 +206,9 @@ Manual:
 - photo public derivatives contain no unnecessary EXIF/location metadata;
 - captions remain outside images and readable;
 - missing or broken media fails validation rather than producing a production placeholder;
+- published moments accept raster documentary photographs only, with non-empty alt
+  text and cardinality enforced by their authored mode;
+- each tracked moment derivative is `<=200 KB` desktop and `<=140 KB` mobile;
 - video has a poster, textual alternative, and visible controls when required;
 - video autoplay obeys muted/inline/visibility/motion/Save-Data conditions;
 - inactive video and animation stop outside the viewport.

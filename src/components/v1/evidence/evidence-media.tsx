@@ -38,9 +38,11 @@ function cropPresentation(
   height: number,
 ): { aspect: string; position: string } {
   if (crop.mode === "focal") {
+    const position = (value: number) =>
+      `${Number((value * 100).toFixed(4))}%`;
     return {
       aspect: crop.aspectRatio.replace(":", " / "),
-      position: `${crop.focalPoint.x * 100}% ${crop.focalPoint.y * 100}%`,
+      position: `${position(crop.focalPoint.x)} ${position(crop.focalPoint.y)}`,
     };
   }
 

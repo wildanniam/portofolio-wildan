@@ -10,6 +10,7 @@ import {
   auditReadyAssetFiles,
   auditVideoFile,
   auditVisualFile,
+  DOCUMENTARY_MEDIA_BUDGETS,
   scanSvg,
   sniffFileFormat,
 } from "../../../scripts/lib/media-audit.mjs";
@@ -100,6 +101,11 @@ describe("SVG security scan", () => {
 });
 
 describe("visual media audit", () => {
+  it("keeps documentary desktop and mobile images inside the release budgets", () => {
+    expect(DOCUMENTARY_MEDIA_BUDGETS.image).toBe(200 * 1024);
+    expect(DOCUMENTARY_MEDIA_BUDGETS.mobileImage).toBe(140 * 1024);
+  });
+
   it("checks real raster dimensions, extension, size, and metadata", async () => {
     const repositoryRoot = await makeRepositoryRoot();
     const src = await writeMedia(repositoryRoot, "image.webp", await makeWebp(12, 8));

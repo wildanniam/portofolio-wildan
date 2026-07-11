@@ -79,6 +79,44 @@ test("preview-enabled builds do not make public project routes routable", async 
   await expect(
     page.getByRole("heading", { level: 1, name: "Fradium" }),
   ).toHaveCount(0);
+
+  const momentsResponse = await page.goto("/moments");
+  expect(momentsResponse?.status()).toBe(404);
+  await expect(page.locator("[data-public-v1-not-found]")).toHaveCount(1);
+});
+
+test("the private moments route renders the curated sequence without leaking planned media", async ({
+  page,
+}, testInfo) => {
+  const diagnostics = observeRuntimeDiagnostics(page);
+  const response = await page.goto("/preview/open-proving-ground/moments");
+
+  expect(response?.status()).toBe(200);
+  expect(response?.headers()["cache-control"]).toContain("no-store");
+  expect(response?.headers()["x-robots-tag"]).toContain("noindex");
+  await expect(page.getByRole("heading", { level: 1, name: "Moments." })).toBeVisible();
+  await expect(page.locator(".opg-moments-sequence > li")).toHaveCount(6);
+  await expect(page.locator(".opg-moment-story h3")).toHaveText([
+    "Second place, after the recovery loop held together",
+    "A student journey beyond the build room",
+    "A completed sprint, with the result in frame",
+    "Research becomes a system question",
+    "Learning in public",
+    "A global result, held by the whole team",
+  ]);
+  expect(
+    await page.locator(".opg-moments-sequence > li").evaluateAll((items) =>
+      items.map((item) => item.getAttribute("data-mode")),
+    ),
+  ).toEqual(["evidence", "portrait", "evidence", "portrait", "lead", "evidence"]);
+  await expect(page.locator("figure, [data-placeholder-media], canvas")).toHaveCount(0);
+  await expect(page.getByText("capture-pending")).toHaveCount(0);
+
+  const overflow = await page.evaluate(
+    () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+  );
+  expect(overflow).toBeLessThanOrEqual(1);
+  await expectNoRuntimeFailures(diagnostics, testInfo);
 });
 
 test("all canonical preview projects are server-rendered and non-indexable", async ({
@@ -240,6 +278,7 @@ test("the flagship preview surfaces have no blocking axe findings", async ({
 }, testInfo) => {
   for (const route of [
     "/preview/open-proving-ground/site",
+    "/preview/open-proving-ground/moments",
     `${root}/fradium`,
     `${root}/nova-ai`,
     `${root}/paygate`,

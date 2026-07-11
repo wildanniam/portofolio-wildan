@@ -1,5 +1,6 @@
 import type { ZodIssue } from "zod";
 
+import { hasMinimumMomentNarrative } from "./moment-policy";
 import { ContentBundleSchema } from "./schema";
 import { toJsonSafe } from "./parse";
 import type {
@@ -619,6 +620,9 @@ function validateMoment(
   if (moment.publication !== "published") return;
 
   const readyAssets = moment.assets.filter(isReadyAsset);
+  const readyRasterPhotos = readyAssets.filter(
+    (asset) => asset.mediaKind === "image",
+  );
   if (readyAssets.length === 0) {
     addError(
       diagnostics,
@@ -639,10 +643,26 @@ function validateMoment(
       return;
     }
 
-    if (
-      (asset.mediaKind === "image" || asset.mediaKind === "svg") &&
-      asset.provenance.kind !== "documentary-photo"
-    ) {
+    if (asset.mediaKind !== "image") {
+      addError(
+        diagnostics,
+        "publication.moment-raster-photo-required",
+        `${path}.assets[${assetIndex}].mediaKind`,
+        "Published moments accept ready raster photographs only",
+      );
+      return;
+    }
+
+    if (asset.alt.trim().length === 0) {
+      addError(
+        diagnostics,
+        "publication.moment-alt-required",
+        `${path}.assets[${assetIndex}].alt`,
+        "A published documentary photograph needs factual alt text",
+      );
+    }
+
+    if (asset.provenance.kind !== "documentary-photo") {
       addError(
         diagnostics,
         "publication.moment-photo-provenance",
@@ -651,6 +671,47 @@ function validateMoment(
       );
     }
   });
+
+  const photoCount = readyRasterPhotos.length;
+  if (moment.mode === "contact-sheet") {
+    if (photoCount < 2 || photoCount > 6) {
+      addError(
+        diagnostics,
+        "publication.moment-contact-sheet-cardinality",
+        `${path}.assets`,
+        "A published contact sheet needs between two and six ready raster photographs",
+      );
+    }
+  } else if (photoCount !== 1) {
+    addError(
+      diagnostics,
+      "publication.moment-single-photo-cardinality",
+      `${path}.assets`,
+      `A published ${moment.mode} moment needs exactly one ready raster photograph`,
+    );
+  }
+
+  if (
+    moment.mode === "lead" &&
+    readyRasterPhotos.length === 1 &&
+    !readyRasterPhotos[0].mobile
+  ) {
+    addError(
+      diagnostics,
+      "publication.moment-lead-mobile-required",
+      `${path}.assets[${moment.assets.indexOf(readyRasterPhotos[0])}].mobile`,
+      "A published lead photograph needs an intentional mobile derivative",
+    );
+  }
+
+  if (moment.mode === "evidence" && moment.context.kind !== "project") {
+    addError(
+      diagnostics,
+      "publication.moment-evidence-project-context",
+      `${path}.context`,
+      "A published evidence photograph must reference at least one project",
+    );
+  }
 }
 
 function validateGlobalUniqueness(content: ContentBundle, diagnostics: ContentDiagnostic[]): void {
@@ -882,17 +943,15 @@ function validateSiteReferences(
   });
 
   if (navigationItems.some((item) => item.href === "/moments" || item.href.startsWith("/moments?"))) {
-    const publishedNarrativePoints = new Set(
-      content.moments
-        .filter((moment) => moment.publication === "published")
-        .map((moment) => `${moment.event}\u0000${moment.date}`),
+    const publishedMoments = content.moments.filter(
+      (moment) => moment.publication === "published",
     );
-    if (publishedNarrativePoints.size < 2) {
+    if (!hasMinimumMomentNarrative(publishedMoments)) {
       addError(
         diagnostics,
         "publication.moments-route-gate",
         "$content.navigation",
-        "The /moments navigation item requires at least two distinct published event/date narrative points",
+        "The /moments navigation item requires at least two distinct published event/date/place narrative points",
       );
     }
   }
@@ -906,15 +965,53 @@ function validateSiteReferences(
       "reference.profile-portrait",
       "Ready portrait evidence",
     );
-    const portrait = [...content.projects, ...content.moments].flatMap((record) =>
-      "evidence" in record ? record.evidence : record.assets,
-    ).find((asset) => asset.id === content.profile.portraitAssetId);
+    const portraitMoment = content.moments.find((moment) =>
+      moment.assets.some((asset) => asset.id === content.profile.portraitAssetId),
+    );
+    const portrait = indexes.assetsById.get(content.profile.portraitAssetId);
     if (portrait && (!isReadyAsset(portrait) || portrait.mediaKind !== "image")) {
       addError(
         diagnostics,
         "reference.profile-portrait-kind",
         "$content.profile.portraitAssetId",
         "A profile portrait must reference a ready image asset",
+      );
+    }
+    if (portrait && !portraitMoment) {
+      addError(
+        diagnostics,
+        "reference.profile-portrait-owner",
+        "$content.profile.portraitAssetId",
+        "A profile portrait must be owned by a documentary moment",
+      );
+    }
+    if (portraitMoment && portraitMoment.publication !== "published") {
+      addError(
+        diagnostics,
+        "publication.profile-portrait-owner",
+        "$content.profile.portraitAssetId",
+        "A profile portrait must belong to a published moment",
+      );
+    }
+    if (portraitMoment && portraitMoment.mode !== "portrait") {
+      addError(
+        diagnostics,
+        "publication.profile-portrait-mode",
+        "$content.profile.portraitAssetId",
+        "A profile portrait must belong to a moment in portrait mode",
+      );
+    }
+    if (
+      portrait &&
+      isReadyAsset(portrait) &&
+      portrait.mediaKind === "image" &&
+      portrait.provenance.kind !== "documentary-photo"
+    ) {
+      addError(
+        diagnostics,
+        "publication.profile-portrait-provenance",
+        "$content.profile.portraitAssetId",
+        "A profile portrait needs documentary-photo provenance",
       );
     }
   }

@@ -303,8 +303,10 @@ evidence:
       kind: owned
       creator: Nova AI team archive
       rightsNote: >-
-        High-resolution team photograph supplied by Wildan for portfolio preview;
-        final photographer credit and public-release consent remain an approval gate.
+        High-resolution team photograph supplied and explicitly selected by Wildan
+        for his portfolio showcase on 2026-07-11. Final photographer credit, the
+        fourth visible person's identity, and the remaining visible-person release
+        record remain publication metadata checkpoints.
     claimIds:
       - nova-lisk-recognition
     mediaKind: image
