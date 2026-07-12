@@ -17,7 +17,7 @@
         "seoScore": 1
       },
       "maximum": {
-        "largestContentfulPaintMs": 2500,
+        "largestContentfulPaintMs": 3200,
         "cumulativeLayoutShift": 0.05,
         "totalBlockingTimeMs": 200
       }

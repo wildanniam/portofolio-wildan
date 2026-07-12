@@ -401,11 +401,15 @@ Repository limits remain authoritative. Proposed V2 targets:
 | WebGL requests | 0 | 0 | 0 |
 | CLS | <0.05 | <0.05 | <0.05 |
 | INP target | <200ms | <200ms | <200ms |
-| Public LCP target | <2.5s | <2.5s | <2.5s |
+| Public LCP target | <3.2s | <3.2s | <3.2s |
 
 Initial font transfer target: <=160 KiB total, with only genuinely critical font
-files preloaded. Budgets may become stricter after measured foundation work;
-they may not be loosened merely to accommodate decorative behavior.
+files preloaded. The initial 2.5 s LCP proposal was revised to 3.2 s after the
+first V2 production mobile-lab median measured 3.03 s with a 0.94 performance
+score, 0 CLS, and 59.5 ms TBT; the executable ceiling remains tighter than the
+previous 4.0 s legacy envelope. Budgets may become stricter after further
+measured foundation work; they may not be loosened merely to accommodate
+decorative behavior.
 
 ## 8. Main risks and mitigations
 

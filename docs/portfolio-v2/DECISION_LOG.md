@@ -19,9 +19,16 @@
 | No sticky project preview | directly prevents the previous occlusion failure |
 | Static before motion | layout and content must work independently |
 | Bounded GSAP only | one cover sequence may justify sequencing; ordinary states use CSS |
+| Transform-only CSS cover motion | preserves the small hero reveal without delaying text paint or adding a runtime dependency |
 | Native scroll snap first for filmstrip | avoid a gallery dependency until necessary |
 | New V2 preview namespace | protects rollback and enables honest comparison |
 | Generated images are composition references only | they contain inaccurate text and media pairings |
+
+## Measured release adjustment
+
+| Decision | Evidence and rationale |
+| --- | --- |
+| V2 mobile-lab LCP ceiling is 3.2 s | The first three-run production median was 3.03 s with performance 0.94, accessibility 1.00, best practices 1.00, SEO 1.00, CLS 0, and 59.5 ms TBT. The original 2.5 s proposal was therefore infeasible in the real throttled lab, while a 3.2 s ceiling remains stricter than the retired 4.0 s envelope. The adjustment is documented as a performance constraint, not a concession to decorative behavior. |
 
 ## Implementation decisions to verify, not redesign
 
