@@ -45,11 +45,11 @@ test("Moments retain a server-rendered gallery and accessible client controls", 
   await test.step("enhanced gallery exposes category filters", async () => {
     await page.goto("/moments");
     await expect(page.getByRole("button", { name: "All notes" })).toHaveAttribute("aria-pressed", "true");
-    await expect(page.getByRole("button", { name: "Build" })).toBeVisible();
-    await expect(page.getByRole("button", { name: "Win" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Build", exact: true })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Win", exact: true })).toBeVisible();
     await expect(page.getByRole("button", { name: "Give" })).toHaveCount(0);
 
-    await page.getByRole("button", { name: "Build" }).click();
+    await page.getByRole("button", { name: "Build", exact: true }).click();
     await expect(page.locator(".pfn-moment-record")).toHaveCount(1);
     await page.getByRole("button", { name: "Open Building in the room, not only for the demo" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();

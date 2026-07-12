@@ -8,20 +8,22 @@ import "./globals.css";
 const instrumentSans = Instrument_Sans({
   variable: "--font-instrument-sans",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   weight: ["400", "500", "600", "700"],
 });
 
 const instrumentSerif = Instrument_Serif({
   variable: "--font-instrument-serif",
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   weight: "400",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "optional",
+  preload: false,
 });
 
 export const metadata: Metadata = {
