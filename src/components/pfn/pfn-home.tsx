@@ -163,7 +163,6 @@ export function PersonalFieldNotesHome({
                   <Image
                     alt={heroPortrait.alt}
                     fill
-                    priority
                     sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) 42vw, 32vw"
                     src={heroPortrait.src}
                     style={{ objectFit: "cover" }}
@@ -235,7 +234,7 @@ export function PersonalFieldNotesHome({
               Open photo archive <ArrowUpRight aria-hidden="true" size={18} />
             </Link>
           </div>
-          <div className="pfn-moments-strip" role="list">
+          <div aria-label="Featured documentary moments" className="pfn-moments-strip" role="list" tabIndex={0}>
             {moments.map((moment) => (
               <div key={moment.id} role="listitem">
                 <MomentTile moment={moment} />
