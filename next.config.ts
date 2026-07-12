@@ -6,14 +6,6 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/contact": ["./content/**/*", "./public/media/**/*"],
     "/moments": ["./content/**/*", "./public/media/**/*"],
-    "/preview/open-proving-ground/content/*": [
-      "./content/**/*",
-      "./public/media/**/*",
-    ],
-    "/preview/open-proving-ground/site": [
-      "./content/**/*",
-      "./public/media/**/*",
-    ],
     "/sitemap.xml": ["./content/**/*", "./public/media/**/*"],
     "/work": ["./content/**/*", "./public/media/**/*"],
     "/work/*": ["./content/**/*", "./public/media/**/*"],

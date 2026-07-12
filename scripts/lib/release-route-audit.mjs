@@ -405,16 +405,10 @@ function inspectBoundaries({
   return findings;
 }
 
-function authorizationHeaders(path, previewAuthorization) {
-  if (!path.startsWith("/preview/open-proving-ground")) return {};
-  return previewAuthorization ? { Authorization: previewAuthorization } : {};
-}
-
-async function request(fetchImpl, origin, path, previewAuthorization) {
+async function request(fetchImpl, origin, path) {
   const response = await fetchImpl(new URL(path, `${origin}/`), {
     headers: {
       Accept: "text/html,application/xhtml+xml",
-      ...authorizationHeaders(path, previewAuthorization),
     },
     redirect: "manual",
   });
@@ -529,18 +523,6 @@ function inspectDiscovery({
       }),
     );
   }
-  if (
-    !/^\s*disallow:\s*\/preview\/open-proving-ground\/?\s*$/im.test(robotsBody)
-  ) {
-    findings.push(
-      finding({
-        code: "discovery.robots-preview-disallow",
-        message:
-          "robots.txt does not disallow the protected preview namespace.",
-        path: "/robots.txt",
-      }),
-    );
-  }
   const expectedSitemap = canonicalUrl(siteOrigin, "/sitemap.xml");
   if (!robotsBody.includes(`Sitemap: ${expectedSitemap}`)) {
     findings.push(
@@ -569,7 +551,6 @@ export async function auditReleaseRoutes({
   fetchImpl = fetch,
   forbiddenSitemapPrefixes,
   origin,
-  previewAuthorization,
   routes,
   siteOrigin = origin,
 }) {
@@ -585,7 +566,7 @@ export async function auditReleaseRoutes({
     if (!documentCache.has(path)) {
       documentCache.set(
         path,
-        request(fetchImpl, normalizedOrigin, path, previewAuthorization),
+        request(fetchImpl, normalizedOrigin, path),
       );
     }
     return documentCache.get(path);
@@ -669,7 +650,7 @@ export async function auditReleaseRoutes({
         });
         if (
           expectation.classification === "public" &&
-          inspected.internal.path.startsWith("/preview/open-proving-ground")
+          inspected.internal.path.startsWith("/preview/")
         ) {
           routeFindings.push(
             finding({
@@ -793,13 +774,11 @@ export async function auditReleaseRoutes({
     fetchImpl,
     normalizedOrigin,
     "/sitemap.xml",
-    previewAuthorization,
   );
   const robots = await request(
     fetchImpl,
     normalizedOrigin,
     "/robots.txt",
-    previewAuthorization,
   );
   const discovery = inspectDiscovery({
     expectedSitemapPaths,

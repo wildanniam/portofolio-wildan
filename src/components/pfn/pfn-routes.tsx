@@ -13,41 +13,37 @@ import type {
   ReadyImageAsset,
 } from "@/content/types";
 
-const categoryLabels = {
-  build: "Build",
-  win: "Win",
-  learn: "Learn",
-  give: "Give",
-} as const;
-
 function route(basePath: string, pathname: string) {
   return `${basePath}${pathname}` || "/";
 }
 
 function firstImage(record: { evidence?: ProjectRecord["evidence"]; assets?: MomentRecord["assets"] }) {
   const assets = record.evidence ?? record.assets ?? [];
+  const isDisplayable = (asset: { mediaKind: string }) =>
+    asset.mediaKind === "image" || asset.mediaKind === "svg";
+
   return assets.find(
-    (asset): asset is ReadyImageAsset => asset.status === "ready" && asset.mediaKind === "image",
+    (asset): asset is ReadyImageAsset => asset.status === "ready" && isDisplayable(asset),
   );
 }
 
-function RouteHeader({ basePath }: { basePath: string }) {
+export function PfnRouteHeader({ basePath }: { basePath: string }) {
   return (
     <header className="pfn-header">
-      <Link className="pfn-wordmark" href={route(basePath, "")}>Wildan Niam</Link>
+      <Link className="pfn-wordmark" href={route(basePath, "")} prefetch={false}>Wildan Niam</Link>
       <nav aria-label="Primary navigation" className="pfn-header__nav">
-        <Link href={route(basePath, "/work")}>Work</Link>
-        <Link href={route(basePath, "/moments")}>Moments</Link>
-        <Link href={route(basePath, "/about")}>About</Link>
+        <Link href={route(basePath, "/work")} prefetch={false}>Work</Link>
+        <Link href={route(basePath, "/moments")} prefetch={false}>Moments</Link>
+        <Link href={route(basePath, "/about")} prefetch={false}>About</Link>
       </nav>
-      <Link className="pfn-header__contact" href={route(basePath, "/contact")}>
+      <Link className="pfn-header__contact" href={route(basePath, "/contact")} prefetch={false}>
         Let&apos;s build <ArrowUpRight aria-hidden="true" size={16} />
       </Link>
     </header>
   );
 }
 
-function RouteFooter() {
+export function PfnRouteFooter() {
   return (
     <footer className="pfn-footer">
       <span>© {new Date().getFullYear()} Wildan Syukri Niam</span>
@@ -84,7 +80,7 @@ export function PersonalFieldNotesWork({
   return (
     <div className="pfn-shell" data-portfolio-v2>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <RouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} />
       <main className="pfn-route" id="pfn-main">
         <header className="pfn-route-opening">
           <p className="pfn-eyebrow">Field notes / work index</p>
@@ -101,7 +97,7 @@ export function PersonalFieldNotesWork({
               const image = firstImage({ evidence: project.evidence });
               return (
                 <li key={project.slug}>
-                  <Link href={route(basePath, `/work/${project.slug}`)}>
+                  <Link href={route(basePath, `/work/${project.slug}`)} prefetch={false}>
                     <span className="pfn-folio">{String(index + 1).padStart(2, "0")}</span>
                     <span className="pfn-work-index__title">
                       <strong>{project.title}</strong>
@@ -121,7 +117,7 @@ export function PersonalFieldNotesWork({
           </ol>
         </section>
       </main>
-      <RouteFooter />
+      <PfnRouteFooter />
     </div>
   );
 }
@@ -139,16 +135,19 @@ export function PersonalFieldNotesProject({
 }) {
   const opening = firstImage({ evidence: project.evidence });
   const remainingEvidence = project.evidence.filter(
-    (asset): asset is ReadyImageAsset => asset.status === "ready" && asset.mediaKind === "image" && asset.id !== opening?.id,
+    (asset): asset is ReadyImageAsset =>
+      asset.status === "ready" &&
+      (asset.mediaKind === "image" || asset.mediaKind === "svg") &&
+      asset.id !== opening?.id,
   );
 
   return (
     <div className="pfn-shell" data-portfolio-v2>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <RouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} />
       <main className="pfn-case" id="pfn-main">
         <header className="pfn-case-opening">
-          <Link className="pfn-back-link" href={route(basePath, "/work")}>
+          <Link className="pfn-back-link" href={route(basePath, "/work")} prefetch={false}>
             <ArrowLeft aria-hidden="true" size={17} /> Back to work
           </Link>
           <div className="pfn-case-opening__folio">
@@ -242,55 +241,12 @@ export function PersonalFieldNotesProject({
         </nav>
 
         {nextProject ? (
-          <Link className="pfn-next-project" href={route(basePath, `/work/${nextProject.slug}`)}>
+          <Link className="pfn-next-project" href={route(basePath, `/work/${nextProject.slug}`)} prefetch={false}>
             <span>Next field note</span><strong>{nextProject.title}</strong><ArrowRight aria-hidden="true" size={30} />
           </Link>
         ) : null}
       </main>
-      <RouteFooter />
-    </div>
-  );
-}
-
-export function PersonalFieldNotesMoments({
-  basePath,
-  moments,
-}: {
-  basePath: string;
-  moments: MomentRecord[];
-}) {
-  return (
-    <div className="pfn-shell" data-portfolio-v2>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <RouteHeader basePath={basePath} />
-      <main className="pfn-route" id="pfn-main">
-        <header className="pfn-route-opening">
-          <p className="pfn-eyebrow">Field notes / moments</p>
-          <h1>The work around the work.</h1>
-          <p>A growing record of rooms, build sessions, outcomes, and the people who made them matter.</p>
-        </header>
-        <section aria-label="Moment categories" className="pfn-moment-key">
-          {Object.entries(categoryLabels).map(([key, label]) => <span className={`pfn-category pfn-category--${key}`} key={key}>{label}</span>)}
-        </section>
-        <section className="pfn-moment-grid" aria-label="Documentary moments">
-          {moments.map((moment) => {
-            const asset = firstImage({ assets: moment.assets });
-            if (!asset) return null;
-            return (
-              <article className="pfn-moment-record" key={moment.id}>
-                <ProjectImage asset={asset} />
-                <div className="pfn-moment-record__copy">
-                  <span className={`pfn-category pfn-category--${moment.category}`}>{categoryLabels[moment.category]}</span>
-                  <h2>{moment.title}</h2>
-                  <p>{moment.caption}</p>
-                  <dl><div><dt>Event</dt><dd>{moment.event}</dd></div><div><dt>When / where</dt><dd>{moment.date} · {moment.place}</dd></div></dl>
-                </div>
-              </article>
-            );
-          })}
-        </section>
-      </main>
-      <RouteFooter />
+      <PfnRouteFooter />
     </div>
   );
 }
@@ -299,7 +255,7 @@ export function PersonalFieldNotesAbout({ basePath, profile }: { basePath: strin
   return (
     <div className="pfn-shell" data-portfolio-v2>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <RouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} />
       <main className="pfn-route" id="pfn-main">
         <header className="pfn-route-opening pfn-route-opening--about">
           <p className="pfn-eyebrow">Field notes / about</p>
@@ -312,7 +268,7 @@ export function PersonalFieldNotesAbout({ basePath, profile }: { basePath: strin
           <dl><div><dt>Based in</dt><dd>{profile.location}</dd></div><div><dt>Studying</dt><dd>{profile.education}</dd></div><div><dt>Open to</dt><dd>{profile.availability}</dd></div></dl>
         </section>
       </main>
-      <RouteFooter />
+      <PfnRouteFooter />
     </div>
   );
 }
@@ -321,7 +277,7 @@ export function PersonalFieldNotesContact({ basePath, profile }: { basePath: str
   return (
     <div className="pfn-shell" data-portfolio-v2>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <RouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} />
       <main className="pfn-contact" id="pfn-main">
         <p className="pfn-eyebrow">Field notes / contact</p>
         <h1>Make the next system more trustworthy.</h1>
@@ -329,7 +285,7 @@ export function PersonalFieldNotesContact({ basePath, profile }: { basePath: str
         <a className="pfn-contact__email" href={`mailto:${profile.email}`}>{profile.email}<ArrowUpRight aria-hidden="true" size={28} /></a>
         {profile.github.status === "public" ? <a className="pfn-action-link" href={profile.github.url} rel="noreferrer" target="_blank">Find the work on GitHub <ArrowUpRight aria-hidden="true" size={18} /></a> : null}
       </main>
-      <RouteFooter />
+      <PfnRouteFooter />
     </div>
   );
 }

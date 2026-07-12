@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "activeProfile": "legacy",
+  "activeProfile": "v2",
   "units": "Metric-specific: JavaScript/CSS use gzip level 9 bytes, media/fonts use response transfer bytes, and WebGL uses a context-request count.",
   "viewports": {
     "desktop": {
@@ -35,76 +35,23 @@
     "cssGzipBytes": "Deduplicated CSS requested by the cold production navigation.",
     "initialMediaTransferBytes": "Image and media response bytes requested during the cold pre-intent observation window.",
     "largestImageTransferBytes": "Largest single image response in the cold pre-intent observation window.",
-    "initialFontTransferBytes": "Font response bytes requested during the cold pre-intent observation window; reported separately without a V1 ceiling.",
+    "initialFontTransferBytes": "Font response bytes requested during the cold pre-intent observation window; reported separately from the JavaScript budget.",
     "webglContextRequests": "Calls requesting a WebGL or WebGL2 canvas context during the cold pre-intent observation window.",
     "unexpectedFailedRequestCount": "Failed network requests not matched by the route's explicit temporary allowlist.",
     "httpErrorResponseCount": "Subresource responses with an HTTP status of 400 or greater.",
     "pageErrorCount": "Uncaught page errors observed during the cold pre-intent window."
   },
   "profiles": {
-    "legacy": {
-      "status": "provisional-regression-envelope",
-      "description": "Temporary ceilings for the preserved V5 root. They prevent growth while V1 is built and are not release approval targets.",
-      "samples": ["/"],
-      "defaultViewport": "desktop",
-      "sampleViewports": ["desktop"],
-      "routes": {
-        "/": {
-          "allowedFailedRequests": [
-            {
-              "pathname": "/_vercel/speed-insights/script.js",
-              "resourceType": "script",
-              "errorText": "net::ERR_ABORTED"
-            }
-          ],
-          "baseline": {
-            "measuredAt": "2026-07-11",
-            "totalInitialJavaScriptGzipBytes": 555535,
-            "manifestInitialJavaScriptGzipBytes": 219444,
-            "runtimeJavaScriptGzipBytes": 132002,
-            "sharedJavaScriptGzipBytes": 166965,
-            "routeOwnedJavaScriptGzipBytes": 52479,
-            "lazyJavaScriptGzipBytes": 336091,
-            "preIntentAdditionalJavaScriptGzipBytes": 336091,
-            "nonBuildJavaScriptTransferBytes": 0,
-            "cssGzipBytes": 18193,
-            "initialMediaTransferBytes": 0,
-            "largestImageTransferBytes": 0,
-            "initialFontTransferBytes": 52396,
-            "webglContextRequests": 2,
-            "unexpectedFailedRequestCount": 0,
-            "httpErrorResponseCount": 0,
-            "pageErrorCount": 0
-          },
-          "limits": {
-            "totalInitialJavaScriptGzipBytes": 570000,
-            "manifestInitialJavaScriptGzipBytes": 225000,
-            "runtimeJavaScriptGzipBytes": 135000,
-            "sharedJavaScriptGzipBytes": 172000,
-            "routeOwnedJavaScriptGzipBytes": 55000,
-            "lazyJavaScriptGzipBytes": 345000,
-            "preIntentAdditionalJavaScriptGzipBytes": 345000,
-            "nonBuildJavaScriptTransferBytes": 0,
-            "cssGzipBytes": 20000,
-            "initialMediaTransferBytes": 0,
-            "largestImageTransferBytes": 0,
-            "webglContextRequests": 2,
-            "unexpectedFailedRequestCount": 0,
-            "httpErrorResponseCount": 0,
-            "pageErrorCount": 0
-          }
-        }
-      }
-    },
-    "v1": {
+    "v2": {
       "status": "locked-release-targets",
-      "description": "Approved V1 ceilings. The active profile changes to v1 only when the new root is ready for release enforcement.",
+      "description": "Approved Personal Field Notes V2 ceilings. They protect the public editorial archive from returning to heavy, speculative interactions.",
       "samples": [
         "/",
         "/work/fradium",
         "/work/nova-ai",
         "/work/paygate",
-        "/work/quorum"
+        "/work/quorum",
+        "/moments"
       ],
       "defaultViewport": "desktop",
       "sampleViewports": ["desktop", "mobile"],
@@ -117,8 +64,8 @@
             "preIntentAdditionalJavaScriptGzipBytes": 0,
             "nonBuildJavaScriptTransferBytes": 0,
             "cssGzipBytes": 30000,
-            "initialMediaTransferBytes": 750000,
-            "largestImageTransferBytes": 200000,
+            "initialMediaTransferBytes": 650000,
+            "largestImageTransferBytes": 180000,
             "webglContextRequests": 0,
             "unexpectedFailedRequestCount": 0,
             "httpErrorResponseCount": 0,
@@ -126,8 +73,8 @@
           },
           "viewportLimits": {
             "mobile": {
-              "initialMediaTransferBytes": 500000,
-              "largestImageTransferBytes": 140000
+              "initialMediaTransferBytes": 420000,
+              "largestImageTransferBytes": 120000
             }
           }
         },
@@ -149,6 +96,27 @@
             "mobile": {
               "initialMediaTransferBytes": 500000,
               "largestImageTransferBytes": 140000
+            }
+          }
+        },
+        "/moments": {
+          "limits": {
+            "totalInitialJavaScriptGzipBytes": 185000,
+            "routeOwnedJavaScriptGzipBytes": 25000,
+            "preIntentAdditionalJavaScriptGzipBytes": 0,
+            "nonBuildJavaScriptTransferBytes": 0,
+            "cssGzipBytes": 30000,
+            "initialMediaTransferBytes": 350000,
+            "largestImageTransferBytes": 100000,
+            "webglContextRequests": 0,
+            "unexpectedFailedRequestCount": 0,
+            "httpErrorResponseCount": 0,
+            "pageErrorCount": 0
+          },
+          "viewportLimits": {
+            "mobile": {
+              "initialMediaTransferBytes": 250000,
+              "largestImageTransferBytes": 70000
             }
           }
         }

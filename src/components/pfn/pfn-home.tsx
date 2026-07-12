@@ -2,7 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
-import { PfnHeroMotion } from "@/components/pfn/pfn-hero-motion";
 import type { HomepageSelection } from "@/content/queries";
 import type { MomentRecord, ProjectRecord, ReadyImageAsset } from "@/content/types";
 
@@ -66,7 +65,7 @@ function ProjectOverviewItem({
           <p className="pfn-project-item__premise">{project.oneLiner}</p>
           <p className="pfn-project-item__role">{project.role.label}</p>
         </div>
-        <Link className="pfn-project-item__link" href={href}>
+        <Link className="pfn-project-item__link" href={href} prefetch={false}>
           Read field notes <ArrowUpRight aria-hidden="true" size={18} strokeWidth={1.8} />
         </Link>
       </div>
@@ -125,13 +124,13 @@ export function PersonalFieldNotesHome({
         Skip to content
       </a>
       <header className="pfn-header">
-        <Link className="pfn-wordmark" href={route(basePath, "")}>Wildan Niam</Link>
+        <Link className="pfn-wordmark" href={route(basePath, "")} prefetch={false}>Wildan Niam</Link>
         <nav aria-label="Primary navigation" className="pfn-header__nav">
           <a href="#selected-work">Work</a>
-          <Link href={route(basePath, "/moments")}>Moments</Link>
-          <Link href={route(basePath, "/about")}>About</Link>
+          <Link href={route(basePath, "/moments")} prefetch={false}>Moments</Link>
+          <Link href={route(basePath, "/about")} prefetch={false}>About</Link>
         </nav>
-        <Link className="pfn-header__contact" href={route(basePath, "/contact")}>
+        <Link className="pfn-header__contact" href={route(basePath, "/contact")} prefetch={false}>
           Let&apos;s build <ArrowUpRight aria-hidden="true" size={16} />
         </Link>
       </header>
@@ -142,7 +141,7 @@ export function PersonalFieldNotesHome({
             <span>Field notes / 01</span>
             <span>Bandung, ID</span>
           </div>
-          <PfnHeroMotion>
+          <div className="pfn-hero__motion">
             <div className="pfn-hero__grid">
               <div className="pfn-hero__copy" data-pfn-hero-copy>
                 <p className="pfn-eyebrow">Software engineer · student builder</p>
@@ -173,10 +172,10 @@ export function PersonalFieldNotesHome({
                 </figure>
               ) : null}
             </div>
-            <p className="pfn-hero__status" data-pfn-hero-status>
+            <p className="pfn-hero__status">
               Currently building <strong>PayGate</strong> — machine-paid API infrastructure on Stellar testnet.
             </p>
-          </PfnHeroMotion>
+          </div>
         </section>
 
         <section aria-labelledby="selected-work-heading" className="pfn-section pfn-selected-work" id="selected-work">
@@ -198,7 +197,7 @@ export function PersonalFieldNotesHome({
               />
             ))}
           </div>
-          <Link className="pfn-section-link" href={route(basePath, "/work")}>
+          <Link className="pfn-section-link" href={route(basePath, "/work")} prefetch={false}>
             View the complete work index <ArrowUpRight aria-hidden="true" size={18} />
           </Link>
         </section>
@@ -218,7 +217,7 @@ export function PersonalFieldNotesHome({
                 <li key={claim.id}>
                   <span>{project?.title}</span>
                   <p>{claim.text}</p>
-                  <Link href={route(basePath, `/work/${projectSlug}`)}>Read the context</Link>
+                  <Link href={route(basePath, `/work/${projectSlug}`)} prefetch={false}>Read the context</Link>
                 </li>
               );
             })}
@@ -232,7 +231,7 @@ export function PersonalFieldNotesHome({
               <p className="pfn-eyebrow">The work around the work</p>
               <h2 id="moments-title">Builds, rooms, and shared wins.</h2>
             </div>
-            <Link className="pfn-section-link" href={route(basePath, "/moments")}>
+            <Link className="pfn-section-link" href={route(basePath, "/moments")} prefetch={false}>
               Open photo archive <ArrowUpRight aria-hidden="true" size={18} />
             </Link>
           </div>
@@ -270,7 +269,7 @@ export function PersonalFieldNotesHome({
           <div className="pfn-close__details">
             <p>{profile.availability}</p>
             <p>{profile.location} · {profile.education}</p>
-            <Link className="pfn-action-link pfn-action-link--solid" href={route(basePath, "/contact")}>
+            <Link className="pfn-action-link pfn-action-link--solid" href={route(basePath, "/contact")} prefetch={false}>
               Start a conversation <ArrowUpRight aria-hidden="true" size={19} />
             </Link>
           </div>

@@ -48,8 +48,8 @@ jobs:
       - name: Build production application
         run: npm run build
 
-      - name: Verify content trace isolation
-        run: npm run analyze:content-tracing
+      - name: Verify content and media contracts
+        run: npm run validate:content && npm run audit:media
 
       - name: Reject high or critical advisories
         run: npm audit --audit-level=high
@@ -93,9 +93,6 @@ jobs:
 
       - name: Build and enforce bundle budgets
         run: npm run analyze:bundle
-
-      - name: Build and enforce V1 explorer enhancement budget
-        run: npm run analyze:bundle:explorer
 
       - name: Run browser smoke tests
         run: npm run test:e2e

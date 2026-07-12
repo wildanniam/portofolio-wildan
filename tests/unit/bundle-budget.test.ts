@@ -115,13 +115,14 @@ describe("App Router manifest normalization", () => {
   });
 });
 
-describe("committed V1 viewport budgets", () => {
+describe("committed Personal Field Notes V2 viewport budgets", () => {
   const budgetConfig = JSON.parse(
     readFileSync(new URL("../../quality/budgets.json", import.meta.url), "utf8"),
   );
 
-  it("samples both desktop and mobile when the V1 profile is activated", () => {
-    expect(budgetConfig.profiles.v1.sampleViewports).toEqual([
+  it("samples both desktop and mobile when the V2 profile is active", () => {
+    expect(budgetConfig.activeProfile).toBe("v2");
+    expect(budgetConfig.profiles.v2.sampleViewports).toEqual([
       "desktop",
       "mobile",
     ]);
@@ -135,13 +136,13 @@ describe("committed V1 viewport budgets", () => {
 
   it("preserves the stricter mobile media ceilings", () => {
     expect(
-      budgetConfig.profiles.v1.routes["/"].viewportLimits.mobile,
+      budgetConfig.profiles.v2.routes["/"].viewportLimits.mobile,
     ).toEqual({
-      initialMediaTransferBytes: 500_000,
-      largestImageTransferBytes: 140_000,
+      initialMediaTransferBytes: 420_000,
+      largestImageTransferBytes: 120_000,
     });
     expect(
-      budgetConfig.profiles.v1.routes["/work/[slug]"].viewportLimits.mobile,
+      budgetConfig.profiles.v2.routes["/work/[slug]"].viewportLimits.mobile,
     ).toEqual({
       initialMediaTransferBytes: 500_000,
       largestImageTransferBytes: 140_000,

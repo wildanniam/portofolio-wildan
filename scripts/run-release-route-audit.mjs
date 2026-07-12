@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { spawn } from "node:child_process";
-import { randomBytes } from "node:crypto";
 import { resolve } from "node:path";
 
 const root = process.cwd();
@@ -11,7 +10,6 @@ if (!Number.isInteger(port) || port < 1024 || port > 65_535) {
 }
 
 const origin = `http://127.0.0.1:${port}`;
-const token = randomBytes(32).toString("hex");
 const nextBin = resolve(root, "node_modules/next/dist/bin/next");
 const auditScript = resolve(root, "scripts/audit-release-routes.mjs");
 const npmCommand = process.platform === "win32" ? "npm.cmd" : "npm";
@@ -93,8 +91,6 @@ const releaseEnvironment = {
   ...process.env,
   FORCE_COLOR: "0",
   NEXT_TELEMETRY_DISABLED: "1",
-  PORTFOLIO_V1_PREVIEW: "1",
-  PORTFOLIO_V1_PREVIEW_TOKEN: token,
 };
 
 await run(npmCommand, ["run", "build"], { env: releaseEnvironment });
@@ -135,8 +131,6 @@ try {
       "--strict",
       "--origin",
       origin,
-      "--preview-token",
-      token,
       ...process.argv.slice(2),
     ],
     { env: releaseEnvironment },

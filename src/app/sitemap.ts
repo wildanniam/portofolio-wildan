@@ -10,6 +10,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absoluteSiteUrl("/") },
     { url: absoluteSiteUrl("/work") },
+    { url: absoluteSiteUrl("/about") },
     { url: absoluteSiteUrl("/contact") },
   ];
   const projectRoutes: MetadataRoute.Sitemap = getPublishedProjects().map(

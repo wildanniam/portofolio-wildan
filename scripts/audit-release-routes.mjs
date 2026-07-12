@@ -11,73 +11,27 @@ const DEFAULT_SITE_ORIGIN = "https://wildanniam.dev";
 const flagshipSlugs = ["fradium", "nova-ai", "paygate", "quorum"];
 
 function auditProfile(name) {
-  const staticPublicRoutes = ["/work", "/contact"].map((path) => ({
+  const staticPublicRoutes = ["/work", "/about", "/contact", "/moments"].map((path) => ({
     classification: "public",
     expectedStatus: 200,
     path,
   }));
-  const previewRoutes = [
-    "/preview/open-proving-ground/site",
-    ...flagshipSlugs.map(
-      (slug) => `/preview/open-proving-ground/content/${slug}`,
-    ),
-    "/preview/open-proving-ground/moments",
-  ];
   const flagshipRoutes = flagshipSlugs.map((slug) => `/work/${slug}`);
 
-  if (name === "pre-cutover") {
-    return {
-      deferredChecks: [
-        "The preserved legacy root is checked only for internal-link reachability. Its canonical and placeholder-link debt is removed by the separately approved root-switch diff.",
-        "Public V1 root, case-study, and Moments metadata are enforced by the post-cutover profile after the publication flip.",
-      ],
-      expectedSitemapPaths: ["/", "/contact", "/work"],
-      forbiddenSitemapPrefixes: [
-        "/preview/open-proving-ground",
-        "/moments",
-        ...flagshipRoutes,
-      ],
-      routes: [
-        ...staticPublicRoutes,
-        ...previewRoutes.map((path) => ({
-          classification: "protected",
-          expectedStatus: 200,
-          path,
-        })),
-        ...flagshipRoutes.map((path) => ({
-          classification: "withheld",
-          expectedStatus: 404,
-          path,
-        })),
-        {
-          classification: "withheld",
-          expectedStatus: 404,
-          path: "/moments",
-        },
-      ],
-    };
-  }
-
-  if (name === "post-cutover") {
+  if (name === "release") {
     const publicRoutes = [
       "/",
       ...staticPublicRoutes.map((route) => route.path),
       ...flagshipRoutes,
-      "/moments",
     ];
     return {
       deferredChecks: [],
       expectedSitemapPaths: publicRoutes,
-      forbiddenSitemapPrefixes: ["/preview/open-proving-ground"],
+      forbiddenSitemapPrefixes: ["/preview/"],
       routes: [
         ...publicRoutes.map((path) => ({
           classification: "public",
           expectedStatus: 200,
-          path,
-        })),
-        ...previewRoutes.map((path) => ({
-          classification: "withheld",
-          expectedStatus: 404,
           path,
         })),
       ],
@@ -85,7 +39,7 @@ function auditProfile(name) {
   }
 
   throw new TypeError(
-    `Unknown audit profile ${JSON.stringify(name)}. Use pre-cutover or post-cutover.`,
+    `Unknown audit profile ${JSON.stringify(name)}. Use release.`,
   );
 }
 
@@ -93,8 +47,7 @@ function parseArguments(argv) {
   const options = {
     origin: process.env.RELEASE_AUDIT_ORIGIN ?? DEFAULT_ORIGIN,
     output: DEFAULT_OUTPUT,
-    profile: process.env.RELEASE_AUDIT_PROFILE ?? "pre-cutover",
-    previewToken: process.env.PORTFOLIO_V1_PREVIEW_TOKEN,
+    profile: process.env.RELEASE_AUDIT_PROFILE ?? "release",
     siteOrigin: process.env.RELEASE_AUDIT_SITE_ORIGIN ?? DEFAULT_SITE_ORIGIN,
     strict: false,
   };
@@ -109,7 +62,6 @@ function parseArguments(argv) {
       [
         "--origin",
         "--output",
-        "--preview-token",
         "--profile",
         "--site-origin",
       ].includes(argument)
@@ -118,7 +70,6 @@ function parseArguments(argv) {
       if (!value) throw new TypeError(`${argument} requires a value.`);
       if (argument === "--origin") options.origin = value;
       if (argument === "--output") options.output = value;
-      if (argument === "--preview-token") options.previewToken = value;
       if (argument === "--profile") options.profile = value;
       if (argument === "--site-origin") options.siteOrigin = value;
       index += 1;
@@ -127,25 +78,15 @@ function parseArguments(argv) {
     throw new TypeError(`Unknown argument: ${argument}`);
   }
 
-  if (!options.previewToken) {
-    throw new TypeError(
-      "The protected-route audit requires PORTFOLIO_V1_PREVIEW_TOKEN or --preview-token.",
-    );
-  }
   return options;
 }
 
 const options = parseArguments(process.argv.slice(2));
 const profile = auditProfile(options.profile);
-const previewAuthorization = `Basic ${Buffer.from(
-  `preview:${options.previewToken}`,
-).toString("base64")}`;
-
 const report = await auditReleaseRoutes({
   expectedSitemapPaths: profile.expectedSitemapPaths,
   forbiddenSitemapPrefixes: profile.forbiddenSitemapPrefixes,
   origin: options.origin,
-  previewAuthorization,
   routes: profile.routes,
   siteOrigin: options.siteOrigin,
 });

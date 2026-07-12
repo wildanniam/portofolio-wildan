@@ -9,9 +9,9 @@ export const siteConfig = {
   description:
     "Evidence-backed case studies from Wildan Syukri Niam, a software engineer building AI agents and Web3 systems.",
   socialImage: {
-    alt: "Wildan Syukri Niam — The Open Proving Ground",
+    alt: "Wildan Syukri Niam working with teammates during a hackathon.",
     height: 630,
-    pathname: "/media/site/open-proving-ground-social.png",
+    pathname: "/media/site/personal-field-notes-social.webp",
     width: 1200,
   },
 } as const;

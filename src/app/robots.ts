@@ -7,10 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: [
-        "/preview/open-proving-ground",
-        "/preview/open-proving-ground/",
-      ],
+      disallow: [],
     },
     host: siteConfig.url,
     sitemap: absoluteSiteUrl("/sitemap.xml"),
