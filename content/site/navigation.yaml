@@ -1,0 +1,16 @@
+primary:
+  - id: home
+    label: Home
+    href: /
+  - id: work
+    label: Work
+    href: /work
+  - id: contact
+    label: Contact
+    href: /contact
+secondary:
+  - id: github
+    label: GitHub
+    href: https://github.com/wildanniam
+
+# /moments remains withheld until the documentary-photo publication gate passes.

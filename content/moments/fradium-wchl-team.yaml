@@ -1,0 +1,76 @@
+id: fradium-wchl-team
+category: win
+title: A global result, held by the whole team
+event: World Computer Hacker League 2025 Global Finale
+date: "2025-10-30"
+place: Virtual global finale
+mode: evidence
+context:
+  kind: project
+  projectSlugs:
+    - fradium
+people:
+  - Wildan Syukri Niam
+  - Indra Mahesa
+  - Muhammad Bintang Al-Fath
+  - Yazid Alghozali
+  - Arga Adolf Lumunon
+  - Ghina Rosvita Maharanisa
+result: Global Finale Winner, Fully On-Chain Track
+caption: >-
+  Fradium's six-person team after winning the Fully On-Chain Track. Wildan led the
+  project and worked across its full-stack system; the photograph keeps the result
+  where it belongs—with the team that built and defended it together.
+reflection: >-
+  The award mattered because it followed months of architecture decisions,
+  integration work, testing, and repeated explanation under deadline pressure.
+claims:
+  - id: moment-fradium-wchl-result
+    kind: award
+    text: Fradium's six-person team won the WCHL 2025 Global Finale Fully On-Chain Track.
+    sources:
+      - kind: url
+        url: https://bse.telkomuniversity.ac.id/tim-fradium-berhasil-meraih-global-finale-winner-fully-on-chain-track-pada-world-computer-hacker-league-2025/
+        label: Telkom University institutional result and team roster
+        verifiedAt: "2026-07-12"
+      - kind: url
+        url: https://luma.com/b2r0vq09
+        label: Official WCHL Global Finale townhall date and virtual format
+        verifiedAt: "2026-07-12"
+    scope: Team result and official finale date; the photograph's capture date, physical location, and credit remain a publication checkpoint.
+claimIds:
+  - moment-fradium-wchl-result
+assets:
+  - id: fradium-wchl-team-photo
+    status: ready
+    slot: project-outcome
+    evidenceFunctions:
+      - verification
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/fradium-wchl-team/main.webp
+    width: 960
+    height: 1280
+    crop:
+      mode: focal
+      aspectRatio: "3:4"
+      focalPoint: { x: 0.5, y: 0.52 }
+    mobile:
+      src: /media/moments/fradium-wchl-team/mobile.webp
+      width: 600
+      height: 800
+      crop:
+        mode: focal
+        aspectRatio: "3:4"
+        focalPoint: { x: 0.5, y: 0.52 }
+    caption: The Fradium team holds its Fully On-Chain Track result board.
+    provenance:
+      kind: documentary-photo
+      source: PHOTO-2025-11-01-10-16-29 3.JPG supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-fradium-wchl-result
+    alt: Six Fradium teammates pose around a board naming the team Global Finale winner of the Fully On-Chain Track.
+publication: published

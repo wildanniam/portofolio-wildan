@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "toolVersion": "13.4.0",
+  "activeProfile": "v2",
+  "numberOfRuns": 3,
+  "maxRejectedAttempts": 2,
+  "retriableRuntimeErrorCodes": ["NO_FCP"],
+  "url": "http://127.0.0.1:3101/",
+  "profiles": {
+    "v2": {
+      "status": "locked-release-targets",
+      "description": "Approved Personal Field Notes V2 mobile-lab release targets.",
+      "minimum": {
+        "performanceScore": 0.9,
+        "accessibilityScore": 1,
+        "bestPracticesScore": 0.95,
+        "seoScore": 1
+      },
+      "maximum": {
+        "largestContentfulPaintMs": 3200,
+        "cumulativeLayoutShift": 0.05,
+        "totalBlockingTimeMs": 200
+      }
+    }
+  }
+}

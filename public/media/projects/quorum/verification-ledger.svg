@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title description">
+  <title id="title">Quorum testnet verification ledger</title>
+  <desc id="description">An editorial verification ledger listing six repository-recorded Quorum flows independently confirmed successful through Stellar Horizon: paid-event publish, paid checkout, free-event publish, free claim, check-in, and collaborator withdrawal. It also records deployed QuorumCore and QuorumPassNFT contracts and 26 contract tests while clearly limiting the proof to testnet.</desc>
+  <defs>
+    <style>
+      .canvas{fill:#f4f5f3}.surface{fill:#fff}.soft{fill:#e5f5f7}.matte{fill:#111315}.ink{fill:#111315}.text{fill:#2b3035}.muted{fill:#596068}.light{fill:#f4f5f3}.accent{fill:#16798b}.rule{stroke:#c9ced3}.rule-strong{stroke:#20252a}.rule-accent{stroke:#16798b}.sans{font-family:Geist,Arial,sans-serif}.mono{font-family:"Geist Mono","SFMono-Regular",Consolas,monospace}.hairline{stroke-width:1;vector-effect:non-scaling-stroke}.strong{stroke-width:2;vector-effect:non-scaling-stroke}
+    </style>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#c9ced3" opacity=".35"/></pattern>
+  </defs>
+  <rect class="canvas" width="1600" height="1000"/><rect x="48" y="48" width="1504" height="904" fill="url(#grid)"/><rect x="48" y="48" width="1504" height="904" fill="none" class="rule-strong hairline"/>
+  <text x="88" y="103" class="mono accent" font-size="18" font-weight="600" letter-spacing="1.4">QUORUM / VERIFICATION LEDGER</text>
+  <text x="88" y="178" class="sans ink" font-size="68" font-weight="600" letter-spacing="-3.2">Six signed flows, one inspectable trail.</text>
+  <text x="88" y="221" class="sans text" font-size="22">Network confirmation, contract tests, and product proof are shown as distinct evidence layers.</text>
+  <text x="1512" y="103" text-anchor="end" class="mono muted" font-size="15">CHECKED / 11 JUL 2026</text>
+  <line x1="88" y1="260" x2="1512" y2="260" class="rule-strong hairline"/>
+
+  <rect x="88" y="300" width="934" height="440" class="surface rule-strong strong"/>
+  <text x="116" y="344" class="mono accent" font-size="14" letter-spacing="1">HORIZON-CONFIRMED TESTNET FLOWS</text>
+  <line x1="116" y1="369" x2="994" y2="369" class="rule hairline"/>
+  <text x="116" y="412" class="mono muted" font-size="14">01</text><text x="174" y="412" class="sans ink" font-size="21" font-weight="600">Paid-event publish</text><text x="950" y="412" text-anchor="end" class="mono accent" font-size="13">SUCCESS</text>
+  <line x1="116" y1="438" x2="994" y2="438" class="rule hairline"/>
+  <text x="116" y="481" class="mono muted" font-size="14">02</text><text x="174" y="481" class="sans ink" font-size="21" font-weight="600">Paid checkout + pass</text><text x="950" y="481" text-anchor="end" class="mono accent" font-size="13">SUCCESS</text>
+  <line x1="116" y1="507" x2="994" y2="507" class="rule hairline"/>
+  <text x="116" y="550" class="mono muted" font-size="14">03</text><text x="174" y="550" class="sans ink" font-size="21" font-weight="600">Free-event publish</text><text x="950" y="550" text-anchor="end" class="mono accent" font-size="13">SUCCESS</text>
+  <line x1="116" y1="576" x2="994" y2="576" class="rule hairline"/>
+  <text x="116" y="619" class="mono muted" font-size="14">04</text><text x="174" y="619" class="sans ink" font-size="21" font-weight="600">Free pass claim</text><text x="950" y="619" text-anchor="end" class="mono accent" font-size="13">SUCCESS</text>
+  <line x1="116" y1="645" x2="994" y2="645" class="rule hairline"/>
+  <text x="116" y="688" class="mono muted" font-size="14">05</text><text x="174" y="688" class="sans ink" font-size="21" font-weight="600">Authorized check-in</text><text x="950" y="688" text-anchor="end" class="mono accent" font-size="13">SUCCESS</text>
+  <line x1="116" y1="714" x2="994" y2="714" class="rule hairline"/>
+  <text x="116" y="728" class="mono muted" font-size="1">.</text>
+
+  <rect x="1046" y="300" width="466" height="210" class="matte rule-strong strong"/>
+  <text x="1074" y="344" class="mono light" font-size="14" letter-spacing="1">FLOW 06 / SETTLEMENT</text><text x="1074" y="391" class="sans light" font-size="27" font-weight="600">Collaborator withdrawal</text><text x="1074" y="434" class="sans light" font-size="18">Confirmed contract-to-wallet movement</text><rect x="1074" y="461" width="180" height="26" fill="#16798b"/><text x="1164" y="479" text-anchor="middle" class="mono light" font-size="11">HORIZON SUCCESS</text>
+  <rect x="1046" y="534" width="466" height="206" class="soft rule-accent strong"/>
+  <text x="1074" y="578" class="mono accent" font-size="14" letter-spacing="1">CONTRACT QA</text><text x="1074" y="627" class="sans ink" font-size="38" font-weight="600">26 contract tests</text><text x="1074" y="670" class="sans text" font-size="17">Capacity, amount, uniqueness, split,</text><text x="1074" y="699" class="sans text" font-size="17">withdrawal, transfer lock, and check-in.</text>
+
+  <rect x="88" y="768" width="1424" height="92" class="matte"/>
+  <text x="116" y="805" class="mono light" font-size="14" letter-spacing="1">DEPLOYED CONTRACTS</text><text x="116" y="837" class="sans light" font-size="18">QuorumCore + QuorumPassNFT / Stellar testnet</text><text x="1484" y="822" text-anchor="end" class="mono light" font-size="13">REPOSITORY HASHES ↗ HORIZON</text>
+  <text x="88" y="908" class="sans muted" font-size="16">This ledger verifies network execution and self-recorded contract QA. It is not an independent security audit or mainnet claim.</text>
+</svg>

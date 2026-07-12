@@ -1,0 +1,369 @@
+slug: quorum
+title: Quorum
+publication: published
+socialImageAssetId: quorum-product-flow
+caseStudyState: full
+lifecycle: prototype
+origin:
+  - hackathon
+  - collaboration
+validationKinds:
+  - live-deployment
+  - testnet
+  - tests
+  - transaction
+startedAt: "2026-06-08"
+lastUpdatedAt: "2026-07-11"
+lastVerifiedAt: "2026-07-11"
+oneLiner: Making collaborative event settlement inspectable on Stellar testnet.
+problem: >-
+  Collaborative events often collect ticket revenue through one organizer and
+  reconcile speaker, venue, community, and partner shares through spreadsheets,
+  screenshots, and follow-up transfers. Access, check-in, contract accounting,
+  evidence, withdrawal, and off-ramp state can easily drift across trust boundaries.
+intendedUsers:
+  - Web3 community organizers creating paid or free events and gated resources.
+  - Attendees purchasing or claiming a wallet-bound pass and checking in.
+  - Collaborators who need a visible share, balance, withdrawal proof, and optional cash-out continuation.
+teamContext:
+  summary: >-
+    Wildan owned the product and full-stack build. ArgaAAL made substantive
+    infrastructure and evidence contributions across database migration, indexing,
+    proof surfaces, ledger work, live-flow evidence, and deployment fixes.
+  collaboratorIds:
+    - arga-aal
+  ownershipBoundary: >-
+    Wildan's product and full-stack ownership is presented alongside direct credit
+    for ArgaAAL's infrastructure and evidence phase.
+role:
+  label: Full-Stack Product Builder
+  scope:
+    - Product specification and interaction design.
+    - Next.js application, server routes, sessions, and Postgres persistence.
+    - Soroban contracts, wallet transaction boundaries, and deployment tooling.
+    - Evidence indexing, settlement correction, MoneyGram-compatible continuation, and QA.
+  claimIds:
+    - quorum-role
+  evidenceIds:
+    - quorum-settlement-correction
+collaborators:
+  - id: arga-aal
+    name: ArgaAAL
+    role: Infrastructure and evidence contributor
+    url: https://github.com/ArgaAAL
+constraints:
+  - >-
+    Mutable event content and user experience lived off-chain, while authorization,
+    pass ownership, balances, withdrawal, and check-in needed verifiable truth.
+  - >-
+    Browser intent, wallet signing, RPC finality, contract events, database state,
+    indexed evidence, and off-ramp continuation had to agree without treating one
+    hash as proof of a different money movement.
+  - >-
+    The build is Stellar testnet scoped, has no independent contract audit, and has
+    not demonstrated production event usage or an end-to-end MoneyGram pickup.
+decisions:
+  - title: Split product data from on-chain invariants
+    rationale: >-
+      Postgres makes event content and product iteration practical, while the
+      contracts enforce the values that control payment, access, balances,
+      withdrawal, and check-in.
+    consequence: >-
+      The system gains a clear source-of-truth map but must reconcile indexed chain
+      events and application records carefully.
+    evidenceIds:
+      - quorum-system-map
+  - title: Make wallet intent narrow and inspectable
+    rationale: >-
+      Prepared and signed XDR are checked for signer, network, source, contract,
+      function, and arguments before submission and persistence.
+    consequence: >-
+      Local or mocked proof cannot silently impersonate a live transaction, while
+      users retain explicit Freighter approval.
+    evidenceIds:
+      - quorum-system-map
+      - quorum-testnet-ledger
+  - title: Separate contract withdrawal from cash-out
+    rationale: >-
+      An on-chain event debit and a later wallet-to-MoneyGram transfer are two money
+      movements. Treating them as one created a double-accounting and proof risk.
+    consequence: >-
+      Cash-out now references eligible settled withdrawals, keeps the two hashes
+      distinct, prevents over-allocation, and reuses failed or cancelled records for
+      safe retry.
+    evidenceIds:
+      - quorum-settlement-correction
+systemFlow:
+  - An organizer signs a Freighter challenge and creates an event with capacity, access mode, resources, and a 100 percent split.
+  - Publishing prepares, validates, signs, submits, and confirms a QuorumCore create-event transaction.
+  - An attendee pays exact testnet USDC or claims a free pass.
+  - QuorumCore enforces capacity and uniqueness, credits balances, and invokes QuorumPassNFT.
+  - The non-transferable pass unlocks resources and can be checked in by an authorized organizer.
+  - An indexer stores contract events and cursor state for proof, pass, event, and collaborator views.
+  - A collaborator withdraws the credited contract balance to a wallet.
+  - Only that settled withdrawal can continue into a separate MoneyGram-compatible SEP-24 cash-out record.
+technologies:
+  - Next.js 16
+  - React 19
+  - TypeScript
+  - Node.js
+  - PostgreSQL
+  - Supabase
+  - Zod
+  - Vercel
+  - Stellar SDK
+  - Freighter
+  - Rust
+  - Soroban
+  - Stellar RPC
+  - Horizon
+  - SEP-1
+  - SEP-10
+  - SEP-24
+  - Playwright
+claims:
+  - id: quorum-role
+    kind: role
+    text: Wildan served as Quorum's Full-Stack Product Builder.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: >-
+          Wildan confirms his product and full-stack role; the public repository
+          reinforces work across application, contracts, evidence, deployment, and QA.
+    scope: >-
+      Personal ownership within a credited collaboration; ArgaAAL's infrastructure
+      and evidence contributions remain explicit.
+  - id: quorum-six-testnet-flows
+    kind: behavior
+    text: >-
+      Six signed Quorum flows recorded by the repository were independently
+      confirmed successful on Stellar testnet on 2026-07-11.
+    sources:
+      - kind: url
+        url: https://github.com/wildanniam/Quorum/blob/main/docs/LIVE_TESTNET_EVIDENCE.json
+        label: Quorum live testnet evidence record
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://horizon-testnet.stellar.org/transactions/4ef57a3cc189e728f17e9f0209b4e52853b6e7dfe6fb853e85ec42bca5673f53
+        label: Paid-event publish transaction
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://horizon-testnet.stellar.org/transactions/9de9002c53d18b3762ab740c799269cec25056afe3349edeaaca3f4a6536a0cd
+        label: Paid checkout transaction
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://horizon-testnet.stellar.org/transactions/aacff3ab92050be1e374c3d21c5f278b05b3fc4ed5d0c170be0d9a86ca14036e
+        label: Free-event publish transaction
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://horizon-testnet.stellar.org/transactions/ea793672bee14b696d9d3c38f7ed49ad7acc12d992941e32adbd2e34466480f8
+        label: Free claim transaction
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://horizon-testnet.stellar.org/transactions/a495baefc620c8dc4ebd7948152ec680f46d0fbe1c5012cfaf93a82777c9e253
+        label: Check-in transaction
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://horizon-testnet.stellar.org/transactions/f202905159b999cb142b9c802080f613b1240e0f6d97933ca7db59d9836156a0
+        label: Collaborator withdrawal transaction
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Testnet network execution for the recorded flows; not evidence of mainnet,
+      production event usage, revenue, partnership, or an independent contract audit.
+  - id: quorum-settlement-boundary
+    kind: behavior
+    text: >-
+      Quorum records contract settlement and MoneyGram-compatible cash-out as two
+      distinct money movements with separate proof identifiers.
+    sources:
+      - kind: url
+        url: https://github.com/wildanniam/Quorum/pull/28
+        label: Settlement and cash-out correction pull request
+        verifiedAt: "2026-07-11"
+    scope: >-
+      The reviewed implementation supports sandbox SEP-24 initiation and validated
+      transfer instructions; the final wallet transfer and pickup were not fully
+      evidenced end to end.
+  - id: quorum-live-testnet
+    kind: lifecycle
+    text: Quorum is a live Stellar testnet hackathon prototype.
+    sources:
+      - kind: url
+        url: https://quorum-sandy-eight.vercel.app
+        label: Public Quorum deployment
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://quorum-sandy-eight.vercel.app/api/contracts/status
+        label: Public testnet contract status
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Hosted prototype with live testnet contracts; not a claim of mainnet,
+      independently audited custody, production use, or automatic fiat payout.
+evidence:
+  - id: quorum-product-flow
+    status: ready
+    slot: hero-event-flow
+    evidenceType: product
+    evidenceFunctions:
+      - product-reality
+    src: /media/projects/quorum/discover-surface.webp
+    width: 1440
+    height: 1024
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/quorum/discover-surface-mobile.webp
+      width: 800
+      height: 569
+      crop:
+        mode: focal
+        aspectRatio: "4:3"
+        focalPoint:
+          x: 0.5
+          y: 0.42
+    caption: >-
+      Quorum's deployed discovery surface makes event access, remaining capacity,
+      format, and the testnet proof layer visible before checkout. Seeded event
+      content demonstrates the product flow; it is not presented as market traction.
+    provenance:
+      kind: owned
+      creator: Quorum team
+      rightsNote: >-
+        Screenshot captured from the team-owned public deployment and approved for
+        portfolio evidence with collaborator credit.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - quorum-live-testnet
+    mediaKind: image
+    alt: >-
+      Quorum discovery page showing event search, four seeded events, remaining
+      seats, categories, and a visible Stellar testnet status.
+  - id: quorum-system-map
+    status: ready
+    slot: trust-boundary-diagram
+    evidenceType: architecture
+    evidenceFunctions:
+      - system-reasoning
+    src: /media/projects/quorum/trust-boundary.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      Product data, inspected wallet intent, contract accounting, finality, and
+      indexed evidence each retain a clear source of truth. Contract withdrawal and
+      optional cash-out continuation remain separate movements.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial diagram derived from Quorum's reviewed public repository,
+        technical specification, and testnet evidence.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - quorum-settlement-boundary
+    mediaKind: svg
+    alt: >-
+      Quorum trust-boundary diagram from Next.js and Postgres through XDR inspection,
+      Freighter approval, contracts, finality, indexer, and readable proof.
+    longDescription: >-
+      Postgres owns mutable event content. Inspected XDR and Freighter hold the
+      authorization boundary. QuorumCore and QuorumPassNFT enforce accounting and
+      access invariants. An idempotent index makes confirmed results readable, while
+      a later MoneyGram-compatible continuation remains a separate step.
+  - id: quorum-testnet-ledger
+    status: ready
+    slot: live-flow-ledger
+    evidenceType: transaction
+    evidenceFunctions:
+      - verification
+    src: /media/projects/quorum/verification-ledger.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      Six repository-recorded flows were independently confirmed successful through
+      Stellar Horizon: two publishes, paid checkout, free claim, check-in, and
+      collaborator withdrawal. Contract QA remains labeled as self-recorded evidence.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial ledger derived from Quorum's public testnet evidence JSON,
+        public Horizon responses, deployments, and contract-test record.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - quorum-six-testnet-flows
+      - quorum-live-testnet
+    mediaKind: svg
+    alt: >-
+      Quorum ledger listing five event and pass flows plus collaborator withdrawal,
+      deployed testnet contracts, and 26 contract tests.
+    longDescription: >-
+      The network layer confirms paid-event publish, paid checkout, free-event
+      publish, free claim, authorized check-in, and collaborator withdrawal. The
+      ledger separately labels 26 self-recorded contract tests and makes no mainnet
+      or independent security-audit claim.
+  - id: quorum-settlement-correction
+    status: ready
+    slot: settlement-before-after
+    evidenceType: source
+    evidenceFunctions:
+      - system-reasoning
+      - verification
+    src: /media/projects/quorum/settlement-correction.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      Issue 27 and pull request 28 corrected a conflated settlement model into two
+      explicit movements: contract-to-wallet withdrawal, then a separately allocated
+      wallet-to-off-ramp continuation with independent proof and retry state.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original before-and-after diagram authored from Quorum's public issue, pull
+        request, migration, allocation guard, and retry semantics.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - quorum-settlement-boundary
+      - quorum-role
+    mediaKind: svg
+    alt: >-
+      Before-and-after Quorum settlement diagram replacing one ambiguous withdrawal
+      state with separate contract settlement and off-ramp movements.
+    longDescription: >-
+      The old model conflated contract settlement, wallet funds, cash-out initiation,
+      and pickup result. The corrected model requires a confirmed withdrawal, prevents
+      over-allocation, stores a separate transfer hash, and allows failed or cancelled
+      cash-out records to retry safely.
+limitations:
+  - Quorum is a Stellar testnet hackathon build with no independent smart-contract or security audit.
+  - The public evidence route showed a hosted database connection failure on 2026-07-11.
+  - MoneyGram-compatible sandbox initiation is not a partnership or a completed cash-out and pickup.
+  - Demonstration testimonials and repeated logo content are not customer validation.
+next:
+  - Repair and re-verify the hosted evidence path, then preserve a stable deployed replay.
+  - Complete and document the remaining manual MoneyGram transfer and pickup flow.
+  - Harden contracts, QR/check-in behavior, refund and cancellation policy, wallet coverage, and observability.
+  - Gather authentic organizer, collaborator, and real-event validation.
+links:
+  live:
+    status: public
+    url: https://quorum-sandy-eight.vercel.app
+    lastVerifiedAt: "2026-07-11"
+  source:
+    status: public
+    url: https://github.com/wildanniam/Quorum
+    lastVerifiedAt: "2026-07-11"
+  docs:
+    status: public
+    url: https://github.com/wildanniam/Quorum/tree/main/docs
+    lastVerifiedAt: "2026-07-11"
+  demo:
+    status: unavailable
+    note: Publish the approved stable deployed replay when the hosted evidence path is re-verified.

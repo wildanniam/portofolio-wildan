@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "activeProfile": "v2",
+  "units": "Metric-specific: JavaScript/CSS use gzip level 9 bytes, media/fonts use response transfer bytes, and WebGL uses a context-request count.",
+  "viewports": {
+    "desktop": {
+      "width": 1440,
+      "height": 900,
+      "deviceScaleFactor": 1,
+      "hasTouch": false,
+      "isMobile": false
+    },
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "deviceScaleFactor": 2,
+      "hasTouch": true,
+      "isMobile": true
+    }
+  },
+  "metricDefinitions": {
+    "totalInitialJavaScriptGzipBytes": "Deduplicated JavaScript requested during a cold production navigation at the named viewport and the 3,000 ms pre-intent observation window.",
+    "manifestInitialJavaScriptGzipBytes": "Deduplicated Next root runtime and route entry JavaScript declared by the production build.",
+    "runtimeJavaScriptGzipBytes": "Next rootMainFiles from the production build manifest.",
+    "sharedJavaScriptGzipBytes": "Initial JavaScript shared by the runtime, layouts, and other non-route-owned entries.",
+    "routeOwnedJavaScriptGzipBytes": "JavaScript unique to the selected route page entry after shared entries are removed.",
+    "lazyJavaScriptGzipBytes": "Route react-loadable JavaScript that is not declared in the initial manifest set.",
+    "preIntentAdditionalJavaScriptGzipBytes": "Cold-navigation JavaScript requested before user intent even though it is outside the declared initial manifest set.",
+    "postTriggerAdditionalJavaScriptGzipBytes": "Local Next build JavaScript first requested during the bounded explorer near/intent settle window after subtracting the complete cold-navigation build set.",
+    "postTriggerUnexpectedFailedRequestCount": "Unexpected transport failures first observed after the explorer near/intent trigger.",
+    "postTriggerHttpErrorResponseCount": "HTTP error responses first observed after the explorer near/intent trigger.",
+    "postTriggerPageErrorCount": "Uncaught page errors first observed after the explorer near/intent trigger.",
+    "postTriggerEnhancementStateMismatchCount": "Whether the explorer failed to reach the deterministic ready/static state and controller count expected for the measured viewport after the trigger settle window.",
+    "nonBuildJavaScriptTransferBytes": "Successful script response bytes outside the local Next build asset graph, including same-origin runtime services and third-party scripts.",
+    "cssGzipBytes": "Deduplicated CSS requested by the cold production navigation.",
+    "initialMediaTransferBytes": "Image and media response bytes requested during the cold pre-intent observation window.",
+    "largestImageTransferBytes": "Largest single image response in the cold pre-intent observation window.",
+    "initialFontTransferBytes": "Font response bytes requested during the cold pre-intent observation window; reported separately from the JavaScript budget.",
+    "webglContextRequests": "Calls requesting a WebGL or WebGL2 canvas context during the cold pre-intent observation window.",
+    "unexpectedFailedRequestCount": "Failed network requests not matched by the route's explicit temporary allowlist.",
+    "httpErrorResponseCount": "Subresource responses with an HTTP status of 400 or greater.",
+    "pageErrorCount": "Uncaught page errors observed during the cold pre-intent window."
+  },
+  "profiles": {
+    "v2": {
+      "status": "locked-release-targets",
+      "description": "Approved Personal Field Notes V2 ceilings. They protect the public editorial archive from returning to heavy, speculative interactions.",
+      "samples": [
+        "/",
+        "/work/fradium",
+        "/work/nova-ai",
+        "/work/paygate",
+        "/work/quorum",
+        "/moments"
+      ],
+      "defaultViewport": "desktop",
+      "sampleViewports": ["desktop", "mobile"],
+      "routes": {
+        "/": {
+          "limits": {
+            "totalInitialJavaScriptGzipBytes": 175000,
+            "routeOwnedJavaScriptGzipBytes": 18000,
+            "lazyJavaScriptGzipBytes": 60000,
+            "preIntentAdditionalJavaScriptGzipBytes": 0,
+            "nonBuildJavaScriptTransferBytes": 0,
+            "cssGzipBytes": 30000,
+            "initialMediaTransferBytes": 650000,
+            "largestImageTransferBytes": 180000,
+            "webglContextRequests": 0,
+            "unexpectedFailedRequestCount": 0,
+            "httpErrorResponseCount": 0,
+            "pageErrorCount": 0
+          },
+          "viewportLimits": {
+            "mobile": {
+              "initialMediaTransferBytes": 420000,
+              "largestImageTransferBytes": 120000
+            }
+          }
+        },
+        "/work/[slug]": {
+          "limits": {
+            "totalInitialJavaScriptGzipBytes": 170000,
+            "routeOwnedJavaScriptGzipBytes": 12000,
+            "preIntentAdditionalJavaScriptGzipBytes": 0,
+            "nonBuildJavaScriptTransferBytes": 0,
+            "cssGzipBytes": 30000,
+            "initialMediaTransferBytes": 750000,
+            "largestImageTransferBytes": 200000,
+            "webglContextRequests": 0,
+            "unexpectedFailedRequestCount": 0,
+            "httpErrorResponseCount": 0,
+            "pageErrorCount": 0
+          },
+          "viewportLimits": {
+            "mobile": {
+              "initialMediaTransferBytes": 500000,
+              "largestImageTransferBytes": 140000
+            }
+          }
+        },
+        "/moments": {
+          "limits": {
+            "totalInitialJavaScriptGzipBytes": 185000,
+            "routeOwnedJavaScriptGzipBytes": 25000,
+            "preIntentAdditionalJavaScriptGzipBytes": 0,
+            "nonBuildJavaScriptTransferBytes": 0,
+            "cssGzipBytes": 30000,
+            "initialMediaTransferBytes": 350000,
+            "largestImageTransferBytes": 100000,
+            "webglContextRequests": 0,
+            "unexpectedFailedRequestCount": 0,
+            "httpErrorResponseCount": 0,
+            "pageErrorCount": 0
+          },
+          "viewportLimits": {
+            "mobile": {
+              "initialMediaTransferBytes": 250000,
+              "largestImageTransferBytes": 70000
+            }
+          }
+        }
+      }
+    }
+  }
+}

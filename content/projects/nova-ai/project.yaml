@@ -1,0 +1,341 @@
+slug: nova-ai
+title: Nova AI Wallet
+publication: published
+socialImageAssetId: nova-agent-flow
+caseStudyState: full
+lifecycle: prototype
+origin:
+  - hackathon
+  - collaboration
+validationKinds:
+  - award
+  - live-deployment
+startedAt: "2025-12-21"
+lastUpdatedAt: "2026-05-04"
+lastVerifiedAt: "2026-07-11"
+oneLiner: Turning wallet intent into inspectable actions without taking over the signature.
+problem: >-
+  Crypto workflows spread one user intention across wallet menus, raw addresses,
+  explorers, market tools, and payment interfaces. Nova explored whether a
+  conversational layer could translate that intention into inspectable reads and
+  prepared actions while leaving final authorization with the user's wallet.
+intendedUsers:
+  - EVM wallet users who want natural-language balance, activity, and transaction preparation.
+  - On-chain explorers and traders combining portfolio, counterparty, whale, and trade-cost context.
+  - Freelancers and creators experimenting with fiat-to-crypto payment links.
+teamContext:
+  summary: >-
+    Nova was a team hackathon build. Wildan owned full-stack and AI-agent work,
+    Galih contributed interface design, and Arga built and hardened multi-chain
+    intelligence. The institutional award roster also names Casta Garneta.
+  collaboratorIds:
+    - galih-aditya-m
+    - arga-aal
+    - casta-garneta
+  ownershipBoundary: >-
+    Wildan's role does not imply that he designed every interface or authored every
+    chain client; the code-contributor and award rosters are kept distinct.
+role:
+  label: Full-Stack & AI Builder
+  scope:
+    - Next.js product and API implementation.
+    - CopilotKit agent behavior and generative UI actions.
+    - Transaction preparation and user-signing boundaries.
+    - Prediction, Paylink, rate-limiting, deployment, and documentation work.
+  claimIds:
+    - nova-role
+  evidenceIds:
+    - nova-source-proof
+collaborators:
+  - id: galih-aditya-m
+    name: Galih Aditya M
+    role: Chat and landing-page UI contributor
+    url: https://github.com/galihadityam1
+  - id: arga-aal
+    name: ArgaAAL
+    role: Multi-chain intelligence contributor
+    url: https://github.com/ArgaAAL
+  - id: casta-garneta
+    name: Casta Garneta
+constraints:
+  - >-
+    The agent had to help users understand and prepare an action without holding a
+    private key or silently moving the wallet-signing boundary into the model.
+  - >-
+    Explorer, market, payment, and model services had different latency, rate
+    limits, and reliability inside a short hackathon build window.
+  - >-
+    Some sprint demo branches used simulated fallbacks; the case study must keep
+    live, recorded, staging, and simulated evidence visibly distinct.
+decisions:
+  - title: Orchestrate an existing wallet instead of creating custody
+    rationale: >-
+      Nova could interpret intent and prepare a transaction while the connected EVM
+      wallet remained the only place where the user approved a signature.
+    consequence: >-
+      The prototype demonstrates agent-assisted execution without claiming that the
+      AI autonomously controls funds.
+    evidenceIds:
+      - nova-agent-flow
+      - nova-system-map
+  - title: Render purpose-built evidence cards
+    rationale: >-
+      Balances, counterparties, trade-cost estimates, payments, and transaction
+      proposals need different information hierarchy; a text-only answer would
+      hide the details a user should inspect.
+    consequence: >-
+      Tool results become reviewable UI, but each card also increases the surface
+      that must keep provenance and loading states honest.
+    evidenceIds:
+      - nova-agent-flow
+  - title: Separate the prediction service behind an HTTP boundary
+    rationale: >-
+      The trade-cost model could be deployed and checked independently from the
+      Next.js application.
+    consequence: >-
+      The companion service remained live after the sprint, while its estimate must
+      still be labeled as model output rather than a guaranteed execution price.
+    evidenceIds:
+      - nova-source-proof
+systemFlow:
+  - A user opens the chat route and connects an EVM wallet.
+  - CopilotKit maps the prompt to a registered balance, analysis, prediction, payment, or transaction action.
+  - Read actions call Next.js routes that select chain clients and aggregate explorer or RPC data.
+  - Nova renders a dedicated evidence card, form, or transaction review state.
+  - A send action validates the proposal and requests a network switch when needed.
+  - Only a separate user action opens the connected wallet for final signing.
+technologies:
+  - Next.js 16
+  - React 19
+  - TypeScript
+  - CopilotKit
+  - OpenAI
+  - Wagmi
+  - Viem
+  - RainbowKit
+  - Prisma
+  - PostgreSQL
+  - Midtrans
+  - Transak
+  - Upstash Redis
+  - LightGBM
+  - ONNX Runtime
+claims:
+  - id: nova-role
+    kind: role
+    text: Wildan served as Nova's Full-Stack & AI Builder.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-11"
+        note: >-
+          Wildan confirms his full-stack and AI-agent responsibilities; repository
+          history independently shows dominant contribution across those surfaces.
+    scope: >-
+      A personal role statement within a credited team build, not a claim that
+      Wildan designed every interface or authored every chain client alone.
+  - id: nova-lisk-recognition
+    kind: award
+    text: >-
+      Nova received 1st Notable Mention and 1st Social Media Challenge recognition
+      in the Southeast Asia Lisk Builders Challenge 3.
+    sources:
+      - kind: url
+        url: https://bse.telkomuniversity.ac.id/prestasi-tim-nova-ai-di-south-east-asia-lisk-builder-challenge-3/
+        label: Telkom University institutional report
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://github.com/OfficialNovaAI/nova-wallet/blob/main/docs/assets/readme/winner.jpg
+        label: Repository award photograph
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Exact hackathon recognition for the named team; not a claim of a grant,
+      customer adoption, investment, or production deployment.
+  - id: nova-user-signing-boundary
+    kind: behavior
+    text: >-
+      Nova prepares a transaction and renders a review state, while the connected
+      wallet retains the final signing decision.
+    sources:
+      - kind: url
+        url: https://github.com/OfficialNovaAI/nova-wallet
+        label: Canonical public repository
+        verifiedAt: "2026-07-11"
+    scope: >-
+      Describes the reviewed agent-assisted send flow; it does not claim autonomous
+      custody or production suitability for high-value transactions.
+  - id: nova-sprint-state
+    kind: lifecycle
+    text: >-
+      Nova is a completed hackathon sprint artifact with a public landing page,
+      recorded product flows, and a live companion prediction service.
+    sources:
+      - kind: url
+        url: https://nova-wallet-puce.vercel.app
+        label: Public Nova deployment
+        verifiedAt: "2026-07-11"
+      - kind: url
+        url: https://wildanniam-slippagepredictoronchain.hf.space
+        label: Companion prediction service
+        verifiedAt: "2026-07-11"
+    scope: >-
+      The historical chat runtime was degraded at verification time; the claim does
+      not present Nova as an actively operated production wallet.
+evidence:
+  - id: nova-agent-flow
+    status: ready
+    slot: hero-agent-loop
+    evidenceType: prototype
+    evidenceFunctions:
+      - product-reality
+    src: /media/projects/nova-ai/product-overview.webp
+    width: 1600
+    height: 900
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/nova-ai/product-overview-mobile.webp
+      width: 800
+      height: 450
+      crop:
+        mode: intrinsic
+    caption: >-
+      Nova's authentic sprint presentation pairs the public landing surface with
+      the agent workspace the team built. It records the completed product idea,
+      not a claim that every historical integration is still operating today.
+    provenance:
+      kind: owned
+      creator: Nova AI team
+      rightsNote: >-
+        Project-owned presentation asset from the canonical team repository,
+        reproduced with collaborator credit for this portfolio case study.
+    mediaKind: image
+    alt: >-
+      Nova AI sprint presentation showing its dark purple landing page beside a
+      light wallet-agent workspace with portfolio balances and action cards.
+  - id: nova-system-map
+    status: ready
+    slot: agent-boundary-diagram
+    evidenceType: architecture
+    evidenceFunctions:
+      - system-reasoning
+    src: /media/projects/nova-ai/agent-boundary.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      The active path maps a user prompt through CopilotKit actions, Next.js routes,
+      chain or model services, and a purpose-built review state. A connected wallet
+      remains the final signing boundary.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial diagram derived from reviewed public repository paths
+        and authored for this portfolio.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - nova-user-signing-boundary
+    mediaKind: svg
+    alt: >-
+      Five-stage Nova diagram from user prompt through CopilotKit, Next.js routes,
+      evidence UI, and separate connected-wallet authorization.
+    longDescription: >-
+      The diagram separates two outcomes. Read actions return chain or model evidence
+      to a dedicated interface card. Write actions only prepare a proposal; network
+      checks, review, and the final signature happen in the user's connected wallet.
+  - id: nova-source-proof
+    status: ready
+    slot: implementation-proof
+    evidenceType: source
+    evidenceFunctions:
+      - verification
+    src: /media/projects/nova-ai/source-ledger.svg
+    width: 1600
+    height: 1000
+    crop:
+      mode: intrinsic
+    caption: >-
+      The public repository contains 82 commits and a substantial TypeScript surface;
+      62 commits are associated with Wildan's verified identity across agent,
+      generative UI, payment, data, deployment, and documentation paths.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam and Codex
+      rightsNote: >-
+        Original editorial ledger derived from the canonical public repository and
+        the 2026-07-11 evidence audit.
+      capturedAt: "2026-07-11"
+    claimIds:
+      - nova-role
+      - nova-sprint-state
+    mediaKind: svg
+    alt: >-
+      Nova repository ledger summarizing 82 commits, 187 tracked files, roughly
+      20,445 TypeScript lines, and Wildan's representative authored surfaces.
+    longDescription: >-
+      The ledger shows Wildan associated with 62 of 82 commits and names his work
+      across the CopilotKit runtime, action registry, transaction and prediction
+      cards, Paylink, Prisma, Redis rate limits, deployment fixes, and documentation.
+      It preserves collaborator credit and makes no adoption claim.
+  - id: nova-award-outcome
+    status: ready
+    slot: team-outcome
+    evidenceType: moment
+    evidenceFunctions:
+      - verification
+    src: /media/projects/nova-ai/award-team.webp
+    width: 1200
+    height: 900
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/nova-ai/award-team-mobile.webp
+      width: 800
+      height: 600
+      crop:
+        mode: intrinsic
+    caption: >-
+      Nova's team at the Lisk Builders Challenge 3 outcome: 1st Notable Mention and
+      1st Social Media Challenge. The exact recognition is also documented by
+      Telkom University's institutional report.
+    provenance:
+      kind: owned
+      creator: Nova AI team archive
+      rightsNote: >-
+        High-resolution team photograph supplied and explicitly selected by Wildan
+        for his portfolio showcase on 2026-07-11. Final photographer credit, the
+        fourth visible person's identity, and the remaining visible-person release
+        record remain publication metadata checkpoints.
+    claimIds:
+      - nova-lisk-recognition
+    mediaKind: image
+    alt: >-
+      Four Nova AI teammates at the Lisk Builders Challenge holding 1st Notable
+      Mention and Social Media Challenge award boards.
+limitations:
+  - Nova is a hackathon artifact, not a production or custodial wallet.
+  - The public chat runtime was degraded during the 2026-07-11 audit.
+  - Simulated payment completions, fallback results, and synthetic reconciliation records are not valid product proof.
+  - Internal beta slides are useful process material, not independently verified usability evidence.
+next:
+  - Preserve a canonical, sanitized demo of the completed sprint flow.
+  - Make live, recorded, staging, and simulated states explicit in data and UI.
+  - Restore a reproducible build, lint baseline, automated tests, and CI.
+  - Harden payment validation and webhook authentication before presenting Paylink beyond prototype scope.
+links:
+  live:
+    status: public
+    url: https://nova-wallet-puce.vercel.app
+    lastVerifiedAt: "2026-07-11"
+  source:
+    status: public
+    url: https://github.com/OfficialNovaAI/nova-wallet
+    lastVerifiedAt: "2026-07-11"
+  docs:
+    status: public
+    url: https://github.com/OfficialNovaAI/nova-wallet/tree/main/docs
+    lastVerifiedAt: "2026-07-11"
+  demo:
+    status: unavailable
+    note: Publish the approved recorded flow when its poster and evidence labels are ready.

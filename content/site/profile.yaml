@@ -1,0 +1,52 @@
+name: Wildan Syukri Niam
+positioning: Software Engineer building AI agents and Web3 systems.
+thesis: >-
+  I build inspectable software systems that turn ambitious AI and Web3 ideas into
+  working product flows, then document the decisions and evidence behind them.
+location: Bandung, Indonesia
+education: Software Engineering, Telkom University
+availability: >-
+  Open to software engineering roles, research collaboration, ambitious product
+  teams, and focused builder programs.
+email: wildanniam4@gmail.com
+github:
+  status: public
+  url: https://github.com/wildanniam
+  lastVerifiedAt: "2026-07-11"
+linkedin:
+  status: unavailable
+  note: Add Wildan's confirmed public profile before publication.
+resume:
+  status: unavailable
+  note: Publish only an approved, redacted portfolio resume derivative.
+portrait:
+  id: builder-portrait
+  status: ready
+  slot: hero-portrait
+  evidenceType: moment
+  evidenceFunctions:
+    - verification
+  mediaKind: image
+  src: /media/moments/builder-portrait/main.webp
+  width: 1200
+  height: 1500
+  crop:
+    mode: focal
+    aspectRatio: "4:5"
+    focalPoint: { x: 0.56, y: 0.5 }
+  mobile:
+    src: /media/moments/builder-portrait/mobile.webp
+    width: 720
+    height: 900
+    crop:
+      mode: focal
+      aspectRatio: "4:5"
+      focalPoint: { x: 0.56, y: 0.5 }
+  caption: Portrait of Wildan at a technology event in Bandung.
+  provenance:
+    kind: documentary-photo
+    source: ab102d36-feaa-4abc-9e27-c697ae78e648 3.JPG supplied by Wildan
+    credit: Supplied by Wildan Syukri Niam
+    rights: permission-confirmed
+    consent: confirmed
+  alt: Wildan wearing a maroon jacket and event lanyard in an indoor venue.

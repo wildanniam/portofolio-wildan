@@ -1,42 +1,63 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import { Footer } from "@/components/footer";
-import { Navbar } from "@/components/navbar";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Geist_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+import { absoluteSiteUrl, siteConfig } from "@/lib/site-config";
+
+import "./globals.css";
+
+const instrumentSans = Instrument_Sans({
+  variable: "--font-instrument-sans",
   subsets: ["latin"],
+  display: "optional",
+  weight: ["400", "500", "600", "700"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-instrument-serif",
+  subsets: ["latin"],
+  display: "optional",
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "optional",
+  preload: false,
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://wildanniam.dev"),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Wildan Syukri Niam - AI Researcher & Web3 Builder",
-    template: "%s - Wildan Syukri Niam",
+    default: "Wildan Syukri Niam — Software Engineer",
+    template: "%s — Wildan Syukri Niam",
   },
   description:
-    "Portfolio of Wildan Syukri Niam, an AI Researcher and Web3 Builder working on trustworthy agents, on-chain intelligence, and autonomous payment systems.",
+    "Personal field notes from Wildan Syukri Niam: AI, Web3, and full-stack systems built to be inspected.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Wildan Syukri Niam - AI Researcher & Web3 Builder",
-    description:
-      "Trustworthy AI agents, Web3 trust layers, on-chain intelligence, and agentic payments.",
     type: "website",
-    url: "https://wildanniam.dev",
+    url: siteConfig.url,
+    title: "Wildan Syukri Niam — Software Engineer",
+    description:
+      "Personal field notes from a student builder working across AI, Web3, and full-stack systems.",
+    images: [
+      {
+        url: absoluteSiteUrl(siteConfig.socialImage.pathname),
+        width: siteConfig.socialImage.width,
+        height: siteConfig.socialImage.height,
+        alt: siteConfig.socialImage.alt,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wildan Syukri Niam - AI Researcher & Web3 Builder",
+    title: "Wildan Syukri Niam — Software Engineer",
     description:
-      "Building trustworthy AI agents for Web3 systems, payments, and software reliability.",
+      "Personal field notes from a student builder working across AI, Web3, and full-stack systems.",
+    images: [absoluteSiteUrl(siteConfig.socialImage.pathname)],
   },
 };
 
@@ -47,14 +68,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ThemeProvider defaultTheme="dark" enableSystem attribute="class">
-          <Navbar />
-          {children}
-          <Toaster richColors position="top-right" />
-          <Footer />
-          <SpeedInsights />
-        </ThemeProvider>
+      <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} antialiased`}>
+        {children}
       </body>
     </html>
   );

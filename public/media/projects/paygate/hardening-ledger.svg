@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title description">
+  <title id="title">PayGate implementation hardening ledger</title>
+  <desc id="description">An editorial ledger connecting eight risks in PayGate's testnet product to concrete controls and repository verification: upstream bypass to two-sided secret probes, server-side request forgery to URL and DNS guards, replay to persistent identifiers, abuse to rate limits, oversized responses to bounded forwarding, withdrawal substitution to transaction-intent checks, secret exposure to scanning, and regression to smoke, contract, build, and workflow checks.</desc>
+  <defs>
+    <style>
+      .canvas{fill:#f4f5f3}.surface{fill:#fff}.soft{fill:#e8ecff}.matte{fill:#111315}.ink{fill:#111315}.text{fill:#2b3035}.muted{fill:#596068}.light{fill:#f4f5f3}.accent{fill:#5b42dd}.ok{fill:#157143}.rule{stroke:#c9ced3}.rule-strong{stroke:#20252a}.rule-accent{stroke:#5b42dd}.sans{font-family:Geist,Arial,sans-serif}.mono{font-family:"Geist Mono","SFMono-Regular",Consolas,monospace}.hairline{stroke-width:1;vector-effect:non-scaling-stroke}.strong{stroke-width:2;vector-effect:non-scaling-stroke}
+    </style>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse"><path d="M28 0H0V28" fill="none" stroke="#c9ced3" opacity=".35"/></pattern>
+  </defs>
+  <rect class="canvas" width="1600" height="1000"/><rect x="48" y="48" width="1504" height="904" fill="url(#grid)"/><rect x="48" y="48" width="1504" height="904" fill="none" class="rule-strong hairline"/>
+  <text x="88" y="103" class="mono accent" font-size="18" font-weight="600" letter-spacing="1.4">PAYGATE / HARDENING LEDGER</text>
+  <text x="88" y="178" class="sans ink" font-size="68" font-weight="600" letter-spacing="-3.2">Every risk maps to a control.</text>
+  <text x="88" y="221" class="sans text" font-size="22">A self-authored security pass made the machine-payment path testable and reviewable.</text>
+  <text x="1512" y="103" text-anchor="end" class="mono muted" font-size="15">REPOSITORY SNAPSHOT / JUL 2026</text>
+  <line x1="88" y1="260" x2="1512" y2="260" class="rule-strong hairline"/>
+
+  <rect x="88" y="300" width="1424" height="442" class="surface rule-strong strong"/>
+  <text x="116" y="342" class="mono muted" font-size="13">RISK</text><text x="420" y="342" class="mono muted" font-size="13">CONTROL</text><text x="1210" y="342" class="mono muted" font-size="13">EVIDENCE</text>
+  <line x1="116" y1="365" x2="1484" y2="365" class="rule-strong hairline"/>
+  <text x="116" y="404" class="sans ink" font-size="18" font-weight="600">Public upstream bypass</text><text x="420" y="404" class="sans text" font-size="18">Invalid-secret rejection + valid-secret success before activation</text><text x="1210" y="404" class="mono accent" font-size="12">SETUP SMOKE</text>
+  <line x1="116" y1="429" x2="1484" y2="429" class="rule hairline"/>
+  <text x="116" y="468" class="sans ink" font-size="18" font-weight="600">SSRF + redirect escape</text><text x="420" y="468" class="sans text" font-size="18">HTTPS, DNS/IP denylist, manual redirects, timeout</text><text x="1210" y="468" class="mono accent" font-size="12">SECURITY SMOKE</text>
+  <line x1="116" y1="493" x2="1484" y2="493" class="rule hairline"/>
+  <text x="116" y="532" class="sans ink" font-size="18" font-weight="600">Credential replay</text><text x="420" y="532" class="sans text" font-size="18">Persistent payment IDs, unique transaction hashes, request state</text><text x="1210" y="532" class="mono accent" font-size="12">DB + CONTRACT TEST</text>
+  <line x1="116" y1="557" x2="1484" y2="557" class="rule hairline"/>
+  <text x="116" y="596" class="sans ink" font-size="18" font-weight="600">Abuse + oversized response</text><text x="420" y="596" class="sans text" font-size="18">Upstash rate limits, bounded body, response-size guard</text><text x="1210" y="596" class="mono accent" font-size="12">PROXY SMOKE</text>
+  <line x1="116" y1="621" x2="1484" y2="621" class="rule hairline"/>
+  <text x="116" y="660" class="sans ink" font-size="18" font-weight="600">Withdrawal substitution</text><text x="420" y="660" class="sans text" font-size="18">Prepared intent, wallet source, expected transaction hash</text><text x="1210" y="660" class="mono accent" font-size="12">WITHDRAWAL PROOF</text>
+  <line x1="116" y1="685" x2="1484" y2="685" class="rule hairline"/>
+  <text x="116" y="724" class="sans ink" font-size="18" font-weight="600">Secret + regression drift</text><text x="420" y="724" class="sans text" font-size="18">Secret scan, production audit, composed beta workflow</text><text x="1210" y="724" class="mono accent" font-size="12">GREEN CI RUN</text>
+
+  <rect x="88" y="774" width="906" height="102" class="soft rule-accent strong"/>
+  <text x="116" y="814" class="mono accent" font-size="14" letter-spacing="1">COMPOSED CHECK</text><text x="116" y="851" class="sans ink" font-size="22" font-weight="600">Auth + registry + 402 + escrow + dashboard + withdrawal</text>
+  <rect x="1018" y="774" width="494" height="102" class="matte rule-strong strong"/>
+  <text x="1046" y="814" class="mono light" font-size="14" letter-spacing="1">BOUNDARY</text><text x="1046" y="851" class="sans light" font-size="18">Documented hardening, not an independent audit.</text>
+  <text x="88" y="921" class="sans muted" font-size="15">Verification: canonical repository, passing security workflow, smoke scripts, Supabase constraints, and Soroban contract tests.</text>
+</svg>

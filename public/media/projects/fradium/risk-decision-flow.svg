@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title description">
+  <title id="title">Fradium hybrid risk-decision flow</title>
+  <desc id="description">An explanatory diagram showing Fradium's web, extension, and wallet surfaces preparing chain-specific features, sending them to an embedded ONNX model in a Rust canister, cross-checking safe model results with community reports in Motoko, and returning a conservative verdict before a user cancels or confirms a test-network transaction.</desc>
+  <defs>
+    <style>
+      .canvas { fill: #f4f5f3; }
+      .surface { fill: #ffffff; }
+      .soft { fill: #e8ecff; }
+      .matte { fill: #111315; }
+      .ink { fill: #111315; }
+      .text { fill: #2b3035; }
+      .muted { fill: #555c63; }
+      .light { fill: #f4f5f3; }
+      .accent { fill: #2448d8; }
+      .rule { stroke: #c9ced3; }
+      .rule-strong { stroke: #20252a; }
+      .rule-accent { stroke: #2448d8; }
+      .sans { font-family: Geist, Arial, sans-serif; }
+      .mono { font-family: "Geist Mono", "SFMono-Regular", Consolas, monospace; }
+      .hairline { stroke-width: 1; vector-effect: non-scaling-stroke; }
+      .strong { stroke-width: 2; vector-effect: non-scaling-stroke; }
+      .arrow { fill: none; stroke: #2448d8; stroke-width: 2; vector-effect: non-scaling-stroke; marker-end: url(#arrow); }
+    </style>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
+      <path d="M0 0L8 4L0 8Z" fill="#2448d8"/>
+    </marker>
+    <pattern id="grid" width="28" height="28" patternUnits="userSpaceOnUse">
+      <path d="M28 0H0V28" fill="none" stroke="#c9ced3" stroke-width="1" opacity="0.35"/>
+    </pattern>
+  </defs>
+
+  <rect class="canvas" width="1600" height="1000"/>
+  <rect x="48" y="48" width="1504" height="904" fill="url(#grid)"/>
+  <rect x="48" y="48" width="1504" height="904" fill="none" class="rule-strong hairline"/>
+
+  <text x="88" y="103" class="mono accent" font-size="18" font-weight="600" letter-spacing="1.4">FRADIUM / HYBRID RISK FLOW</text>
+  <text x="88" y="178" class="sans ink" font-size="68" font-weight="600" letter-spacing="-3.2">Evidence before execution.</text>
+  <text x="88" y="221" class="sans text" font-size="22">Model and community signals remain distinct until the user makes the final decision.</text>
+  <text x="1512" y="103" text-anchor="end" class="mono muted" font-size="15" letter-spacing="1">EXPLANATORY DIAGRAM / JUL 2026</text>
+  <line x1="88" y1="260" x2="1512" y2="260" class="rule-strong hairline"/>
+
+  <text x="88" y="305" class="mono muted" font-size="15" letter-spacing="1.2">SURFACES</text>
+  <text x="392" y="305" class="mono muted" font-size="15" letter-spacing="1.2">PREPARE</text>
+  <text x="704" y="305" class="mono muted" font-size="15" letter-spacing="1.2">INFER</text>
+  <text x="1016" y="305" class="mono muted" font-size="15" letter-spacing="1.2">CROSS-CHECK</text>
+  <text x="1328" y="305" class="mono muted" font-size="15" letter-spacing="1.2">DECIDE</text>
+
+  <rect x="88" y="332" width="240" height="356" class="surface rule-strong strong"/>
+  <text x="112" y="380" class="sans ink" font-size="27" font-weight="600">Client surfaces</text>
+  <line x1="112" y1="404" x2="304" y2="404" class="rule hairline"/>
+  <text x="112" y="448" class="sans text" font-size="20">Web analyzer</text>
+  <text x="112" y="492" class="sans text" font-size="20">Browser extension</text>
+  <text x="112" y="536" class="sans text" font-size="20">Wallet send flow</text>
+  <rect x="112" y="582" width="192" height="76" class="matte"/>
+  <text x="128" y="612" class="mono light" font-size="14" letter-spacing="0.8">USER INTENT</text>
+  <text x="128" y="641" class="sans light" font-size="18">Analyze or send</text>
+
+  <path d="M328 510H376" class="arrow"/>
+
+  <rect x="392" y="332" width="240" height="356" class="surface rule-strong strong"/>
+  <text x="416" y="380" class="sans ink" font-size="27" font-weight="600">Feature prep</text>
+  <line x1="416" y1="404" x2="608" y2="404" class="rule hairline"/>
+  <text x="416" y="448" class="mono accent" font-size="15">BTC / TESTNET</text>
+  <text x="416" y="486" class="mono accent" font-size="15">ETH / SEPOLIA</text>
+  <text x="416" y="524" class="mono accent" font-size="15">SOL / DEVNET</text>
+  <text x="416" y="562" class="mono accent" font-size="15">ICP / SERVICE</text>
+  <text x="416" y="615" class="sans muted" font-size="17">Chain-specific history</text>
+  <text x="416" y="642" class="sans muted" font-size="17">and behavior features</text>
+  <path d="M632 510H680" class="arrow"/>
+
+  <rect x="696" y="332" width="240" height="356" class="matte rule-strong strong"/>
+  <text x="720" y="380" class="sans light" font-size="27" font-weight="600">AI canister</text>
+  <line x1="720" y1="404" x2="912" y2="404" stroke="#555c63" class="hairline"/>
+  <text x="720" y="451" class="mono light" font-size="15">RUST / WASM</text>
+  <text x="720" y="489" class="mono light" font-size="15">EMBEDDED ONNX</text>
+  <rect x="720" y="532" width="192" height="102" fill="#2448d8"/>
+  <text x="738" y="566" class="mono light" font-size="14" letter-spacing="0.8">MODEL RESULT</text>
+  <text x="738" y="606" class="sans light" font-size="25" font-weight="600">Safe / unsafe</text>
+  <path d="M936 510H984" class="arrow"/>
+
+  <rect x="1000" y="332" width="240" height="356" class="surface rule-strong strong"/>
+  <text x="1024" y="380" class="sans ink" font-size="27" font-weight="600">Community</text>
+  <line x1="1024" y1="404" x2="1216" y2="404" class="rule hairline"/>
+  <text x="1024" y="451" class="mono accent" font-size="15">MOTOKO BACKEND</text>
+  <text x="1024" y="491" class="sans text" font-size="19">Address reports</text>
+  <text x="1024" y="526" class="sans text" font-size="19">Voting evidence</text>
+  <text x="1024" y="561" class="sans text" font-size="19">Historical context</text>
+  <rect x="1024" y="590" width="192" height="52" class="soft"/>
+  <text x="1040" y="612" class="mono accent" font-size="12" letter-spacing="0.4">CHECK IF MODEL</text>
+  <text x="1040" y="630" class="mono accent" font-size="12" letter-spacing="0.4">RESULT IS SAFE</text>
+  <path d="M1240 510H1288" class="arrow"/>
+
+  <rect x="1304" y="332" width="208" height="356" class="surface rule-accent strong"/>
+  <text x="1328" y="380" class="sans ink" font-size="27" font-weight="600">Verdict</text>
+  <line x1="1328" y1="404" x2="1488" y2="404" class="rule hairline"/>
+  <text x="1328" y="451" class="sans text" font-size="18">Conservative rule</text>
+  <text x="1328" y="480" class="sans text" font-size="18">preserves disagreement.</text>
+  <rect x="1328" y="524" width="160" height="50" class="matte"/>
+  <text x="1408" y="556" text-anchor="middle" class="sans light" font-size="17" font-weight="600">Cancel</text>
+  <rect x="1328" y="590" width="160" height="50" class="soft rule-accent hairline"/>
+  <text x="1408" y="622" text-anchor="middle" class="sans accent" font-size="17" font-weight="600">Confirm testnet</text>
+
+  <rect x="88" y="724" width="1424" height="116" class="soft"/>
+  <text x="112" y="763" class="mono accent" font-size="15" letter-spacing="1">DECISION RULE</text>
+  <text x="112" y="805" class="sans ink" font-size="26" font-weight="600">Unsafe model result stops the path. A safe model result still yields to unsafe community evidence.</text>
+
+  <line x1="88" y1="880" x2="1512" y2="880" class="rule-strong hairline"/>
+  <text x="88" y="918" class="mono muted" font-size="14" letter-spacing="0.7">BOUNDARY</text>
+  <text x="187" y="918" class="sans text" font-size="16">Bitcoin, Ethereum, and Solana execution shown here remains testnet or devnet scoped.</text>
+  <text x="1512" y="918" text-anchor="end" class="mono muted" font-size="14">SOURCE: REVIEWED PUBLIC REPOSITORY</text>
+</svg>

@@ -1,0 +1,20 @@
+flagshipProjectSlugs:
+  - fradium
+  - nova-ai
+  - paygate
+  - quorum
+flagshipHighlightClaimIds:
+  fradium: fradium-wchl-2025
+  nova-ai: nova-lisk-recognition
+  paygate: paygate-instaward-2026
+  quorum: quorum-six-testnet-flows
+featuredMomentIds:
+  - refactory-build-room
+  - learning-in-public
+  - fradium-wchl-team
+  - self-healing-research
+  - nova-lisk-team
+  - specheal-refactory-team
+  - serambi-bank-indonesia
+currentlyBuildingIds:
+  - paygate-active-2026

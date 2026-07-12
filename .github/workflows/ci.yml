@@ -1,0 +1,171 @@
+name: Portfolio quality gates
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - enhance-fe
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NEXT_TELEMETRY_DISABLED: "1"
+
+jobs:
+  static-quality:
+    name: Static and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Use pinned Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run static quality gates
+        run: npm run quality:static
+
+      - name: Measure server-only runtime floor
+        run: npm run analyze:runtime
+
+      - name: Build production application
+        run: npm run build
+
+      - name: Verify content and media contracts
+        run: npm run validate:content && npm run audit:media
+
+      - name: Reject high or critical advisories
+        run: npm audit --audit-level=high
+
+      - name: Reject high or critical production advisories
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Upload quality reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: static-quality-reports
+          path: .quality-reports/
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 14
+
+  browser-quality:
+    name: Chromium smoke and accessibility
+    needs: static-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Use pinned Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install browser engines and system dependencies
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      - name: Build and enforce bundle budgets
+        run: npm run analyze:bundle
+
+      - name: Run browser smoke tests
+        run: npm run test:e2e
+
+      - name: Run accessibility regression tests
+        run: npm run test:a11y
+
+      - name: Run editorial foundation matrix
+        run: npm run test:foundation
+
+      - name: Run content compatibility matrix
+        run: npm run test:content:e2e
+
+      - name: Run cross-browser release smoke
+        run: npm run test:release
+
+      - name: Audit pre-cutover routes and metadata
+        run: npm run audit:release-routes
+
+      - name: Upload Playwright diagnostics
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: playwright-report
+          path: |
+            .quality-reports/
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
+          include-hidden-files: true
+          retention-days: 14
+
+  lighthouse:
+    name: Lighthouse mobile median
+    needs: static-quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          persist-credentials: false
+
+      - name: Use pinned Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify stable Google Chrome
+        run: |
+          if command -v google-chrome >/dev/null; then
+            google-chrome --version
+          elif command -v google-chrome-stable >/dev/null; then
+            google-chrome-stable --version
+          else
+            echo "Stable Google Chrome is required for the Lighthouse lab."
+            exit 1
+          fi
+
+      - name: Run three-sample Lighthouse gate
+        run: npm run lighthouse
+
+      - name: Upload Lighthouse reports
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: lighthouse-reports
+          path: .quality-reports/lighthouse/
+          if-no-files-found: error
+          include-hidden-files: true
+          retention-days: 14

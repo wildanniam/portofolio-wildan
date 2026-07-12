@@ -1,0 +1,71 @@
+id: specheal-refactory-team
+category: win
+title: Second place, after the recovery loop held together
+event: Refactory Hackathon at Telkom University
+date: "2026-05-13"
+place: Telkom University, Bandung, Indonesia
+mode: evidence
+context:
+  kind: project
+  projectSlugs:
+    - specheal
+people:
+  - Wildan Syukri Niam
+  - Arga Adolf Lumunon
+result: 2nd Place, Outstanding Team
+caption: >-
+  The SpecHeal team with its second-place result after building an evidence-first
+  recovery cockpit for Playwright failures under hackathon constraints.
+reflection: >-
+  The useful lesson was not that AI can patch tests. It was that every proposed
+  recovery needs evidence, a controlled boundary, a rerun, and a way to admit that
+  the product—not the test—may be wrong.
+claims:
+  - id: moment-specheal-refactory-result
+    kind: award
+    text: SpecHeal placed second at the Refactory Hackathon at Telkom University.
+    sources:
+      - kind: url
+        url: https://hackathon.refactory.id/
+        label: Official Refactory Hackathon program and result context
+        verifiedAt: "2026-07-12"
+      - kind: owner-attestation
+        confirmedAt: "2026-07-12"
+        note: Wildan confirms the team result shown on the supplied official event placard.
+    scope: Team hackathon result; not a claim of production adoption.
+claimIds:
+  - moment-specheal-refactory-result
+assets:
+  - id: specheal-refactory-team-photo
+    status: ready
+    slot: project-outcome
+    evidenceFunctions:
+      - verification
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/specheal-refactory-team/main.webp
+    width: 1200
+    height: 1500
+    crop:
+      mode: focal
+      aspectRatio: "4:5"
+      focalPoint: { x: 0.5, y: 0.68 }
+    mobile:
+      src: /media/moments/specheal-refactory-team/mobile.webp
+      width: 720
+      height: 900
+      crop:
+        mode: focal
+        aspectRatio: "4:5"
+        focalPoint: { x: 0.5, y: 0.68 }
+    caption: The SpecHeal team holds its Refactory Hackathon second-place placard.
+    provenance:
+      kind: documentary-photo
+      source: FullSizeRender 5.JPG supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-specheal-refactory-result
+    alt: Wildan and a teammate hold a Refactory Hackathon placard reading 2nd Place, Outstanding Team.
+publication: published

@@ -1,0 +1,70 @@
+id: learning-in-public
+category: learn
+title: Learning in public
+event: Kelas Rutin BlockDevID Batch 4 Graduation Day
+date: "2025-11-30"
+place: Markas KOMDIGI, Jakarta, Indonesia
+mode: lead
+context:
+  kind: journey
+  label: Learning in public
+people:
+  - Wildan Syukri Niam
+caption: >-
+  Taking the microphone among fellow Web3 learners at the close of a six-week
+  builder program. The frame is less about a title than the habit of explaining
+  work, listening in public, and staying close to the people building beside it.
+reflection: >-
+  The strongest technical work still has to survive a room: questions, imperfect
+  explanations, and the useful friction of other builders.
+claims:
+  - id: moment-learning-public-event
+    kind: interpretation
+    text: >-
+      Wildan participated in the Kelas Rutin BlockDevID Batch 4 Graduation Day at
+      Markas KOMDIGI and is shown taking the microphone among fellow participants.
+    sources:
+      - kind: url
+        url: https://www.jpnn.com/news/program-edukasi-intensif-kepeduliaan-sosial-rayakan-hut-ke-7-upbit-indonesia
+        label: Graduation Day date, venue, program, and partner context
+        verifiedAt: "2026-07-12"
+      - kind: owner-attestation
+        confirmedAt: "2026-07-12"
+        note: Wildan supplied the documentary frame and identifies himself speaking in it.
+    scope: Participation and visible event activity; no organizer, mentor, or award claim.
+claimIds:
+  - moment-learning-public-event
+assets:
+  - id: learning-in-public-photo
+    status: ready
+    slot: homepage-lead
+    evidenceFunctions:
+      - verification
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/learning-in-public/main.webp
+    width: 1440
+    height: 960
+    crop:
+      mode: focal
+      aspectRatio: "3:2"
+      focalPoint: { x: 0.55, y: 0.34 }
+    mobile:
+      src: /media/moments/learning-in-public/mobile.webp
+      width: 720
+      height: 480
+      crop:
+        mode: focal
+        aspectRatio: "3:2"
+        focalPoint: { x: 0.55, y: 0.34 }
+    caption: Documentary frame of Wildan speaking alongside fellow Web3 learners.
+    provenance:
+      kind: documentary-photo
+      source: IMG_2331.heic supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-learning-public-event
+    alt: Wildan speaks into a microphone at a BlockDevID graduation gathering.
+publication: published

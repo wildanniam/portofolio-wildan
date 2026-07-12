@@ -1,0 +1,76 @@
+id: nova-lisk-team
+category: win
+title: A completed sprint, with the result in frame
+event: Southeast Asia Lisk Builders Challenge 3 Demo Day
+date: "2026-01-31"
+place: Jakarta, Indonesia
+mode: evidence
+context:
+  kind: project
+  projectSlugs:
+    - nova-ai
+people:
+  - Wildan Syukri Niam
+  - Arga Adolf Lumunon
+  - Casta Garneta
+result: 1st Notable Mention and 1st Social Media Challenge
+caption: >-
+  At the end of Nova's hackathon sprint, the award boards keep the external result
+  visible while the people around the build remain the center of the frame. Wildan
+  worked as a Full-Stack & AI Builder across the agent, transaction, payment, data,
+  and deployment paths.
+reflection: >-
+  Nova remains an award-recognized hackathon artifact rather than a production
+  wallet; that boundary makes the implementation story more useful, not less.
+claims:
+  - id: moment-nova-lisk-result
+    kind: award
+    text: >-
+      Nova received 1st Notable Mention and 1st Social Media Challenge recognition
+      at the Southeast Asia Lisk Builders Challenge 3.
+    sources:
+      - kind: url
+        url: https://bse.telkomuniversity.ac.id/prestasi-tim-nova-ai-di-south-east-asia-lisk-builder-challenge-3/
+        label: Telkom University institutional result
+        verifiedAt: "2026-07-12"
+      - kind: url
+        url: https://lisk-builders-challenge-3.devfolio.co/
+        label: Official challenge and Demo Day program
+        verifiedAt: "2026-07-12"
+    scope: Team hackathon recognition; not a production, adoption, or funding claim.
+claimIds:
+  - moment-nova-lisk-result
+assets:
+  - id: nova-lisk-team-photo
+    status: ready
+    slot: project-outcome
+    evidenceFunctions:
+      - verification
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/nova-lisk-team/main.webp
+    width: 1200
+    height: 900
+    crop:
+      mode: focal
+      aspectRatio: "4:3"
+      focalPoint: { x: 0.51, y: 0.59 }
+    mobile:
+      src: /media/moments/nova-lisk-team/mobile.webp
+      width: 800
+      height: 600
+      crop:
+        mode: focal
+        aspectRatio: "4:3"
+        focalPoint: { x: 0.51, y: 0.59 }
+    caption: Nova teammates stand with the challenge award boards after Demo Day.
+    provenance:
+      kind: documentary-photo
+      source: IMG_7463 2.HEIC supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-nova-lisk-result
+    alt: Nova teammates hold Lisk Builders Challenge award boards on a stage.
+publication: published

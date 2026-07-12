@@ -1,0 +1,67 @@
+id: self-healing-research
+category: learn
+title: Research becomes a system question
+event: Software Engineering proposal seminar
+date: "2026-01-07"
+place: School of Computing, Telkom University, Bandung, Indonesia
+mode: portrait
+context:
+  kind: journey
+  label: Applied software-engineering research
+people:
+  - Wildan Syukri Niam
+caption: >-
+  A proposal milestone for Wildan's work on LLM-assisted self-healing test
+  automation and more reliable Katalon-based CI/CD pipelines.
+reflection: >-
+  The research thread and the hackathon projects are related by a working habit:
+  make an uncertain system observable before asking AI to act on it.
+claims:
+  - id: moment-self-healing-proposal
+    kind: interpretation
+    text: >-
+      Wildan presented a proposal on LLM-assisted self-healing test automation and
+      CI/CD reliability.
+    sources:
+      - kind: owner-attestation
+        confirmedAt: "2026-07-12"
+        note: >-
+          Wildan supplied the seminar photograph showing the proposal title and
+          identifies it as part of his software-engineering research journey.
+    scope: Personal academic milestone; not a claim that the research has been published or deployed.
+claimIds:
+  - moment-self-healing-proposal
+assets:
+  - id: self-healing-research-photo
+    status: ready
+    slot: research-portrait
+    evidenceFunctions:
+      - verification
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/self-healing-research/main.webp
+    width: 1200
+    height: 1500
+    crop:
+      mode: focal
+      aspectRatio: "4:5"
+      focalPoint: { x: 0.5, y: 0.58 }
+    mobile:
+      src: /media/moments/self-healing-research/mobile.webp
+      width: 720
+      height: 899
+      crop:
+        mode: focal
+        aspectRatio: "4:5"
+        focalPoint: { x: 0.5, y: 0.58 }
+    caption: A research proposal milestone at Telkom University's School of Computing.
+    provenance:
+      kind: documentary-photo
+      source: IMG_5499.HEIC supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-self-healing-proposal
+    alt: Wildan stands with a colleague while holding a research proposal document at the School of Computing.
+publication: published

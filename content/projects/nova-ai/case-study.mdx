@@ -1,0 +1,73 @@
+> Nova explored a wallet experience where an agent can interpret intent and prepare an action, while the user still controls the signature.
+
+## Problem and stakes
+
+Even a simple crypto task can require a wallet, several explorer tabs, raw addresses, market data, network switching, and a payment interface. The friction is not only the number of screens. Users must translate one intention into the exact technical steps and still judge whether the result is safe to execute.
+
+Nova tested a conversational layer over that workflow. A prompt could select a tool, fetch wallet or chain evidence, render an appropriate review card, and prepare a transaction without moving private-key custody into the agent.
+
+## My role and the team
+
+I was Nova's Full-Stack & AI Builder. I worked across the Next.js application, CopilotKit agent behavior, generative UI, transaction preparation, model integration, Paylink experiments, rate limiting, deployment fixes, and documentation.
+
+Nova was built with a team. Galih Aditya M contributed chat and landing-page interface work. ArgaAAL implemented and hardened multi-chain intelligence. The institutional award roster also names Casta Garneta. This case study highlights my ownership while preserving those contributions instead of implying that one person built every surface.
+
+## Constraint
+
+The product depended on wallets, RPC and explorer services, market data, a separate prediction model, payment providers, and an agent runtime. Each dependency had different latency and failure behavior inside a short competition window.
+
+The signing boundary also had to stay clear. Nova could propose details and render a confirmation state, but a connected external wallet had to remain responsible for the final approval. Some sprint branches used fallbacks or simulated completion to preserve the demo; those states cannot be used as authentic proof.
+
+## Decision
+
+### Orchestrate instead of custody
+
+Nova sits above an existing EVM wallet. The agent can interpret a request, select a chain, and prepare the transaction, but only a user action invokes the connected wallet. This made the central product idea testable without creating a new key-management system.
+
+### Use generative UI as evidence
+
+A balance, counterparty profile, trade-cost estimate, payment form, and transaction proposal should not all be flattened into chat text. Registered actions render purpose-built cards so the user can inspect the fields that matter before continuing.
+
+### Isolate the model service
+
+The trade-cost predictor runs as a separate HTTP service. Nova can check and consume it through a narrow contract, and the service can remain deployable independently from the application. Its output is an estimate, not a promised execution price.
+
+## System behavior
+
+- The user opens the chat route and connects an EVM wallet.
+- CopilotKit maps the prompt to a registered frontend action.
+- Read actions call Next.js routes that select chain clients and aggregate RPC, explorer, or market data.
+- The result becomes a dedicated card, form, status, or transaction review state.
+- A send proposal validates the recipient and amount and requests a network switch when required.
+- A separate user action opens the wallet, which owns the final signature.
+
+The same experiment also included Paylink and a companion prediction service. They show the sprint's ambition, but the canonical case study keeps staging, simulated, recorded, and live behavior labeled separately.
+
+## Evidence sequence
+
+- The authentic sprint overview pairs Nova's landing surface with the wallet-agent workspace the team built.
+- The agent-boundary map follows a prompt through CopilotKit, a Next.js route, chain or model services, rendered evidence, and the connected wallet.
+- The source ledger connects repository scale and representative authored surfaces to my Full-Stack & AI Builder role.
+- The owner-supplied team photograph preserves the exact 1st Notable Mention and Social Media Challenge outcome.
+
+The historical runtime does not need to be disguised as a continuously operated product. Recorded flows and source evidence can present the completed sprint honestly and with energy.
+
+## Outcome and validation
+
+Nova received 1st Notable Mention and 1st Social Media Challenge recognition in the Southeast Asia Lisk Builders Challenge 3. The institutional report names Wildan, Arga, and Casta, and the repository preserves an authentic award photograph.
+
+<SourceLink href="https://bse.telkomuniversity.ac.id/prestasi-tim-nova-ai-di-south-east-asia-lisk-builder-challenge-3/">Read Telkom University's institutional result.</SourceLink>
+
+The public landing page and companion prediction service were reachable during the audit. The main chat runtime was degraded, so the award, source, recorded flows, and model-service response are the reliable evidence set rather than a claim that every historical integration remains live.
+
+## Where it stands
+
+Nova is a completed hackathon sprint artifact. It contains substantial full-stack agent work, an explicit wallet-signing boundary, and a useful record of what the team learned. It is not presented as a production wallet, and its simulated payment and reconciliation paths are not treated as transaction evidence.
+
+## What I'd improve next
+
+- Preserve one canonical recorded path with a poster, transcript, and reduced-motion steps.
+- Move every fallback behind an explicit demo mode with visible provenance.
+- Restore a reproducible production build, lint baseline, assertion-based tests, and CI.
+- Harden payment input, webhook authentication, reconciliation, and transaction verification.
+- Publish the beta-research method and raw anonymized inputs before using its score as validation.

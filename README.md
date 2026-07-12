@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wildan Syukri Niam - Portfolio
 
-## Getting Started
+An evidence-first portfolio for Wildan's work across software engineering, AI
+agents, and Web3 systems.
 
-First, run the development server:
+The current V5 website remains intact while **The Open Proving Ground V1** is
+developed through a controlled, issue-driven migration. The approved V1 source
+of truth lives in [`docs/portfolio-v1`](./docs/portfolio-v1/README.md).
+
+## Local development
+
+Prerequisites:
+
+- Node.js 24.18.0
+- npm 11.16.0
+
+Node 20 reached end of life in March 2026. The V1 implementation is pinned to
+Node 24.18.0/npm 11.16.0 for local verification through `.nvmrc`,
+`packageManager`, and CI. The engine range accepts Vercel's supported Node 24
+minor, while `vercel.json` pins npm 11.16.0 for deployment installs.
 
 ```bash
+nvm use
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To run the production build locally:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm run start
+```
 
-## Learn More
+### Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+No environment variables are required to build or browse the current website.
+The private editorial checkpoint at `/preview/open-proving-ground` requires both
+`PORTFOLIO_V1_PREVIEW=1` and a random `PORTFOLIO_V1_PREVIEW_TOKEN` of at least 32
+characters. Sign in through HTTP Basic Authentication with username `preview`
+and that token as the password. Authenticated responses remain `private,
+no-store` and `noindex`; the public and default test builds force the gate off.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The legacy `/api/contact` endpoint is intentionally unavailable. V1 uses direct
+contact links and does not depend on this endpoint.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Current verification
 
-## Deploy on Vercel
+```bash
+npm run lint
+npm run typecheck
+npm run test:run
+npm run build
+npm run test:e2e
+npm run test:a11y
+npm run test:foundation
+npm run test:release
+npm run audit:release-routes
+npm run audit:links
+npm run analyze:bundle
+npm run lighthouse
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The exact preservation state and observed results are recorded in the
+[V5 preservation baseline](./docs/portfolio-v1/baseline/README.md).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The current quality commands, temporary legacy envelopes, V1 release targets,
+and browser prerequisites are documented in the
+[quality harness guide](./docs/quality-harness.md). Content validation is added
+with the content repository rather than represented by a placeholder command.
+
+## V1 source of truth
+
+- [Canonical V1 index](./docs/portfolio-v1/README.md)
+- [Blueprint summary](./docs/portfolio-v1/blueprint-summary.md)
+- [Scope V1](./docs/portfolio-v1/scope-v1.md)
+- [Content and asset contract](./docs/portfolio-v1/content-asset-contract.md)
+- [Motion storyboard](./docs/portfolio-v1/motion-storyboard.md)
+- [Development package](./docs/portfolio-v1/development/README.md)
+- [QA matrix](./docs/portfolio-v1/development/QA_MATRIX.md)
+
+The older reactor and 3D documents describe the preserved V5 direction. They
+are historical context, not implementation guidance for V1.
+
+## Development workflow
+
+Meaningful work follows the repository's issue-driven workflow:
+
+1. Create or reuse a GitHub issue.
+2. Branch from the agreed integration head using
+   `codex/<issue-number>-<short-topic>`.
+3. Implement the smallest complete delivery slice.
+4. Run the relevant verification commands.
+5. Open a pull request containing summary, verification, risks or notes, and a
+   link to the issue.
+6. Do not merge without Wildan's explicit approval.
+
+The safety branch is recovery evidence, not an implementation base.
+
+## Publishing policy
+
+V5 remains the public root until the V1 release candidate passes the tracked QA
+matrix and receives explicit cutover approval. V1 preview routes remain
+unlisted and `noindex` while unfinished.
+
+Only optimized, redacted, rights-cleared derivatives may be committed for
+documentary photos. Original photo masters remain outside the repository.
