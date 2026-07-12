@@ -9,6 +9,16 @@ import {
 const repositoryRoot = process.cwd();
 const content = loadContentBundle({ repositoryRoot });
 const readyAssets = [
+  ...(content.profile.portrait
+    ? [
+        {
+          asset: content.profile.portrait,
+          owner: "profile",
+          isSocialImage: false,
+          budgets: DOCUMENTARY_MEDIA_BUDGETS,
+        },
+      ]
+    : []),
   ...content.projects.flatMap((project) =>
     project.evidence
       .filter((asset) => asset.status === "ready")

@@ -1,6 +1,7 @@
 slug: fradium
 title: Fradium
-publication: preview
+publication: published
+socialImageAssetId: fradium-public-beta-surface
 caseStudyState: full
 lifecycle: beta
 origin:
@@ -80,7 +81,7 @@ decisions:
       The product makes risk visible without taking the final decision away from
       the user.
     evidenceIds:
-      - fradium-product-verdict
+      - fradium-system-map
   - title: Compose AI and community evidence conservatively
     rationale: >-
       A single opaque score would hide disagreement. An unsafe model result stops
@@ -212,17 +213,6 @@ evidence:
       capturedAt: "2026-07-11"
     claimIds:
       - fradium-public-beta
-  - id: fradium-product-verdict
-    status: needs-capture
-    intendedEvidenceType: product
-    intendedMediaKind: video
-    evidenceFunctions:
-      - product-reality
-    slot: hero-product-loop
-    acquisitionNotes: >-
-      Capture a fresh 12-15 second loop from the current product: address input,
-      inference and community composition, verdict, and pre-send choice. Include a
-      still poster and an intentional mobile crop.
   - id: fradium-system-map
     status: ready
     slot: primary-system-diagram

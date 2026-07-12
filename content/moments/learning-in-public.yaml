@@ -1,4 +1,5 @@
 id: learning-in-public
+category: learn
 title: Learning in public
 event: Kelas Rutin BlockDevID Batch 4 Graduation Day
 date: "2025-11-30"
@@ -35,17 +36,35 @@ claimIds:
   - moment-learning-public-event
 assets:
   - id: learning-in-public-photo
-    status: needs-redaction
+    status: ready
     slot: homepage-lead
     evidenceFunctions:
       - verification
-    intendedEvidenceType: moment
-    intendedMediaKind: image
-    acquisitionNotes: >-
-      Prepare the approved derivative from IMG_2331.heic. The private review uses
-      a 3:2 stage crop centered on Wildan; the untouched HEIC stays outside the
-      repository. Confirm the discussion topic only if a future caption names it.
-    redactionNotes: >-
-      Strip all metadata and verify that participant labels are not readable at
-      publication size. Preserve the audience framing and event context.
-publication: preview
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/learning-in-public/main.webp
+    width: 1440
+    height: 960
+    crop:
+      mode: focal
+      aspectRatio: "3:2"
+      focalPoint: { x: 0.55, y: 0.34 }
+    mobile:
+      src: /media/moments/learning-in-public/mobile.webp
+      width: 720
+      height: 480
+      crop:
+        mode: focal
+        aspectRatio: "3:2"
+        focalPoint: { x: 0.55, y: 0.34 }
+    caption: Documentary frame of Wildan speaking alongside fellow Web3 learners.
+    provenance:
+      kind: documentary-photo
+      source: IMG_2331.heic supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-learning-public-event
+    alt: Wildan speaks into a microphone at a BlockDevID graduation gathering.
+publication: published

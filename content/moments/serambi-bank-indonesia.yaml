@@ -1,4 +1,5 @@
 id: serambi-bank-indonesia
+category: learn
 title: A student journey beyond the build room
 event: SERAMBI 2026
 date: "2026-03-09"
@@ -36,16 +37,35 @@ claimIds:
   - moment-serambi-program-context
 assets:
   - id: serambi-bank-indonesia-photo
-    status: needs-redaction
+    status: ready
     slot: journey-portrait
     evidenceFunctions:
       - verification
-    intendedEvidenceType: moment
-    intendedMediaKind: image
-    acquisitionNotes: >-
-      Prepare the approved 4:5 derivative from IMG_0313 2.HEIC, preserving Wildan,
-      the Bank Indonesia facade, and the SERAMBI banners.
-    redactionNotes: >-
-      Strip GPS and all metadata and crop the credential out while keeping the
-      lanyard as event context. Confirm the exact visit story and photographer credit.
-publication: preview
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/serambi-bank-indonesia/main.webp
+    width: 1200
+    height: 1500
+    crop:
+      mode: focal
+      aspectRatio: "4:5"
+      focalPoint: { x: 0.5, y: 0.47 }
+    mobile:
+      src: /media/moments/serambi-bank-indonesia/mobile.webp
+      width: 720
+      height: 900
+      crop:
+        mode: focal
+        aspectRatio: "4:5"
+        focalPoint: { x: 0.5, y: 0.47 }
+    caption: Wildan stands outside Bank Indonesia's West Java office during SERAMBI 2026.
+    provenance:
+      kind: documentary-photo
+      source: IMG_0313 2.HEIC supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-serambi-program-context
+    alt: Wildan stands in front of the Bank Indonesia West Java office facade.
+publication: published

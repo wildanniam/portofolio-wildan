@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { loadContentBundle } from "../../../src/content/repository.node";
-import { PREVIEW_CONTENT_SLUGS } from "../../../src/proxy";
 import { REPOSITORY_ROOT } from "./fixtures";
 
 const expectedProjects = [
@@ -18,7 +17,7 @@ const expectedProjects = [
   ],
 ] as const;
 
-describe("canonical V1 project inventory", () => {
+describe("canonical V2 project inventory", () => {
   it("retains four full flagships and three lighter archive projects with approved roles", () => {
     const content = loadContentBundle({ repositoryRoot: REPOSITORY_ROOT });
 
@@ -29,11 +28,11 @@ describe("canonical V1 project inventory", () => {
         project.role.label,
       ]),
     ).toEqual(expectedProjects);
-    expect(content.projects.every((project) => project.publication === "preview"))
-      .toBe(true);
-    expect([...PREVIEW_CONTENT_SLUGS]).toEqual(
-      content.projects.map((project) => project.slug),
-    );
+    expect(
+      content.projects
+        .filter((project) => project.publication === "published")
+        .map((project) => project.slug),
+    ).toEqual(["fradium", "nova-ai", "paygate", "quorum"]);
     expect(content.homepage.flagshipProjectSlugs).toEqual([
       "fradium",
       "nova-ai",
@@ -94,16 +93,16 @@ describe("canonical V1 project inventory", () => {
     );
   });
 
-  it("keeps the three remaining flagship evidence packages ready in preview", () => {
+  it("keeps all four published flagship evidence packages ready", () => {
     const content = loadContentBundle({ repositoryRoot: REPOSITORY_ROOT });
-    const flagships = ["nova-ai", "paygate", "quorum"].map((slug) => {
+    const flagships = ["fradium", "nova-ai", "paygate", "quorum"].map((slug) => {
       const project = content.projects.find((candidate) => candidate.slug === slug);
       expect(project, slug).toBeDefined();
       return project!;
     });
 
     for (const project of flagships) {
-      expect(project.publication, project.slug).toBe("preview");
+      expect(project.publication, project.slug).toBe("published");
       expect(project.socialImageAssetId, project.slug).toBeDefined();
       expect(
         project.evidence.every((asset) => asset.status === "ready"),

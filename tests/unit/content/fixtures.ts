@@ -127,6 +127,7 @@ export function makeMoment(
 ): MomentRecord {
   return {
     id: "test-moment",
+    category: "build",
     mode: "lead",
     title: "A documented builder moment",
     event: "Test event",

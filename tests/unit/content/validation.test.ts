@@ -110,7 +110,6 @@ describe("project publication gates", () => {
     const content = cloneSeedBundle();
     const project = projectBySlug(content, "fradium");
     project.publication = "published";
-    delete project.socialImageAssetId;
     project.evidence = [
       makePlannedAsset({ id: "planned-product-reality" }),
       makePlannedAsset({
@@ -155,6 +154,7 @@ describe("project publication gates", () => {
       ],
     });
     project.publication = "published";
+    delete project.socialImageAssetId;
     project.evidence = [evidence];
     project.socialImageAssetId = evidence.id;
     project.role.evidenceIds = [];
@@ -178,6 +178,7 @@ describe("project publication gates", () => {
       ],
     });
     project.publication = "published";
+    delete project.socialImageAssetId;
     project.evidence = [evidence];
     project.role.evidenceIds = [];
     if (project.caseStudyState !== "full") throw new Error("Expected full project.");

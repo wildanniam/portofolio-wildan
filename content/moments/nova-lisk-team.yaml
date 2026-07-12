@@ -1,4 +1,5 @@
 id: nova-lisk-team
+category: win
 title: A completed sprint, with the result in frame
 event: Southeast Asia Lisk Builders Challenge 3 Demo Day
 date: "2026-01-31"
@@ -41,15 +42,35 @@ claimIds:
   - moment-nova-lisk-result
 assets:
   - id: nova-lisk-team-photo
-    status: needs-redaction
+    status: ready
     slot: project-outcome
     evidenceFunctions:
       - verification
-    intendedEvidenceType: moment
-    intendedMediaKind: image
-    acquisitionNotes: >-
-      Reuse the already prepared Nova award frame after its photo-credit checkpoint;
-      do not create a second binary or a duplicate gallery tile.
-    redactionNotes: >-
-      Confirm left-to-right names, exact venue, photographer credit, and team release.
-publication: preview
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/nova-lisk-team/main.webp
+    width: 1200
+    height: 900
+    crop:
+      mode: focal
+      aspectRatio: "4:3"
+      focalPoint: { x: 0.51, y: 0.59 }
+    mobile:
+      src: /media/moments/nova-lisk-team/mobile.webp
+      width: 800
+      height: 600
+      crop:
+        mode: focal
+        aspectRatio: "4:3"
+        focalPoint: { x: 0.51, y: 0.59 }
+    caption: Nova teammates stand with the challenge award boards after Demo Day.
+    provenance:
+      kind: documentary-photo
+      source: IMG_7463 2.HEIC supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-nova-lisk-result
+    alt: Nova teammates hold Lisk Builders Challenge award boards on a stage.
+publication: published

@@ -1,4 +1,5 @@
 id: self-healing-research
+category: learn
 title: Research becomes a system question
 event: Software Engineering proposal seminar
 date: "2026-01-07"
@@ -32,16 +33,35 @@ claimIds:
   - moment-self-healing-proposal
 assets:
   - id: self-healing-research-photo
-    status: needs-redaction
+    status: ready
     slot: research-portrait
     evidenceFunctions:
       - verification
-    intendedEvidenceType: moment
-    intendedMediaKind: image
-    acquisitionNotes: >-
-      Prepare the approved 4:5 derivative from IMG_5499.HEIC. Keep the proposal
-      title readable and the School of Computing setting intact.
-    redactionNotes: >-
-      Remove all metadata and redact the student number on the laptop. Confirm the
-      second person's name, role, photo credit, and release before publication.
-publication: preview
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/self-healing-research/main.webp
+    width: 1200
+    height: 1500
+    crop:
+      mode: focal
+      aspectRatio: "4:5"
+      focalPoint: { x: 0.5, y: 0.58 }
+    mobile:
+      src: /media/moments/self-healing-research/mobile.webp
+      width: 720
+      height: 899
+      crop:
+        mode: focal
+        aspectRatio: "4:5"
+        focalPoint: { x: 0.5, y: 0.58 }
+    caption: A research proposal milestone at Telkom University's School of Computing.
+    provenance:
+      kind: documentary-photo
+      source: IMG_5499.HEIC supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-self-healing-proposal
+    alt: Wildan stands with a colleague while holding a research proposal document at the School of Computing.
+publication: published

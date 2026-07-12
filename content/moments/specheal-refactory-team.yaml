@@ -1,4 +1,5 @@
 id: specheal-refactory-team
+category: win
 title: Second place, after the recovery loop held together
 event: Refactory Hackathon at Telkom University
 date: "2026-05-13"
@@ -36,16 +37,35 @@ claimIds:
   - moment-specheal-refactory-result
 assets:
   - id: specheal-refactory-team-photo
-    status: needs-redaction
+    status: ready
     slot: project-outcome
     evidenceFunctions:
       - verification
-    intendedEvidenceType: moment
-    intendedMediaKind: image
-    acquisitionNotes: >-
-      Prepare the approved 4:5 derivative from FullSizeRender 5.JPG. Retain both
-      people and the complete official result placard while reducing the blank wall.
-    redactionNotes: >-
-      Strip GPS and all other metadata; confirm photographer credit and both people's
-      release before publication.
-publication: preview
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/specheal-refactory-team/main.webp
+    width: 1200
+    height: 1500
+    crop:
+      mode: focal
+      aspectRatio: "4:5"
+      focalPoint: { x: 0.5, y: 0.68 }
+    mobile:
+      src: /media/moments/specheal-refactory-team/mobile.webp
+      width: 720
+      height: 900
+      crop:
+        mode: focal
+        aspectRatio: "4:5"
+        focalPoint: { x: 0.5, y: 0.68 }
+    caption: The SpecHeal team holds its Refactory Hackathon second-place placard.
+    provenance:
+      kind: documentary-photo
+      source: FullSizeRender 5.JPG supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-specheal-refactory-result
+    alt: Wildan and a teammate hold a Refactory Hackathon placard reading 2nd Place, Outstanding Team.
+publication: published

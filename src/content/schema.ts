@@ -131,6 +131,7 @@ export const MomentShowcaseModeSchema = z.enum([
   "evidence",
   "portrait",
 ]);
+export const MomentCategorySchema = z.enum(["build", "win", "learn", "give"]);
 
 export const PublicLinkStateSchema = z
   .object({
@@ -479,6 +480,7 @@ export const MomentContextSchema = z.discriminatedUnion("kind", [
 export const MomentRecordSchema = z
   .object({
     id: IdentifierSchema,
+    category: MomentCategorySchema,
     mode: MomentShowcaseModeSchema,
     title: NonEmptyStringSchema,
     event: NonEmptyStringSchema,
@@ -520,6 +522,7 @@ export const ProfileSchema = z
     github: LinkStateSchema,
     linkedin: LinkStateSchema,
     resume: LinkStateSchema,
+    portrait: ReadyImageAssetSchema.optional(),
     portraitAssetId: IdentifierSchema.optional(),
   })
   .strict();

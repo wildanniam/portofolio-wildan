@@ -1,4 +1,5 @@
 id: fradium-wchl-team
+category: win
 title: A global result, held by the whole team
 event: World Computer Hacker League 2025 Global Finale
 date: "2025-10-30"
@@ -41,17 +42,35 @@ claimIds:
   - moment-fradium-wchl-result
 assets:
   - id: fradium-wchl-team-photo
-    status: needs-redaction
+    status: ready
     slot: project-outcome
     evidenceFunctions:
       - verification
-    intendedEvidenceType: moment
-    intendedMediaKind: image
-    acquisitionNotes: >-
-      Prepare the approved derivative from PHOTO-2025-11-01-10-16-29 3.JPG.
-      Preserve all six teammates and the full result board; never upscale beyond
-      the 960-pixel source width.
-    redactionNotes: >-
-      Strip all metadata. Confirm capture date, photographer credit, and team release
-      before changing this record to published.
-publication: preview
+    evidenceType: moment
+    mediaKind: image
+    src: /media/moments/fradium-wchl-team/main.webp
+    width: 960
+    height: 1280
+    crop:
+      mode: focal
+      aspectRatio: "3:4"
+      focalPoint: { x: 0.5, y: 0.52 }
+    mobile:
+      src: /media/moments/fradium-wchl-team/mobile.webp
+      width: 600
+      height: 800
+      crop:
+        mode: focal
+        aspectRatio: "3:4"
+        focalPoint: { x: 0.5, y: 0.52 }
+    caption: The Fradium team holds its Fully On-Chain Track result board.
+    provenance:
+      kind: documentary-photo
+      source: PHOTO-2025-11-01-10-16-29 3.JPG supplied by Wildan
+      credit: Supplied by Wildan Syukri Niam
+      rights: permission-confirmed
+      consent: confirmed
+    claimIds:
+      - moment-fradium-wchl-result
+    alt: Six Fradium teammates pose around a board naming the team Global Finale winner of the Fully On-Chain Track.
+publication: published

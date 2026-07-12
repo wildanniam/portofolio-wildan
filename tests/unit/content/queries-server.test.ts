@@ -21,15 +21,16 @@ afterEach(() => {
 });
 
 describe("server preview query gate", () => {
-  it("requires both caller intent and the preview environment", () => {
+  it("requires both caller intent and the preview environment for unpublished archive records", () => {
     delete process.env.PORTFOLIO_V1_PREVIEW;
-    expect(getProjectBySlug("fradium", { preview: true })).toBeUndefined();
+    expect(getProjectBySlug("agentpay", { preview: true })).toBeUndefined();
+    expect(getProjectBySlug("fradium")?.slug).toBe("fradium");
 
     process.env.PORTFOLIO_V1_PREVIEW = "1";
-    expect(getProjectBySlug("fradium")).toBeUndefined();
-    expect(getProjectBySlug("fradium", { preview: false })).toBeUndefined();
-    expect(getProjectBySlug("fradium", { preview: true })?.slug).toBe(
-      "fradium",
+    expect(getProjectBySlug("agentpay")).toBeUndefined();
+    expect(getProjectBySlug("agentpay", { preview: false })).toBeUndefined();
+    expect(getProjectBySlug("agentpay", { preview: true })?.slug).toBe(
+      "agentpay",
     );
   });
 
@@ -41,17 +42,23 @@ describe("server preview query gate", () => {
     ).toBeUndefined();
   });
 
-  it("keeps site and archive wrappers public unless both preview gates pass", () => {
+  it("keeps published work public and adds preview work only when both preview gates pass", () => {
     delete process.env.PORTFOLIO_V1_PREVIEW;
 
     expect(getSiteShell({ preview: true }).profile.name).toBe(
       "Wildan Syukri Niam",
     );
-    expect(getWorkProjectSummaries({ preview: true })).toEqual([]);
+    expect(getWorkProjectSummaries({ preview: true }).map((project) => project.slug)).toEqual([
+      "quorum", "paygate", "nova-ai", "fradium",
+    ]);
 
     process.env.PORTFOLIO_V1_PREVIEW = "1";
-    expect(getWorkProjectSummaries()).toEqual([]);
-    expect(getWorkProjectSummaries({ preview: false })).toEqual([]);
+    expect(getWorkProjectSummaries().map((project) => project.slug)).toEqual([
+      "quorum", "paygate", "nova-ai", "fradium",
+    ]);
+    expect(getWorkProjectSummaries({ preview: false }).map((project) => project.slug)).toEqual([
+      "quorum", "paygate", "nova-ai", "fradium",
+    ]);
     expect(
       getWorkProjectSummaries({ preview: true }).map((project) => project.slug),
     ).toEqual([
@@ -65,27 +72,27 @@ describe("server preview query gate", () => {
     ]);
   });
 
-  it("applies the same preview gate to adjacent work summaries", () => {
+  it("applies the same preview gate to adjacent preview work summaries", () => {
     process.env.PORTFOLIO_V1_PREVIEW = "1";
 
     expect(
-      getAdjacentWorkProjectSummaries("quorum", { preview: false }),
+      getAdjacentWorkProjectSummaries("agentpay", { preview: false }),
     ).toBeUndefined();
     expect(
-      getAdjacentWorkProjectSummaries("quorum", { preview: true }),
-    ).toMatchObject({ next: { slug: "paygate" } });
+      getAdjacentWorkProjectSummaries("agentpay", { preview: true }),
+    ).toMatchObject({ next: { slug: "fradium" } });
   });
 
-  it("does not let preview records satisfy the public moments gate", () => {
-    process.env.PORTFOLIO_V1_PREVIEW = "1";
-    expect(getMomentsNarrative()).toBeUndefined();
-  });
-
-  it("requires both preview gates before querying a preview moments narrative", () => {
+  it("exposes published moments without a preview environment", () => {
     delete process.env.PORTFOLIO_V1_PREVIEW;
-    expect(getMomentsNarrative({ preview: true })).toBeUndefined();
+    expect(getMomentsNarrative()?.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("keeps the published moments narrative stable when preview is requested", () => {
+    delete process.env.PORTFOLIO_V1_PREVIEW;
+    expect(getMomentsNarrative({ preview: true })?.length).toBeGreaterThanOrEqual(5);
 
     process.env.PORTFOLIO_V1_PREVIEW = "1";
-    expect(getMomentsNarrative({ preview: false })).toBeUndefined();
+    expect(getMomentsNarrative({ preview: false })?.length).toBeGreaterThanOrEqual(5);
   });
 });

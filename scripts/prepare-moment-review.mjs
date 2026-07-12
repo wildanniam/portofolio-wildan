@@ -84,8 +84,17 @@ const moments = [
     desktopWidth: 1200,
   },
   {
+    id: "refactory-build-room",
+    label: "06 / Building under pressure",
+    source: "DSC02164.JPG",
+    ratio: [3, 2],
+    focalPoint: { x: 0.42, y: 0.56 },
+    desktopWidth: 1440,
+    mobileWidth: 800,
+  },
+  {
     id: "serambi-bank-indonesia",
-    label: "06 / SERAMBI 2026",
+    label: "07 / SERAMBI 2026",
     source: "IMG_0313 2.HEIC",
     ratio: [4, 5],
     focalPoint: { x: 0.5, y: 0.47 },
