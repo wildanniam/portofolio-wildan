@@ -9,6 +9,7 @@ flagshipHighlightClaimIds:
   paygate: paygate-instaward-2026
   quorum: quorum-six-testnet-flows
 featuredMomentIds:
+  - refactory-build-room
   - learning-in-public
   - fradium-wchl-team
   - self-healing-research
