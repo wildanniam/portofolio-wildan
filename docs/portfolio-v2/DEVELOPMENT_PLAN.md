@@ -2,7 +2,7 @@
 
 Date: 12 July 2026
 
-Status: **planning complete candidate; coding blocked until Checkpoint A**
+Status: **Checkpoint A approved by Wildan; implementation authorized**
 
 Delivery model: issue-driven, branch-per-slice, reviewed PRs, no direct meaningful
 work on `main`, no merge without Wildan's explicit approval.
@@ -141,6 +141,8 @@ Purpose: implement the design vocabulary without composing the full homepage.
 Work:
 
 - self-host Instrument Serif and Instrument Sans with license files;
+- prefer build-time `next/font/google` delivery; fall back to vendored official
+  WOFF2 files only when the installed runtime lacks the required families;
 - implement `pfn-*` color, type, spacing, grid, motion, focus, and layer tokens;
 - create a `[data-portfolio-v2]` scope and neutral document shell;
 - implement foundation primitives from `DESIGN_SPEC.md`;
@@ -169,6 +171,8 @@ Work:
 - implement verified achievement summaries;
 - implement a static Moments teaser with correct real assets;
 - implement currently-building and About/Contact close;
+- implement a concise `/about` route from profile content; it expands the
+  homepage teaser without becoming an organization chronology or CV dump;
 - ensure ordinary links reach `/work/[slug]` without JavaScript;
 - compose intentional desktop, tablet, mobile, and short-desktop layouts;
 - add the protected V2 homepage preview route;

@@ -11,6 +11,7 @@
 | PayGate is the current signal | it is the active real product |
 | Project details live on `/work/[slug]` | preserves homepage clarity |
 | Moments categories are Build/Win/Learn/Give | represents a human journey without an organization résumé |
+| `/about` is a concise real route | mock navigation needs a destination; it expands the homepage close without becoming a CV |
 | 70/30 structure/expression rule | maintains creativity without layout chaos |
 | Warm paper + ink + three accents | distinctive but implementable and readable |
 | Instrument Serif + Instrument Sans | editorial expression plus clear UI/body text |

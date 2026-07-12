@@ -47,6 +47,7 @@ Final public routes remain:
 /work
 /work/[slug]
 /moments
+/about
 /contact
 ```
 
@@ -60,6 +61,7 @@ Final public routes remain:
 | explorer enhancer/motion policy | cover motion module | do not reuse sticky/overlay logic |
 | `MomentsSection` | `MomentsTeaser` + `MomentsArchive` | reuse data queries, revise composition |
 | `MomentFigure` | `MomentFigure` | preserve semantics and media policy |
+| no dedicated About route | `AboutPage` | concise narrative route derived from profile content |
 | `ProjectPage` primitives | V2 case-study primitives | restyle and simplify public narrative |
 | `ActionLink` | V2 `ActionLink` | semantics retained; visual state rewritten |
 | `EditorialGrid` | V2 `EditorialGrid` | retain idea; implement V2 grid tokens |

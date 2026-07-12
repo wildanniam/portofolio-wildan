@@ -97,6 +97,11 @@ Primary pairing:
 Self-host WOFF2 files and retain the OFL license. Load only required styles and
 Latin subsets. Do not introduce a third downloaded family.
 
+Implementation preference: use `next/font/google` when both approved families
+are available in the installed Next.js version, so files are self-hosted at
+build time with no runtime font request. Otherwise vendor the official WOFF2
+files and their licenses locally before the foundation preview is approved.
+
 Proposed scale:
 
 ```css

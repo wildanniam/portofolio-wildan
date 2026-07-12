@@ -55,6 +55,7 @@ Required routes:
 - `/work/quorum`;
 - at least one published brief project;
 - `/moments`;
+- `/about`;
 - `/contact`;
 - not-found;
 - sitemap, robots, and representative social image;

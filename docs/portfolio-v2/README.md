@@ -2,7 +2,7 @@
 
 Date: 12 July 2026
 
-Status: **visual direction approved; implementation not started**
+Status: **Checkpoint A approved by Wildan; implementation authorized**
 
 This directory is the source of truth for the next portfolio redesign. It
 supersedes the visual and interaction direction in `docs/portfolio-v1`, while
@@ -55,6 +55,8 @@ replaced by validated repository content and approved real assets.
 8. Static composition and semantics are approved before motion is added.
 9. Mobile is recomposed, not scaled down from desktop.
 10. V1 stays reversible until V2 passes the release gate.
+11. `/about` is a real concise route for the narrative behind the work; the
+    homepage About/Contact close remains a teaser, not a substitute for it.
 
 ## Public roles
 
