@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  url: "https://wildanniam.dev",
+  url: "https://portofolio-wildan-zeta.vercel.app",
   name: "Wildan Syukri Niam",
   shortName: "Wildan",
   role: "Software Engineer",

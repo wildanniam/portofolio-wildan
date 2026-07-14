@@ -131,7 +131,7 @@ export async function probeExternalLink(
           Accept: "text/html,application/json;q=0.9,*/*;q=0.8",
           Range: "bytes=0-0",
           "User-Agent":
-            "Mozilla/5.0 (compatible; WildanPortfolioReleaseAudit/1.0; +https://wildanniam.dev)",
+            "Mozilla/5.0 (compatible; WildanPortfolioReleaseAudit/1.0; +https://portofolio-wildan-zeta.vercel.app)",
         },
         redirect: "follow",
         signal: controller.signal,

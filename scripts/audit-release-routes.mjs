@@ -7,7 +7,7 @@ import { auditReleaseRoutes } from "./lib/release-route-audit.mjs";
 
 const DEFAULT_ORIGIN = "http://127.0.0.1:3105";
 const DEFAULT_OUTPUT = ".quality-reports/release/routes-and-metadata.json";
-const DEFAULT_SITE_ORIGIN = "https://wildanniam.dev";
+const DEFAULT_SITE_ORIGIN = "https://portofolio-wildan-zeta.vercel.app";
 const flagshipSlugs = ["fradium", "nova-ai", "paygate", "quorum"];
 
 function auditProfile(name) {

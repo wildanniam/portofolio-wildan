@@ -68,7 +68,7 @@ test("sitemap and robots expose only the V3 public surface", async ({ request })
   expect(sitemap.status()).toBe(200);
   const sitemapBody = await sitemap.text();
   for (const route of ["/", "/work", "/about", "/contact", "/moments", "/work/fradium", "/work/nova-ai", "/work/paygate", "/work/quorum"]) {
-    expect(sitemapBody).toContain(`https://wildanniam.dev${route}`);
+    expect(sitemapBody).toContain(`https://portofolio-wildan-zeta.vercel.app${route}`);
   }
   expect(sitemapBody).not.toContain("/preview/");
 
@@ -77,7 +77,9 @@ test("sitemap and robots expose only the V3 public surface", async ({ request })
   const robotsBody = await robots.text();
   expect(robotsBody).toContain("Allow: /");
   expect(robotsBody).not.toContain("/preview/");
-  expect(robotsBody).toContain("Sitemap: https://wildanniam.dev/sitemap.xml");
+  expect(robotsBody).toContain(
+    "Sitemap: https://portofolio-wildan-zeta.vercel.app/sitemap.xml",
+  );
 });
 
 test("unknown routes keep the V3 visual shell", async ({ page }) => {
