@@ -19,7 +19,7 @@ caption: >-
 reflection: >-
   The useful lesson was not that AI can patch tests. It was that every proposed
   recovery needs evidence, a controlled boundary, a rerun, and a way to admit that
-  the product—not the test—may be wrong.
+  the product, not the test, may be wrong.
 claims:
   - id: moment-specheal-refactory-result
     kind: award

@@ -1,112 +1,111 @@
-import Image from "next/image";
+import { ArrowDownRight, ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
 
 import type { HomepageSelection } from "@/content/queries";
-import type { MomentRecord, ProjectRecord, ReadyImageAsset } from "@/content/types";
+import type { MomentRecord, ProjectRecord, VerifiedClaim } from "@/content/types";
+
+import { PfnFooter } from "./pfn-footer";
+import { PfnMedia } from "./pfn-media";
+import {
+  momentPrimaryImage,
+  orderMomentsForDisplay,
+  projectAtlasVariant,
+  projectOutcome,
+  projectPrimaryImage,
+} from "./pfn-models";
+import { PfnHeader } from "./pfn-shell";
 
 type PersonalFieldNotesHomeProps = {
   selection: HomepageSelection;
   basePath?: string;
 };
 
-const categoryLabels = {
-  build: "Build",
-  win: "Win",
-  learn: "Learn",
-  give: "Give",
-} as const;
-
 function route(basePath: string, pathname: string) {
   return `${basePath}${pathname}` || "/";
 }
 
-function findProjectImage(project: ProjectRecord): ReadyImageAsset | undefined {
-  const preferred = project.socialImageAssetId;
-  const evidence = project.evidence.find(
-    (asset): asset is ReadyImageAsset =>
-      asset.status === "ready" &&
-      asset.mediaKind === "image" &&
-      (asset.id === preferred || !preferred),
-  );
-
-  return evidence;
-}
-
-function findMomentImage(moment: MomentRecord): ReadyImageAsset | undefined {
-  return moment.assets.find(
-    (asset): asset is ReadyImageAsset =>
-      asset.status === "ready" && asset.mediaKind === "image",
-  );
-}
-
-function ProjectOverviewItem({
-  index,
+function ProjectAtlasItem({
+  basePath,
   project,
-  href,
 }: {
-  index: number;
+  basePath: string;
   project: ProjectRecord;
-  href: string;
 }) {
-  const image = findProjectImage(project);
+  const image = projectPrimaryImage(project);
+  const outcome = projectOutcome(project);
+  const variant = projectAtlasVariant(project);
 
   return (
-    <article className="pfn-project-item">
-      <div className="pfn-project-item__topline">
-        <span className="pfn-folio">{String(index + 1).padStart(2, "0")}</span>
-        <span className="pfn-project-item__context">
-          {project.origin.includes("hackathon") ? "Hackathon artifact" : "Independent build"}
-        </span>
-      </div>
-      <div className="pfn-project-item__content">
-        <div>
-          <h3>{project.title}</h3>
-          <p className="pfn-project-item__premise">{project.oneLiner}</p>
-          <p className="pfn-project-item__role">{project.role.label}</p>
+    <article className={`pfn-atlas-item pfn-atlas-item--${variant}`}>
+      <div className="pfn-atlas-item__copy">
+        <div className="pfn-atlas-item__identity">
+          <p>{project.role.label}</p>
+          <h3>
+            <Link href={route(basePath, `/work/${project.slug}`)} prefetch={false}>{project.title}</Link>
+          </h3>
+          <p className="pfn-atlas-item__premise">{project.oneLiner}</p>
         </div>
-        <Link className="pfn-project-item__link" href={href} prefetch={false}>
-          Read field notes <ArrowUpRight aria-hidden="true" size={18} strokeWidth={1.8} />
+        {outcome ? <p className="pfn-atlas-item__outcome">{outcome.text}</p> : null}
+        <Link
+          aria-label={`Open ${project.title} case study`}
+          className="pfn-text-link"
+          href={route(basePath, `/work/${project.slug}`)}
+          prefetch={false}
+        >
+          Read the case study
+          <ArrowUpRight aria-hidden="true" size={18} />
         </Link>
       </div>
       {image ? (
-        <figure className="pfn-project-item__media">
-          <Image
-            alt={image.alt}
-            fill
-            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 42vw"
-            src={image.src}
-            style={{ objectFit: "cover" }}
+        <div className="pfn-atlas-item__media">
+          <PfnMedia
+            asset={image}
+            sizes={
+              variant === "feature" || variant === "landscape"
+                ? "(max-width: 639px) 100vw, (max-width: 1023px) 58vw, 58vw"
+                : "(max-width: 639px) 100vw, (max-width: 1023px) 42vw, 38vw"
+            }
           />
-        </figure>
+        </div>
       ) : null}
     </article>
   );
 }
 
-function MomentTile({ moment }: { moment: MomentRecord }) {
-  const image = findMomentImage(moment);
+function ProofItem({ claim, project }: { claim: VerifiedClaim; project?: ProjectRecord }) {
+  if (!project) return null;
+
+  return (
+    <li>
+      <span>{project.title}</span>
+      <p>{claim.text}</p>
+      <Link aria-label={`Read ${project.title} proof in context`} href={`/work/${project.slug}`} prefetch={false}>
+        In context
+        <ArrowUpRight aria-hidden="true" size={15} />
+      </Link>
+    </li>
+  );
+}
+
+function MomentTile({ basePath, moment }: { basePath: string; moment: MomentRecord }) {
+  const image = momentPrimaryImage(moment);
   if (!image) return null;
 
   return (
-    <figure className="pfn-moment-tile">
-      <div className="pfn-moment-tile__image">
-        <Image
-          alt={image.alt}
-          fill
-          sizes="(max-width: 639px) 70vw, 30vw"
-          src={image.src}
-          style={{ objectFit: "cover" }}
-        />
-      </div>
-      <figcaption>
-        <span className={`pfn-category pfn-category--${moment.category}`}>
-          {categoryLabels[moment.category]}
+    <article className={`pfn-mosaic-item pfn-mosaic-item--${moment.mode}`} id={moment.id}>
+      <Link aria-label={`View ${moment.title} in Moments`} href={route(basePath, "/moments")} prefetch={false}>
+        <span className="pfn-mosaic-item__media">
+          <PfnMedia
+            asset={image}
+            sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 38vw"
+          />
         </span>
-        <strong>{moment.title}</strong>
-        <span>{moment.event}</span>
-      </figcaption>
-    </figure>
+        <span className="pfn-mosaic-item__caption">
+          <strong>{moment.title}</strong>
+          <span>{moment.event}</span>
+        </span>
+      </Link>
+    </article>
   );
 }
 
@@ -115,170 +114,150 @@ export function PersonalFieldNotesHome({
   basePath = "",
 }: PersonalFieldNotesHomeProps) {
   const { currentlyBuilding, flagshipHighlightClaims, moments, profile, projects } = selection;
-  const heroPortrait = profile.portrait;
   const github = profile.github.status === "public" ? profile.github.url : undefined;
+  const orderedMoments = orderMomentsForDisplay(moments);
 
   return (
-    <div className="pfn-shell" data-portfolio-v2>
-      <a className="pfn-skip-link" href="#pfn-main">
-        Skip to content
-      </a>
-      <header className="pfn-header">
-        <Link className="pfn-wordmark" href={route(basePath, "")} prefetch={false}>Wildan Niam</Link>
-        <nav aria-label="Primary navigation" className="pfn-header__nav">
-          <a href="#selected-work">Work</a>
-          <Link href={route(basePath, "/moments")} prefetch={false}>Moments</Link>
-          <Link href={route(basePath, "/about")} prefetch={false}>About</Link>
-        </nav>
-        <Link className="pfn-header__contact" href={route(basePath, "/contact")} prefetch={false}>
-          Let&apos;s build <ArrowUpRight aria-hidden="true" size={16} />
-        </Link>
-      </header>
+    <div className="pfn-shell" data-portfolio-v3>
+      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
+      <PfnHeader basePath={basePath} currentPath="/" />
 
       <main id="pfn-main">
         <section aria-labelledby="pfn-hero-title" className="pfn-hero">
-          <div className="pfn-hero__marker">
-            <span>Field notes / 01</span>
-            <span>Bandung, ID</span>
+          <div className="pfn-hero__identity">
+            <span>Wildan Syukri Niam</span>
+            <span>Software Engineer</span>
+            <span>Bandung, Indonesia</span>
           </div>
-          <div className="pfn-hero__motion">
-            <div className="pfn-hero__grid">
-              <div className="pfn-hero__copy" data-pfn-hero-copy>
-                <p className="pfn-eyebrow">Software engineer · student builder</p>
-                <h1 id="pfn-hero-title">Building is how I learn.</h1>
-                <p className="pfn-hero__thesis">{profile.thesis}</p>
-                <div className="pfn-hero__actions">
-                  <a className="pfn-action-link pfn-action-link--solid" href="#selected-work">
-                    Explore selected work <ArrowDownRight aria-hidden="true" size={19} />
-                  </a>
-                  {github ? (
-                    <a className="pfn-action-link" href={github} rel="noreferrer" target="_blank">
-                      GitHub <ArrowUpRight aria-hidden="true" size={18} />
-                    </a>
-                  ) : null}
-                </div>
-              </div>
-              {heroPortrait ? (
-                <figure className="pfn-hero__portrait" data-pfn-hero-portrait>
-                  <Image
-                    alt={heroPortrait.alt}
-                    fill
-                    sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) 42vw, 32vw"
-                    src={heroPortrait.src}
-                    style={{ objectFit: "cover" }}
-                  />
-                  <figcaption>Working across AI, Web3, and trustworthy product systems.</figcaption>
-                </figure>
+
+          <div className="pfn-hero__statement">
+            <h1 id="pfn-hero-title">
+              <span>I build systems</span>
+              <span>you can inspect.</span>
+            </h1>
+            <p>{profile.thesis}</p>
+            <div className="pfn-hero__actions">
+              <a className="pfn-button pfn-button--primary" href="#selected-work">
+                Explore selected work
+                <ArrowDownRight aria-hidden="true" size={19} />
+              </a>
+              {github ? (
+                <a className="pfn-button pfn-button--quiet" href={github} rel="noreferrer" target="_blank">
+                  GitHub
+                  <ArrowUpRight aria-hidden="true" size={18} />
+                </a>
               ) : null}
             </div>
-            <p className="pfn-hero__status">
-              Currently building <strong>PayGate</strong> — machine-paid API infrastructure on Stellar testnet.
-            </p>
           </div>
+
+          {profile.portrait ? (
+            <figure className="pfn-hero__portrait">
+              <div className="pfn-hero__portrait-frame">
+                <PfnMedia
+                  asset={profile.portrait}
+                  priority
+                  sizes="(max-width: 639px) 76vw, (max-width: 1023px) 42vw, 31vw"
+                />
+              </div>
+              <figcaption>Builder, team lead, and student researcher.</figcaption>
+            </figure>
+          ) : null}
+
+          <p className="pfn-hero__aside">
+            AI agents, Web3 infrastructure, and full-stack product systems built with visible boundaries.
+          </p>
         </section>
 
-        <section aria-labelledby="selected-work-heading" className="pfn-section pfn-selected-work" id="selected-work">
-          <div className="pfn-section-heading">
-            <span className="pfn-folio">02</span>
-            <div>
-              <p className="pfn-eyebrow">Selected work</p>
-              <h2 id="selected-work-heading">Four systems, each with a different question.</h2>
-            </div>
-            <p>Start broad. Follow the work that earns your curiosity.</p>
+        <section aria-label="Selected proof" className="pfn-proof-ribbon">
+          <div className="pfn-proof-ribbon__heading">
+            <span>Selected proof</span>
+            <ArrowRight aria-hidden="true" size={18} />
           </div>
-          <div className="pfn-project-grid">
-            {projects.map((project, index) => (
-              <ProjectOverviewItem
-                href={route(basePath, `/work/${project.slug}`)}
-                index={index}
-                key={project.slug}
-                project={project}
+          <ol>
+            {flagshipHighlightClaims.map(({ claim, projectSlug }) => (
+              <ProofItem
+                claim={claim}
+                key={claim.id}
+                project={projects.find((project) => project.slug === projectSlug)}
               />
             ))}
-          </div>
-          <Link className="pfn-section-link" href={route(basePath, "/work")} prefetch={false}>
-            View the complete work index <ArrowUpRight aria-hidden="true" size={18} />
-          </Link>
-        </section>
-
-        <section aria-labelledby="proof-index" className="pfn-section pfn-achievements">
-          <div className="pfn-section-heading pfn-section-heading--compact">
-            <span className="pfn-folio">03</span>
-            <div>
-              <p className="pfn-eyebrow">Proof index</p>
-              <h2 id="proof-index">Results, kept in context.</h2>
-            </div>
-          </div>
-          <ol className="pfn-achievement-list">
-            {flagshipHighlightClaims.map(({ claim, projectSlug }) => {
-              const project = projects.find((item) => item.slug === projectSlug);
-              return (
-                <li key={claim.id}>
-                  <span>{project?.title}</span>
-                  <p>{claim.text}</p>
-                  <Link href={route(basePath, `/work/${projectSlug}`)} prefetch={false}>Read the context</Link>
-                </li>
-              );
-            })}
           </ol>
         </section>
 
-        <section aria-labelledby="moments-title" className="pfn-section pfn-moments">
-          <div className="pfn-section-heading pfn-section-heading--compact">
-            <span className="pfn-folio">04</span>
+        <section aria-labelledby="selected-work-heading" className="pfn-section pfn-atlas" id="selected-work">
+          <header className="pfn-section-intro">
+            <p>Selected work</p>
+            <h2 id="selected-work-heading">Four ambitious systems. Four different trust problems.</h2>
             <div>
-              <p className="pfn-eyebrow">The work around the work</p>
-              <h2 id="moments-title">Builds, rooms, and shared wins.</h2>
+              <p>Start with the artifact. Open a case study for the decisions, team context, and evidence behind it.</p>
+              <Link className="pfn-text-link" href={route(basePath, "/work")} prefetch={false}>
+                View the full archive
+                <ArrowUpRight aria-hidden="true" size={18} />
+              </Link>
             </div>
-            <Link className="pfn-section-link" href={route(basePath, "/moments")} prefetch={false}>
-              Open photo archive <ArrowUpRight aria-hidden="true" size={18} />
-            </Link>
+          </header>
+          <div className="pfn-atlas__grid">
+            {projects.map((project) => (
+              <ProjectAtlasItem basePath={basePath} key={project.slug} project={project} />
+            ))}
           </div>
-          <div aria-label="Featured documentary moments" className="pfn-moments-strip" role="list" tabIndex={0}>
-            {moments.map((moment) => (
-              <div key={moment.id} role="listitem">
-                <MomentTile moment={moment} />
-              </div>
+        </section>
+
+        <section aria-labelledby="moments-title" className="pfn-section pfn-moments-home">
+          <header className="pfn-section-intro pfn-section-intro--moments">
+            <p>Moments</p>
+            <h2 id="moments-title">The rooms, people, and outcomes around the code.</h2>
+            <div>
+              <p>A documentary layer of build sessions, public learning, research, and shared wins.</p>
+              <Link className="pfn-text-link" href={route(basePath, "/moments")} prefetch={false}>
+                Open the full gallery
+                <ArrowUpRight aria-hidden="true" size={18} />
+              </Link>
+            </div>
+          </header>
+          <div className="pfn-mosaic">
+            {orderedMoments.map((moment) => (
+              <MomentTile basePath={basePath} key={moment.id} moment={moment} />
             ))}
           </div>
         </section>
 
         {currentlyBuilding[0] ? (
-          <section aria-labelledby="currently-building" className="pfn-section pfn-now-building">
-            <span className="pfn-folio">05</span>
+          <section aria-labelledby="currently-building" className="pfn-dispatch">
+            <p>Current build</p>
             <div>
-              <p className="pfn-eyebrow">Currently building</p>
               <h2 id="currently-building">{currentlyBuilding[0].title}</h2>
               <p>{currentlyBuilding[0].summary}</p>
-              {currentlyBuilding[0].link.status === "public" ? (
-                <a className="pfn-action-link pfn-action-link--solid" href={currentlyBuilding[0].link.url} rel="noreferrer" target="_blank">
-                  Visit the active build <ArrowUpRight aria-hidden="true" size={18} />
-                </a>
-              ) : null}
             </div>
+            {currentlyBuilding[0].link.status === "public" ? (
+              <a className="pfn-button pfn-button--inverse" href={currentlyBuilding[0].link.url} rel="noreferrer" target="_blank">
+                Visit PayGate
+                <ArrowUpRight aria-hidden="true" size={18} />
+              </a>
+            ) : null}
           </section>
         ) : null}
 
         <section aria-labelledby="pfn-close-title" className="pfn-close">
-          <span className="pfn-folio">06</span>
+          <p>About the builder</p>
           <div>
-            <p className="pfn-eyebrow">An open field note</p>
-            <h2 id="pfn-close-title">Let&apos;s make an ambitious system easier to trust.</h2>
+            <h2 id="pfn-close-title">I like difficult systems with boundaries people can see.</h2>
+            <p>{profile.positioning} I work best where product craft, technical depth, and a strong team have to meet.</p>
           </div>
-          <div className="pfn-close__details">
-            <p>{profile.availability}</p>
-            <p>{profile.location} · {profile.education}</p>
-            <Link className="pfn-action-link pfn-action-link--solid" href={route(basePath, "/contact")} prefetch={false}>
-              Start a conversation <ArrowUpRight aria-hidden="true" size={19} />
+          <div className="pfn-close__actions">
+            <Link className="pfn-button pfn-button--primary" href={route(basePath, "/contact")} prefetch={false}>
+              Start a conversation
+              <ArrowUpRight aria-hidden="true" size={18} />
+            </Link>
+            <Link className="pfn-text-link" href={route(basePath, "/about")} prefetch={false}>
+              More about how I work
+              <ArrowRight aria-hidden="true" size={18} />
             </Link>
           </div>
         </section>
       </main>
 
-      <footer className="pfn-footer">
-        <span>© {new Date().getFullYear()} Wildan Syukri Niam</span>
-        <span>Personal field notes / software systems</span>
-      </footer>
+      <PfnFooter />
     </div>
   );
 }
