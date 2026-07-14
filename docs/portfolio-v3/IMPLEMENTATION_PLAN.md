@@ -1,5 +1,9 @@
 # Portfolio V3 Implementation Plan
 
+> [!WARNING]
+> Historical implementation plan. New work must follow
+> [Portfolio V4 — Research / Build Atlas](../portfolio-v4/README.md).
+
 Issue: #25  
 Branch: `codex/25-portfolio-v3-integration`  
 Release policy: merge only after every blocking gate passes
@@ -137,4 +141,3 @@ Use a small number of coherent commits:
 5. `test: strengthen portfolio release verification`
 
 The exact grouping may shrink if a smaller set creates a clearer review. No artificial commits are added.
-
