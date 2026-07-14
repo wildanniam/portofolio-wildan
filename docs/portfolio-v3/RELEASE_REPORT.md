@@ -6,6 +6,8 @@ Issue: #25
 
 Reviewed: 15 July 2026 (WIB)
 
+Production: <https://portofolio-wildan-zeta.vercel.app>
+
 ## Decision
 
 Portfolio V3 is an authored editorial rebuild, not a reskin of V2. It keeps the validated content and media layer while replacing the presentation layer with the locked builder-journal direction: paper, graphite, cobalt, expressive editorial typography, asymmetric project compositions, documentary photography, and evidence-led case studies.
