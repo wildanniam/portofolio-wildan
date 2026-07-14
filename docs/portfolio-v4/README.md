@@ -33,6 +33,7 @@ V3 is technically sound but visually unsuccessful:
 - [DESIGN.md](./DESIGN.md) — visual, narrative, component, responsive, and motion lock.
 - [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — ordered implementation and migration plan.
 - [QA_MATRIX.md](./QA_MATRIX.md) — merge blockers and required visual evidence.
+- [BASELINE.md](./BASELINE.md) — production V3 rollback, metrics, and failure patterns V4 must remove.
 
 ## Non-negotiable release rule
 
