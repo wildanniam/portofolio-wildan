@@ -1068,7 +1068,7 @@ button {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  padding: 2rem var(--pfn-gutter) clamp(2.5rem, 4vw, 4rem);
+  padding: 2rem var(--pfn-gutter) clamp(2rem, 2.5vw, 3rem);
 }
 
 .pfn-case-hero__kicker {
@@ -1173,7 +1173,7 @@ button {
   display: grid;
   gap: 1.5rem;
   grid-template-columns: repeat(12, minmax(0, 1fr));
-  margin-top: clamp(2.5rem, 5vw, 5rem);
+  margin-top: clamp(1.5rem, 2.5vw, 3rem);
   padding: clamp(2.5rem, 5vw, 5rem) var(--pfn-gutter);
 }
 
