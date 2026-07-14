@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Instrument_Sans, Instrument_Serif } from "next/font/google";
+import { Archivo, Bodoni_Moda, Geist_Mono } from "next/font/google";
 
 import { absoluteSiteUrl, siteConfig } from "@/lib/site-config";
 
 import "./globals.css";
 
-const instrumentSans = Instrument_Sans({
-  variable: "--font-instrument-sans",
+const archivo = Archivo({
+  variable: "--font-archivo",
   subsets: ["latin"],
-  display: "optional",
+  display: "swap",
   weight: ["400", "500", "600", "700"],
 });
 
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-instrument-serif",
+const bodoniModa = Bodoni_Moda({
+  variable: "--font-bodoni-moda",
   subsets: ["latin"],
-  display: "optional",
-  weight: "400",
+  display: "swap",
+  weight: ["500", "600"],
 });
 
 const geistMono = Geist_Mono({
@@ -29,8 +29,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Wildan Syukri Niam — Software Engineer",
-    template: "%s — Wildan Syukri Niam",
+    default: "Wildan Syukri Niam | Software Engineer",
+    template: "%s | Wildan Syukri Niam",
   },
   description:
     "Personal field notes from Wildan Syukri Niam: AI, Web3, and full-stack systems built to be inspected.",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: siteConfig.url,
-    title: "Wildan Syukri Niam — Software Engineer",
+    title: "Wildan Syukri Niam | Software Engineer",
     description:
       "Personal field notes from a student builder working across AI, Web3, and full-stack systems.",
     images: [
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wildan Syukri Niam — Software Engineer",
+    title: "Wildan Syukri Niam | Software Engineer",
     description:
       "Personal field notes from a student builder working across AI, Web3, and full-stack systems.",
     images: [absoluteSiteUrl(siteConfig.socialImage.pathname)],
@@ -68,7 +68,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${instrumentSans.variable} ${instrumentSerif.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${archivo.variable} ${bodoniModa.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
     </html>

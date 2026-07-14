@@ -31,7 +31,7 @@ export function createPublicPageMetadata({
   pathname,
   title,
 }: PublicPageMetadataInput): Metadata {
-  const socialTitle = `${title} — ${siteConfig.name}`;
+  const socialTitle = `${title} | ${siteConfig.name}`;
 
   return {
     title,

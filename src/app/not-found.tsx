@@ -1,15 +1,18 @@
 import Link from "next/link";
 
+import { PfnFooter } from "@/components/pfn/pfn-footer";
+import { PfnHeader } from "@/components/pfn/pfn-shell";
+
 export default function NotFound() {
   return (
-    <main className="pfn-shell" data-portfolio-v2>
-      <section className="pfn-contact">
-        <p className="pfn-eyebrow">404 / field note unavailable</p>
+    <div className="pfn-shell" data-portfolio-v3>
+      <PfnHeader currentPath="/404" />
+      <main className="pfn-contact pfn-not-found">
+        <p>404 / Page unavailable</p>
         <h1>This page could not be found.</h1>
-        <Link className="pfn-action-link pfn-action-link--solid" href="/">
-          Return to the portfolio
-        </Link>
-      </section>
-    </main>
+        <Link className="pfn-button pfn-button--primary" href="/" prefetch={false}>Return to the portfolio</Link>
+      </main>
+      <PfnFooter />
+    </div>
   );
 }

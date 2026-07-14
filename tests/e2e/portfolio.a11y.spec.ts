@@ -1,7 +1,17 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 
-for (const route of ["/", "/work", "/work/paygate", "/moments", "/about", "/contact"] as const) {
+for (const route of [
+  "/",
+  "/work",
+  "/work/fradium",
+  "/work/nova-ai",
+  "/work/paygate",
+  "/work/quorum",
+  "/moments",
+  "/about",
+  "/contact",
+] as const) {
   test(`${route} has no serious or critical accessibility violations @a11y`, async ({ page }, testInfo) => {
     const response = await page.goto(route);
     expect(response?.status(), route).toBe(200);

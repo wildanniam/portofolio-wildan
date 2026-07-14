@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PersonalFieldNotesProject } from "@/components/pfn/pfn-routes";
-import { getProjectBySlug, getWorkProjectSummaries } from "@/content/queries.server";
+import { getProjectBySlug, getPublishedMoments, getWorkProjectSummaries } from "@/content/queries.server";
 import { selectProjectSocialImage } from "@/content/queries";
-import { getProjectNarrative } from "@/content/project-narrative.server";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: project.oneLiner,
     alternates: { canonical: `/work/${project.slug}` },
     openGraph: {
-      title: `${project.title} — Wildan Syukri Niam`,
+      title: `${project.title} | Wildan Syukri Niam`,
       description: project.oneLiner,
       type: "article",
       url: `/work/${project.slug}`,
@@ -41,7 +40,7 @@ export default async function WorkProjectPage({ params }: PageProps) {
   return (
     <PersonalFieldNotesProject
       basePath=""
-      narrative={await getProjectNarrative(project.slug)}
+      moments={getPublishedMoments()}
       nextProject={next ? getProjectBySlug(next.slug) : undefined}
       project={project}
     />

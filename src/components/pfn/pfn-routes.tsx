@@ -1,8 +1,5 @@
-import type { ReactNode } from "react";
-
-import Image from "next/image";
-import Link from "next/link";
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 
 import type { ProjectSummaryDto } from "@/content/dto";
 import type {
@@ -13,60 +10,46 @@ import type {
   ReadyImageAsset,
 } from "@/content/types";
 
+import { PfnFooter } from "./pfn-footer";
+import { PfnMedia } from "./pfn-media";
+import {
+  momentForProject,
+  momentPrimaryImage,
+  projectOutcome,
+  projectPeriod,
+  projectPrimaryImage,
+  readyImages,
+} from "./pfn-models";
+import { PfnHeader } from "./pfn-shell";
+
 function route(basePath: string, pathname: string) {
   return `${basePath}${pathname}` || "/";
 }
 
-function firstImage(record: { evidence?: ProjectRecord["evidence"]; assets?: MomentRecord["assets"] }) {
-  const assets = record.evidence ?? record.assets ?? [];
-  const isDisplayable = (asset: { mediaKind: string }) =>
-    asset.mediaKind === "image" || asset.mediaKind === "svg";
-
-  return assets.find(
-    (asset): asset is ReadyImageAsset => asset.status === "ready" && isDisplayable(asset),
-  );
-}
-
-export function PfnRouteHeader({ basePath }: { basePath: string }) {
-  return (
-    <header className="pfn-header">
-      <Link className="pfn-wordmark" href={route(basePath, "")} prefetch={false}>Wildan Niam</Link>
-      <nav aria-label="Primary navigation" className="pfn-header__nav">
-        <Link href={route(basePath, "/work")} prefetch={false}>Work</Link>
-        <Link href={route(basePath, "/moments")} prefetch={false}>Moments</Link>
-        <Link href={route(basePath, "/about")} prefetch={false}>About</Link>
-      </nav>
-      <Link className="pfn-header__contact" href={route(basePath, "/contact")} prefetch={false}>
-        Let&apos;s build <ArrowUpRight aria-hidden="true" size={16} />
-      </Link>
-    </header>
-  );
+export function PfnRouteHeader({ basePath, currentPath }: { basePath: string; currentPath: string }) {
+  return <PfnHeader basePath={basePath} currentPath={currentPath} />;
 }
 
 export function PfnRouteFooter() {
-  return (
-    <footer className="pfn-footer">
-      <span>© {new Date().getFullYear()} Wildan Syukri Niam</span>
-      <span>Personal field notes / software systems</span>
-    </footer>
+  return <PfnFooter />;
+}
+
+function summaryImage(project: ProjectSummaryDto): ReadyImageAsset | undefined {
+  return project.evidence.find(
+    (asset): asset is ReadyImageAsset =>
+      asset.status === "ready" && asset.mediaKind === "image",
   );
 }
 
-function ProjectImage({ asset, priority = false }: { asset: ReadyImageAsset; priority?: boolean }) {
-  return (
-    <figure className="pfn-evidence-figure">
-      <div className="pfn-evidence-figure__image">
-        <Image
-          alt={asset.alt}
-          fill
-          priority={priority}
-          sizes="(max-width: 639px) calc(100vw - 40px), (max-width: 1023px) calc(100vw - 64px), 980px"
-          src={asset.src}
-          style={{ objectFit: asset.mediaKind === "svg" ? "contain" : "cover" }}
-        />
-      </div>
-      <figcaption>{asset.caption}</figcaption>
-    </figure>
+const flagshipOrder = ["fradium", "nova-ai", "paygate", "quorum"];
+
+function orderArchive(projects: ProjectSummaryDto[]) {
+  const rank = new Map(flagshipOrder.map((slug, index) => [slug, index]));
+  return [...projects].sort(
+    (left, right) =>
+      (rank.get(left.slug) ?? Number.MAX_SAFE_INTEGER) -
+        (rank.get(right.slug) ?? Number.MAX_SAFE_INTEGER) ||
+      right.lastUpdatedAt.localeCompare(left.lastUpdatedAt),
   );
 }
 
@@ -77,39 +60,51 @@ export function PersonalFieldNotesWork({
   basePath: string;
   projects: ProjectSummaryDto[];
 }) {
+  const orderedProjects = orderArchive(projects);
+
   return (
-    <div className="pfn-shell" data-portfolio-v2>
+    <div className="pfn-shell" data-portfolio-v3>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} currentPath="/work" />
       <main className="pfn-route" id="pfn-main">
-        <header className="pfn-route-opening">
-          <p className="pfn-eyebrow">Field notes / work index</p>
-          <h1>Work with a trail behind it.</h1>
-          <p>Flagship systems and smaller experiments, organized as durable records rather than a trophy wall.</p>
-        </header>
-        <section aria-labelledby="work-index-heading" className="pfn-work-index">
-          <div className="pfn-work-index__heading">
-            <span className="pfn-folio">All work</span>
-            <h2 id="work-index-heading">Choose a system to inspect.</h2>
+        <header className="pfn-route-hero">
+          <p>Work archive</p>
+          <h1>Systems with a trail behind them.</h1>
+          <div>
+            <p>Flagship builds and smaller experiments, organized by what was made and what can be inspected next.</p>
+            <p>{orderedProjects.length} published records</p>
           </div>
+        </header>
+
+        <section aria-labelledby="work-index-heading" className="pfn-work-archive">
+          <h2 className="pfn-visually-hidden" id="work-index-heading">Published project archive</h2>
           <ol>
-            {projects.map((project, index) => {
-              const image = firstImage({ evidence: project.evidence });
+            {orderedProjects.map((project) => {
+              const image = summaryImage(project);
+              const isFlagship = flagshipOrder.includes(project.slug);
               return (
-                <li key={project.slug}>
-                  <Link href={route(basePath, `/work/${project.slug}`)} prefetch={false}>
-                    <span className="pfn-folio">{String(index + 1).padStart(2, "0")}</span>
-                    <span className="pfn-work-index__title">
-                      <strong>{project.title}</strong>
-                      <small>{project.oneLiner}</small>
+                <li className={isFlagship ? "pfn-work-record pfn-work-record--flagship" : "pfn-work-record"} key={project.slug}>
+                  <Link aria-label={`Open ${project.title} project record`} href={route(basePath, `/work/${project.slug}`)} prefetch={false}>
+                    <span className="pfn-work-record__meta">
+                      <span>{project.role.label}</span>
+                      <span>{project.lifecycle}</span>
+                      <span>{project.startedAt}</span>
                     </span>
-                    <span className="pfn-work-index__role">{project.role.label}</span>
+                    <span className="pfn-work-record__title">
+                      <strong>{project.title}</strong>
+                      <span>{project.oneLiner}</span>
+                    </span>
                     {image ? (
-                      <span className="pfn-work-index__image">
-                        <Image alt="" fill sizes="160px" src={image.src} style={{ objectFit: "cover" }} />
+                      <span className="pfn-work-record__media">
+                        <PfnMedia asset={image} decorative sizes="(max-width: 639px) 100vw, 34vw" />
                       </span>
-                    ) : null}
-                    <ArrowUpRight aria-hidden="true" size={20} />
+                    ) : (
+                      <span aria-hidden="true" className="pfn-work-record__monogram">{project.title.slice(0, 2)}</span>
+                    )}
+                    <span className="pfn-work-record__open">
+                      Inspect project
+                      <ArrowUpRight aria-hidden="true" size={18} />
+                    </span>
                   </Link>
                 </li>
               );
@@ -122,129 +117,207 @@ export function PersonalFieldNotesWork({
   );
 }
 
+function ProjectFigure({
+  asset,
+  priority = false,
+}: {
+  asset: ReadyImageAsset;
+  priority?: boolean;
+}) {
+  return (
+    <figure className="pfn-case-figure">
+      <div className="pfn-case-figure__media">
+        <PfnMedia
+          asset={asset}
+          priority={priority}
+          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 92vw, 86vw"
+        />
+      </div>
+      <figcaption>{asset.caption}</figcaption>
+    </figure>
+  );
+}
+
 export function PersonalFieldNotesProject({
   basePath,
-  narrative,
+  moments,
   nextProject,
   project,
 }: {
   basePath: string;
-  narrative: ReactNode;
+  moments: MomentRecord[];
   nextProject?: ProjectRecord;
   project: FullProjectRecord;
 }) {
-  const opening = firstImage({ evidence: project.evidence });
-  const remainingEvidence = project.evidence.filter(
-    (asset): asset is ReadyImageAsset =>
-      asset.status === "ready" &&
-      (asset.mediaKind === "image" || asset.mediaKind === "svg") &&
-      asset.id !== opening?.id,
-  );
+  const primaryImage = projectPrimaryImage(project);
+  const outcome = projectOutcome(project);
+  const outcomeSources = outcome?.sources.filter((source) => source.kind === "url") ?? [];
+  const projectImages = readyImages(project.evidence).filter((asset) => asset.id !== primaryImage?.id);
+  const documentaryMoment = momentForProject(moments, project.slug);
+  const documentaryImage = documentaryMoment ? momentPrimaryImage(documentaryMoment) : undefined;
 
   return (
-    <div className="pfn-shell" data-portfolio-v2>
+    <div className="pfn-shell" data-portfolio-v3>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} currentPath={`/work/${project.slug}`} />
       <main className="pfn-case" id="pfn-main">
-        <header className="pfn-case-opening">
+        <header className="pfn-case-hero">
           <Link className="pfn-back-link" href={route(basePath, "/work")} prefetch={false}>
-            <ArrowLeft aria-hidden="true" size={17} /> Back to work
+            <ArrowLeft aria-hidden="true" size={17} />
+            Back to work
           </Link>
-          <div className="pfn-case-opening__folio">
-            <span className="pfn-eyebrow">Project field notes</span>
-            <span>{project.lifecycle} · {project.startedAt} — present</span>
+          <div className="pfn-case-hero__kicker">
+            <span>{project.role.label}</span>
+            <span>{projectPeriod(project)}</span>
           </div>
           <h1>{project.title}</h1>
-          <p className="pfn-case-opening__premise">{project.oneLiner}</p>
+          <p className="pfn-case-hero__premise">{project.oneLiner}</p>
           <dl className="pfn-case-facts">
-            <div><dt>Role</dt><dd>{project.role.label}</dd></div>
-            <div><dt>Context</dt><dd>{project.origin.join(" · ")}</dd></div>
             <div><dt>State</dt><dd>{project.lifecycle}</dd></div>
+            <div><dt>Context</dt><dd>{project.origin.join(" / ")}</dd></div>
+            <div><dt>Validation</dt><dd>{project.validationKinds.join(" / ")}</dd></div>
           </dl>
+          <nav aria-label={`${project.title} external links`} className="pfn-case-hero__actions">
+            {project.links.live.status === "public" ? (
+              <a className="pfn-button pfn-button--primary" href={project.links.live.url} rel="noreferrer" target="_blank">
+                Open live project
+                <ArrowUpRight aria-hidden="true" size={18} />
+              </a>
+            ) : null}
+            {project.links.source.status === "public" ? (
+              <a className="pfn-button pfn-button--quiet" href={project.links.source.url} rel="noreferrer" target="_blank">
+                View source
+                <ArrowUpRight aria-hidden="true" size={18} />
+              </a>
+            ) : null}
+          </nav>
         </header>
 
-        {opening ? <ProjectImage asset={opening} priority /> : null}
+        {primaryImage ? <ProjectFigure asset={primaryImage} priority /> : null}
 
-        <section className="pfn-case-split" aria-labelledby="case-problem">
-          <span className="pfn-folio">01</span>
+        {outcome ? (
+          <section aria-labelledby="case-outcome" className="pfn-case-outcome">
+            <p>Outcome</p>
+            <div>
+              <h2 id="case-outcome">{outcome.text}</h2>
+              <p>{outcome.scope}</p>
+            </div>
+            {outcomeSources.length > 0 ? (
+              <div className="pfn-case-outcome__sources">
+                {outcomeSources.slice(0, 2).map((source) => (
+                  <a href={source.url} key={source.url} rel="noreferrer" target="_blank">
+                    {source.label}
+                    <ArrowUpRight aria-hidden="true" size={16} />
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </section>
+        ) : null}
+
+        <section aria-labelledby="case-problem" className="pfn-case-chapter pfn-case-chapter--problem">
+          <p>Problem</p>
           <div>
-            <p className="pfn-eyebrow">Problem and intended users</p>
-            <h2 id="case-problem">{project.problem}</h2>
+            <h2 id="case-problem">The product question.</h2>
+            <p className="pfn-case-chapter__lead">{project.problem}</p>
           </div>
-          <ul>
-            {project.intendedUsers.map((user) => <li key={user}>{user}</li>)}
-          </ul>
+          <div>
+            <h3>Intended users</h3>
+            <ul>{project.intendedUsers.map((user) => <li key={user}>{user}</li>)}</ul>
+          </div>
         </section>
 
-        <section className="pfn-case-split" aria-labelledby="case-role">
-          <span className="pfn-folio">02</span>
+        <section aria-labelledby="case-role" className="pfn-case-chapter pfn-case-chapter--role">
+          <p>Contribution</p>
           <div>
-            <p className="pfn-eyebrow">My responsibility</p>
-            <h2 id="case-role">A defined role inside a credited team.</h2>
-            <p>{project.teamContext.summary}</p>
+            <h2 id="case-role">{project.role.label}</h2>
+            <p className="pfn-case-chapter__lead">{project.teamContext.summary}</p>
           </div>
-          <ul>
+          <ul className="pfn-scope-list">
             {project.role.scope.map((scope) => <li key={scope}>{scope}</li>)}
           </ul>
         </section>
 
-        <section aria-labelledby="case-decisions" className="pfn-case-section">
-          <div className="pfn-case-section__heading">
-            <span className="pfn-folio">03</span>
-            <div><p className="pfn-eyebrow">Decisions</p><h2 id="case-decisions">The choices that shaped the build.</h2></div>
-          </div>
-          <div className="pfn-decision-list">
-            {project.decisions.map((decision, index) => (
+        <section aria-labelledby="case-decisions" className="pfn-case-decisions">
+          <header>
+            <p>Decisions</p>
+            <h2 id="case-decisions">Choices that shaped the build.</h2>
+          </header>
+          <div>
+            {project.decisions.slice(0, 3).map((decision, index) => (
               <article key={decision.title}>
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <h3>{decision.title}</h3>
                 <p>{decision.rationale}</p>
-                <small>{decision.consequence}</small>
+                <p>{decision.consequence}</p>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="pfn-case-flow" aria-labelledby="case-flow">
-          <span className="pfn-folio">04</span>
-          <div><p className="pfn-eyebrow">System flow</p><h2 id="case-flow">A working sequence, made inspectable.</h2></div>
-          <ol>{project.systemFlow.map((step) => <li key={step}>{step}</li>)}</ol>
+        <section aria-labelledby="case-flow" className="pfn-case-flow">
+          <header>
+            <p>System flow</p>
+            <h2 id="case-flow">From intent to visible evidence.</h2>
+          </header>
+          <ol>
+            {project.systemFlow.map((step, index) => (
+              <li key={step}>
+                <span>{String(index + 1).padStart(2, "0")}</span>
+                <p>{step}</p>
+              </li>
+            ))}
+          </ol>
         </section>
 
-        <section aria-label="Long-form case study" className="pfn-prose">{narrative}</section>
-
-        {remainingEvidence.length > 0 ? (
-          <section aria-labelledby="case-evidence" className="pfn-case-evidence">
-            <div className="pfn-case-section__heading">
-              <span className="pfn-folio">05</span>
-              <div><p className="pfn-eyebrow">Evidence and outcome</p><h2 id="case-evidence">Artifacts from the work.</h2></div>
-            </div>
-            <div className="pfn-evidence-grid">
-              {remainingEvidence.map((asset) => <ProjectImage asset={asset} key={asset.id} />)}
+        {projectImages.length > 0 || documentaryImage ? (
+          <section aria-labelledby="case-evidence" className="pfn-case-gallery">
+            <header>
+              <p>Evidence</p>
+              <h2 id="case-evidence">Product and team, in frame.</h2>
+            </header>
+            <div className="pfn-case-gallery__grid">
+              {projectImages.slice(0, 2).map((asset) => <ProjectFigure asset={asset} key={asset.id} />)}
+              {documentaryImage && documentaryMoment ? (
+                <figure className="pfn-case-figure pfn-case-figure--documentary">
+                  <div className="pfn-case-figure__media">
+                    <PfnMedia asset={documentaryImage} sizes="(max-width: 639px) 100vw, 44vw" />
+                  </div>
+                  <figcaption>{documentaryMoment.caption}</figcaption>
+                </figure>
+              ) : null}
             </div>
           </section>
         ) : null}
 
-        <section className="pfn-case-reflection" aria-labelledby="case-reflection">
-          <div><span className="pfn-folio">06</span><p className="pfn-eyebrow">Boundary and next step</p></div>
+        <section aria-labelledby="case-reflection" className="pfn-case-reflection">
+          <p>Reflection</p>
           <div>
-            <h2 id="case-reflection">What remains honest about the work.</h2>
-            <ul>{project.limitations.map((item) => <li key={item}>{item}</li>)}</ul>
-            <h3>Next</h3>
-            <ul>{project.next.map((item) => <li key={item}>{item}</li>)}</ul>
+            <h2 id="case-reflection">What remains, and what comes next.</h2>
+            <h3>Current boundary</h3>
+            <ul>{project.limitations.slice(0, 3).map((item) => <li key={item}>{item}</li>)}</ul>
+          </div>
+          <div>
+            <h3>Next improvements</h3>
+            <ul>{project.next.slice(0, 4).map((item) => <li key={item}>{item}</li>)}</ul>
+            <h3>Technology</h3>
+            <p className="pfn-tech-list">{project.technologies.join(" / ")}</p>
           </div>
         </section>
 
-        <nav aria-label={`${project.title} links`} className="pfn-case-links">
-          {project.links.live.status === "public" ? <a href={project.links.live.url} rel="noreferrer" target="_blank">Open live project <ArrowUpRight aria-hidden="true" size={18} /></a> : null}
-          {project.links.source.status === "public" ? <a href={project.links.source.url} rel="noreferrer" target="_blank">Open source <ArrowUpRight aria-hidden="true" size={18} /></a> : null}
-        </nav>
-
         {nextProject ? (
           <Link className="pfn-next-project" href={route(basePath, `/work/${nextProject.slug}`)} prefetch={false}>
-            <span>Next field note</span><strong>{nextProject.title}</strong><ArrowRight aria-hidden="true" size={30} />
+            <span>Next project</span>
+            <strong>{nextProject.title}</strong>
+            <ArrowRight aria-hidden="true" size={32} />
           </Link>
-        ) : null}
+        ) : (
+          <Link className="pfn-next-project" href={route(basePath, "/work")} prefetch={false}>
+            <span>Continue exploring</span>
+            <strong>Work archive</strong>
+            <ArrowRight aria-hidden="true" size={32} />
+          </Link>
+        )}
       </main>
       <PfnRouteFooter />
     </div>
@@ -253,19 +326,44 @@ export function PersonalFieldNotesProject({
 
 export function PersonalFieldNotesAbout({ basePath, profile }: { basePath: string; profile: Profile }) {
   return (
-    <div className="pfn-shell" data-portfolio-v2>
+    <div className="pfn-shell" data-portfolio-v3>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} currentPath="/about" />
       <main className="pfn-route" id="pfn-main">
-        <header className="pfn-route-opening pfn-route-opening--about">
-          <p className="pfn-eyebrow">Field notes / about</p>
-          <h1>I learn by making the system visible.</h1>
-          <p>{profile.positioning} {profile.thesis}</p>
+        <header className="pfn-route-hero pfn-about-hero">
+          <p>About</p>
+          <h1>I make ambitious systems easier to see.</h1>
+          <div><p>{profile.positioning}</p><p>{profile.location}</p></div>
         </header>
-        <section className="pfn-about-grid">
-          <div><span className="pfn-folio">01</span><h2>How I work</h2></div>
-          <p>I like ambitious systems with real boundaries: an AI agent that should not overstep, a payment flow that needs a receipt, or a Web3 interaction that should be clear before it asks for a signature. I start by making the path observable, then build toward a product someone can inspect.</p>
-          <dl><div><dt>Based in</dt><dd>{profile.location}</dd></div><div><dt>Studying</dt><dd>{profile.education}</dd></div><div><dt>Open to</dt><dd>{profile.availability}</dd></div></dl>
+
+        <section className="pfn-about-story">
+          {profile.portrait ? (
+            <figure>
+              <div><PfnMedia asset={profile.portrait} priority sizes="(max-width: 639px) 100vw, 38vw" /></div>
+              <figcaption>{profile.portrait.caption}</figcaption>
+            </figure>
+          ) : null}
+          <div className="pfn-about-story__copy">
+            <p className="pfn-about-story__lead">{profile.thesis}</p>
+            <p>I am a Software Engineering student at Telkom University who learns by building systems with real constraints. My favorite projects sit where product behavior and technical architecture have to agree: an AI agent that should help without taking custody, a payment flow that needs a receipt, or a Web3 action that should be understandable before someone signs it.</p>
+            <p>I usually work across the stack, but I do not treat full-stack work as a claim that one person did everything. The strongest hackathon projects here were team efforts. I like leading the product direction, connecting specialist contributions, and making the final path coherent enough for a user, teammate, or reviewer to inspect.</p>
+            <p>That working habit also shapes my research into LLM-assisted self-healing test automation. Before asking an intelligent system to act, I want the failure, decision boundary, and recovery evidence to be visible. The same principle appears in Fradium, Nova, PayGate, and Quorum in different forms.</p>
+            <p>This portfolio is a living record of that practice. Some projects are hackathon artifacts, some are research, and PayGate is an active product build. I present each one with its actual state, the role I held, the people around it, and the proof that survives after the demo.</p>
+          </div>
+          <dl className="pfn-about-facts">
+            <div><dt>Based in</dt><dd>{profile.location}</dd></div>
+            <div><dt>Studying</dt><dd>{profile.education}</dd></div>
+            <div><dt>Open to</dt><dd>{profile.availability}</dd></div>
+          </dl>
+        </section>
+
+        <section className="pfn-about-principles">
+          <p>Working principles</p>
+          <ol>
+            <li><strong>Make the boundary visible.</strong><span>Users should know what the system did, what it did not do, and where their decision still matters.</span></li>
+            <li><strong>Keep evidence close.</strong><span>Product behavior, source, transactions, tests, and team outcomes become more useful when their context stays attached.</span></li>
+            <li><strong>Build with the team in frame.</strong><span>Leadership means making the shared build coherent while keeping specialist contributions clear.</span></li>
+          </ol>
         </section>
       </main>
       <PfnRouteFooter />
@@ -275,15 +373,27 @@ export function PersonalFieldNotesAbout({ basePath, profile }: { basePath: strin
 
 export function PersonalFieldNotesContact({ basePath, profile }: { basePath: string; profile: Profile }) {
   return (
-    <div className="pfn-shell" data-portfolio-v2>
+    <div className="pfn-shell" data-portfolio-v3>
       <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} />
+      <PfnRouteHeader basePath={basePath} currentPath="/contact" />
       <main className="pfn-contact" id="pfn-main">
-        <p className="pfn-eyebrow">Field notes / contact</p>
-        <h1>Make the next system more trustworthy.</h1>
-        <p>{profile.availability}</p>
-        <a className="pfn-contact__email" href={`mailto:${profile.email}`}>{profile.email}<ArrowUpRight aria-hidden="true" size={28} /></a>
-        {profile.github.status === "public" ? <a className="pfn-action-link" href={profile.github.url} rel="noreferrer" target="_blank">Find the work on GitHub <ArrowUpRight aria-hidden="true" size={18} /></a> : null}
+        <p>Contact</p>
+        <h1>Let&apos;s build something worth inspecting.</h1>
+        <div className="pfn-contact__copy">
+          <p>{profile.availability}</p>
+          <p>Tell me what you are building, what makes it difficult, and where a strong software engineer can help.</p>
+        </div>
+        <a className="pfn-contact__email" href={`mailto:${profile.email}`}>
+          <span>{profile.email}</span>
+          <ArrowUpRight aria-hidden="true" size={32} />
+        </a>
+        {profile.github.status === "public" ? (
+          <a className="pfn-text-link" href={profile.github.url} rel="noreferrer" target="_blank">
+            Inspect my GitHub
+            <ArrowUpRight aria-hidden="true" size={18} />
+          </a>
+        ) : null}
+        <p className="pfn-contact__location">{profile.location}</p>
       </main>
       <PfnRouteFooter />
     </div>
