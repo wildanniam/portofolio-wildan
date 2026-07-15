@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import type { HomepageProjectStageSelection } from "@/content/queries";
 
+import { AtlasMotionLoader } from "./atlas-motion-loader";
 import { ProjectStage } from "./project-stage";
 
 type ProjectAtlasProps = {
@@ -19,6 +20,7 @@ export function ProjectAtlas({ basePath = "", stages }: ProjectAtlasProps) {
     <section
       aria-labelledby="project-atlas-title"
       className="v4-atlas portfolio-container"
+      data-atlas-motion-state="static"
       data-project-atlas
       id="project-atlas"
     >
@@ -50,6 +52,7 @@ export function ProjectAtlas({ basePath = "", stages }: ProjectAtlasProps) {
           />
         ))}
       </div>
+      <AtlasMotionLoader />
     </section>
   );
 }

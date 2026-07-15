@@ -1,7 +1,7 @@
 # Portfolio V4 Design QA
 
 - Review date: 15 July 2026
-- Scope: static homepage golden slice before motion enhancement
+- Scope: homepage golden slice and bounded Signal → System motion
 - Reference contract: `docs/portfolio-v4/GATE1_VISUAL_BOARD.md`
 - Reference frames: Research Instrument desktop/mobile and Atlas desktop/mobile
 - Runtime captures: `artifacts/design-qa/` (local, intentionally git-ignored)
@@ -44,6 +44,17 @@ scale differs from production.
 - No glass, glow, generic bento treatment, 3D decoration, terminal cosplay, fake
   asset, or generated UI drawing was introduced.
 - No console errors or warnings were observed in desktop or mobile inspection.
+- The motion runtime is absent at the top of the page, loads only when the Atlas
+  approaches the viewport, and settles after one pass through the four stages.
+- GSAP changes only opacity and transforms by at most 8px; it introduces no pin,
+  scrub, loop, overlap, horizontal overflow, or permanent inline presentation.
+- All 27 animated targets return to `opacity: 1`, `transform: none`, and
+  `visibility: visible`; stage dimensions and document-space positions remain
+  unchanged before and after motion.
+- The initial route ships only the 827-byte motion loader chunk. The 115.6KB
+  GSAP/ScrollTrigger runtime remains a separate on-demand chunk.
+- Reduced-motion and no-JavaScript paths retain the complete static Atlas and do
+  not mount the motion controller.
 
 ## Open findings
 

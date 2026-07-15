@@ -144,6 +144,89 @@ test("mobile golden slice preserves strict reading order, visible logos, and bou
   );
 });
 
+test("Atlas motion loads near the section, settles once, and preserves geometry", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== "desktop-chromium",
+    "The motion contract is deterministic and needs one engine at this gate.",
+  );
+
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto("/");
+
+  const atlas = page.locator("[data-project-atlas]");
+  await expect(atlas).toHaveAttribute("data-atlas-motion-state", "static");
+  await expect(page.locator("[data-atlas-motion-controller]")).toHaveCount(0);
+
+  const before = await atlas.evaluate((element) =>
+    Array.from(element.querySelectorAll("[data-atlas-stage]")).map((stage) => {
+      const rect = stage.getBoundingClientRect();
+      return {
+        left: rect.left,
+        top: rect.top + window.scrollY,
+        width: rect.width,
+        height: rect.height,
+      };
+    }),
+  );
+
+  for (const slug of stageOrder) {
+    await page
+      .locator(`[data-atlas-stage="${slug}"]`)
+      .scrollIntoViewIfNeeded();
+  }
+
+  await expect(page.locator("[data-atlas-motion-controller]")).toHaveCount(1);
+  await expect(atlas).toHaveAttribute("data-atlas-motion-state", "settled");
+
+  const after = await atlas.evaluate((element) =>
+    Array.from(element.querySelectorAll("[data-atlas-stage]")).map((stage) => {
+      const rect = stage.getBoundingClientRect();
+      return {
+        left: rect.left,
+        top: rect.top + window.scrollY,
+        width: rect.width,
+        height: rect.height,
+      };
+    }),
+  );
+
+  expect(after).toEqual(before);
+  await expect(atlas.locator(".v4-stage__artifact").first()).toHaveCSS(
+    "transform",
+    "none",
+  );
+  await expect(atlas.locator(".v4-stage__artifact").first()).toHaveCSS(
+    "opacity",
+    "1",
+  );
+});
+
+test.describe("reduced-motion static fallback", () => {
+  test("keeps the complete Atlas static and never mounts the runtime", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("/");
+    const atlas = page.locator("[data-project-atlas]");
+
+    await atlas.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(600);
+
+    await expect(atlas).toHaveAttribute("data-atlas-motion-state", "static");
+    await expect(page.locator("[data-atlas-motion-controller]")).toHaveCount(0);
+    await expect(atlas.locator(".v4-stage__artifact").first()).toHaveCSS(
+      "opacity",
+      "1",
+    );
+    await expect(atlas.locator(".v4-stage__artifact").first()).toHaveCSS(
+      "transform",
+      "none",
+    );
+  });
+});
+
 test.describe("no-JavaScript static fallback", () => {
   test.use({ javaScriptEnabled: false });
 
