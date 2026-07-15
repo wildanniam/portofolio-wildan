@@ -112,6 +112,7 @@ button {
 
 .pfn-wordmark span:last-child {
   color: var(--pfn-cobalt);
+  font-family: var(--portfolio-font-authored-italic);
   font-style: italic;
 }
 
@@ -264,6 +265,7 @@ button {
 
 .pfn-menu-links a[aria-current="page"] {
   color: var(--pfn-cobalt);
+  font-family: var(--portfolio-font-authored-italic);
   font-style: italic;
 }
 
@@ -397,6 +399,7 @@ button {
 
 .pfn-hero__statement h1 span:last-child {
   color: var(--pfn-cobalt);
+  font-family: var(--portfolio-font-authored-italic);
   font-style: italic;
   padding-left: 0.55em;
 }

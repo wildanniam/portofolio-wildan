@@ -11,6 +11,7 @@
 
   --portfolio-font-sans: var(--font-archivo), Arial, sans-serif;
   --portfolio-font-authored: var(--font-newsreader), Georgia, serif;
+  --portfolio-font-authored-italic: var(--font-newsreader-italic), Georgia, serif;
   --portfolio-font-mono: var(--font-geist-mono), "SFMono-Regular", Consolas, monospace;
   /* Temporary compatibility while V3 route modules migrate to semantic aliases. */
   --font-bodoni-moda: var(--font-newsreader);

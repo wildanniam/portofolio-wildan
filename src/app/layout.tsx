@@ -10,17 +10,24 @@ const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
-  weight: "variable",
-  axes: ["wdth"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const newsreader = Newsreader({
   variable: "--font-newsreader",
   subsets: ["latin"],
   display: "swap",
-  style: ["normal", "italic"],
-  weight: "variable",
-  axes: ["opsz"],
+  style: "normal",
+  weight: "500",
+});
+
+const newsreaderItalic = Newsreader({
+  variable: "--font-newsreader-italic",
+  subsets: ["latin"],
+  display: "optional",
+  preload: false,
+  style: "italic",
+  weight: "500",
 });
 
 const geistMono = Geist_Mono({
@@ -73,7 +80,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      className={`${archivo.variable} ${newsreader.variable} ${geistMono.variable}`}
+      className={`${archivo.variable} ${newsreader.variable} ${newsreaderItalic.variable} ${geistMono.variable}`}
       lang="en"
       suppressHydrationWarning
     >
