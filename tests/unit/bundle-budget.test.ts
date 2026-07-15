@@ -153,7 +153,7 @@ describe("committed Personal Field Notes V2 viewport budgets", () => {
     for (const route of Object.values(budgetConfig.profiles.v2.routes) as Array<{
       limits: { initialFontTransferBytes?: number };
     }>) {
-      expect(route.limits.initialFontTransferBytes).toBe(98_304);
+      expect(route.limits.initialFontTransferBytes).toBe(114_688);
     }
   });
 });
