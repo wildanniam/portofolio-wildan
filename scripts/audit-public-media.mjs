@@ -1,6 +1,9 @@
 import { loadContentBundle } from "../src/content/repository.node.ts";
 import {
+  ATLAS_MEDIA_BUDGETS,
   auditReadyAssetFiles,
+  auditVisualFile,
+  BRAND_MEDIA_BUDGET_BYTES,
   detectFfprobe,
   DOCUMENTARY_MEDIA_BUDGETS,
   probeVideoWithFfprobe,
@@ -8,6 +11,9 @@ import {
 
 const repositoryRoot = process.cwd();
 const content = loadContentBundle({ repositoryRoot });
+const atlasAssetIds = new Set(
+  content.homepage.projectStages.flatMap((stage) => stage.artifactAssetIds),
+);
 const readyAssets = [
   ...(content.profile.portrait
     ? [
@@ -26,7 +32,7 @@ const readyAssets = [
         asset,
         owner: `project:${project.slug}`,
         isSocialImage: project.socialImageAssetId === asset.id,
-        budgets: undefined,
+        budgets: atlasAssetIds.has(asset.id) ? ATLAS_MEDIA_BUDGETS : undefined,
       })),
   ),
   ...content.moments.flatMap((moment) =>
@@ -40,6 +46,15 @@ const readyAssets = [
       })),
   ),
 ];
+const brandAssets = content.projects.flatMap((project) => {
+  if (!project.branding) return [];
+  return [
+    { asset: project.branding.mark, role: "mark" },
+    ...(project.branding.wordmark
+      ? [{ asset: project.branding.wordmark, role: "wordmark" }]
+      : []),
+  ].map(({ asset, role }) => ({ asset, owner: `project:${project.slug}:brand:${role}` }));
+});
 
 const includesVideo = readyAssets.some(({ asset }) => asset.mediaKind === "video");
 const ffprobeExecutable = includesVideo ? await detectFfprobe() : null;
@@ -64,6 +79,21 @@ for (const { asset, owner, isSocialImage, budgets } of readyAssets) {
   failures.push(...result.failures);
   warnings.push(...result.warnings);
   summaries.push(...result.summaries);
+}
+
+for (const { asset, owner } of brandAssets) {
+  const result = await auditVisualFile({
+    repositoryRoot,
+    src: asset.src,
+    width: asset.width,
+    height: asset.height,
+    declaredKind: asset.src.toLowerCase().endsWith(".svg") ? "svg" : "image",
+    label: `${owner}/${asset.id}`,
+    byteBudget: BRAND_MEDIA_BUDGET_BYTES,
+  });
+  failures.push(...result.failures);
+  warnings.push(...result.warnings);
+  if (result.summary) summaries.push(result.summary);
 }
 
 for (const summary of summaries) console.log(`✓ ${summary}`);

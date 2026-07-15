@@ -152,10 +152,23 @@ describe("project publication gates", () => {
         "system-reasoning",
         "verification",
       ],
+      provenance: {
+        kind: "owned",
+        creator: "Wildan Syukri Niam",
+        rightsNote: "Approved for this portfolio test fixture.",
+        sourceRepository: "https://github.com/fradiumofficial/fradium",
+        revision: "370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e",
+        sourcePath: "docs/images/test-fixture.png",
+      },
     });
     project.publication = "published";
     delete project.socialImageAssetId;
     project.evidence = [evidence];
+    const stage = content.homepage.projectStages.find(
+      (candidate) => candidate.projectSlug === project.slug,
+    );
+    if (!stage) throw new Error("Missing homepage project stage fixture.");
+    stage.artifactAssetIds = [evidence.id];
     project.socialImageAssetId = evidence.id;
     project.role.evidenceIds = [];
     project.decisions = project.decisions.map((decision) => ({
@@ -212,12 +225,27 @@ describe("project publication gates", () => {
 
   it("accepts a published brief with one ready media item and no MDX requirement", () => {
     const content = cloneSeedBundle();
-    const readyEvidence = makeReadyImage({ id: "brief-ready-evidence" });
+    const readyEvidence = makeReadyImage({
+      id: "brief-ready-evidence",
+      provenance: {
+        kind: "owned",
+        creator: "Wildan Syukri Niam",
+        rightsNote: "Approved for this portfolio test fixture.",
+        sourceRepository: "https://github.com/OfficialNovaAI/nova-wallet",
+        revision: "38b03a80c9c4d85c767013188df2b77f0eda20b8",
+        sourcePath: "public/test-fixture.png",
+      },
+    });
     const project = projectBySlug(content, "nova-ai");
     const brief = toBriefProject(project, {
       publication: "published",
       evidence: [readyEvidence],
     });
+    const stage = content.homepage.projectStages.find(
+      (candidate) => candidate.projectSlug === project.slug,
+    );
+    if (!stage) throw new Error("Missing homepage project stage fixture.");
+    stage.artifactAssetIds = [readyEvidence.id];
     delete brief.socialImageAssetId;
     brief.role.evidenceIds = [];
     content.projects[content.projects.indexOf(project)] = brief;
@@ -286,46 +314,105 @@ describe("project social-image references", () => {
   });
 });
 
-describe("homepage flagship highlight claims", () => {
-  it("accepts one project-owned claim for every flagship", () => {
+describe("homepage project-stage references", () => {
+  it("accepts one project-owned outcome claim for every stage", () => {
     const content = cloneSeedBundle();
 
-    expect(content.homepage.flagshipHighlightClaimIds).toEqual({
-      fradium: "fradium-wchl-2025",
-      "nova-ai": "nova-lisk-recognition",
-      paygate: "paygate-instaward-2026",
-      quorum: "quorum-six-testnet-flows",
-    });
+    expect(
+      content.homepage.projectStages.map((stage) => [
+        stage.projectSlug,
+        stage.outcomeClaimId,
+      ]),
+    ).toEqual([
+      ["fradium", "fradium-wchl-2025"],
+      ["nova-ai", "nova-lisk-recognition"],
+      ["paygate", "paygate-instaward-2026"],
+      ["quorum", "quorum-six-testnet-flows"],
+    ]);
     expect(() => validateContentBundle(content, () => true)).not.toThrow();
   });
 
-  it("requires exact coverage of the flagship project list", () => {
+  it("requires exactly four distinct layout variants", () => {
     const content = cloneSeedBundle();
-    delete content.homepage.flagshipHighlightClaimIds.fradium;
-    content.homepage.flagshipHighlightClaimIds.agentpay = "agentpay-role";
+    content.homepage.projectStages[1].variant =
+      content.homepage.projectStages[0].variant;
 
-    expect(
-      diagnosticCodes(content).filter(
-        (code) => code === "reference.homepage-highlight-coverage",
-      ),
-    ).toHaveLength(2);
+    expect(diagnosticCodes(content)).toContain("schema.custom");
   });
 
-  it("rejects a highlight claim owned by a different project", () => {
+  it("rejects an outcome claim owned by a different project", () => {
     const content = cloneSeedBundle();
-    content.homepage.flagshipHighlightClaimIds.fradium = "nova-role";
+    content.homepage.projectStages[0].outcomeClaimId = "nova-role";
 
     expect(diagnosticCodes(content)).toContain(
-      "reference.homepage-highlight-ownership",
+      "reference.homepage-outcome-ownership",
     );
   });
 
-  it("rejects an unknown highlight claim", () => {
+  it("rejects an unknown outcome claim", () => {
     const content = cloneSeedBundle();
-    content.homepage.flagshipHighlightClaimIds.fradium = "unknown-claim";
+    content.homepage.projectStages[0].outcomeClaimId = "unknown-claim";
 
     expect(diagnosticCodes(content)).toContain(
-      "reference.homepage-highlight-claim",
+      "reference.homepage-outcome-claim",
+    );
+  });
+
+  it("rejects an artifact owned by a different project", () => {
+    const content = cloneSeedBundle();
+    content.homepage.projectStages[0].artifactAssetIds = [
+      "nova-atlas-workspace",
+    ];
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.homepage-artifact-ownership",
+    );
+  });
+
+  it("keeps brand identity assets out of the artifact flow", () => {
+    const content = cloneSeedBundle();
+    content.homepage.projectStages[0].artifactAssetIds = [
+      "fradium-brand-mark",
+    ];
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.homepage-artifact-brand-asset",
+    );
+  });
+
+  it("requires reproducible repository provenance for owned Atlas artifacts", () => {
+    const content = cloneSeedBundle();
+    const artifact = projectBySlug(content, "fradium").evidence.find(
+      (candidate) => candidate.id === "fradium-atlas-wallet-result",
+    );
+    if (!artifact || artifact.status !== "ready") {
+      throw new Error("Missing ready Atlas artifact fixture.");
+    }
+    if (artifact.provenance.kind !== "owned") {
+      throw new Error("Expected owned Atlas artifact provenance.");
+    }
+    delete artifact.provenance.sourcePath;
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.homepage-artifact-source-provenance",
+    );
+  });
+
+  it("keeps owned Atlas provenance on the canonical project repository", () => {
+    const content = cloneSeedBundle();
+    const artifact = projectBySlug(content, "fradium").evidence.find(
+      (candidate) => candidate.id === "fradium-atlas-wallet-result",
+    );
+    if (!artifact || artifact.status !== "ready") {
+      throw new Error("Missing ready Atlas artifact fixture.");
+    }
+    if (artifact.provenance.kind !== "owned") {
+      throw new Error("Expected owned Atlas artifact provenance.");
+    }
+    artifact.provenance.sourceRepository = "https://github.com/example/wrong";
+
+    expect(diagnosticCodes(content)).toContain(
+      "reference.homepage-artifact-source-repository",
     );
   });
 });
@@ -695,7 +782,7 @@ describe("schema and referential acceptance matrix", () => {
     [
       "homepage project",
       (content: ReturnType<typeof cloneSeedBundle>) =>
-        content.homepage.flagshipProjectSlugs.push("unknown-project"),
+        (content.homepage.projectStages[0].projectSlug = "unknown-project"),
       "reference.homepage-project",
     ],
     [

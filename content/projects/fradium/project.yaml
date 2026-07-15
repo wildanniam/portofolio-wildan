@@ -14,6 +14,46 @@ startedAt: "2025"
 lastUpdatedAt: "2025-12-24"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Making on-chain risk legible before money moves.
+branding:
+  palette:
+    surface: "#08110A"
+    foreground: "#F3F8F1"
+    accent: "#8EEA76"
+  mark:
+    id: fradium-brand-mark
+    src: /media/projects/fradium/brand/mark.svg
+    width: 36
+    height: 36
+    suitableSurfaces:
+      - light
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/fradiumofficial/fradium
+      revision: 370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e
+      sourcePath: src/frontend/public/logo.svg
+      creator: Fradium team
+      rights: >-
+        First-party collaborative project identity reused only to identify
+        Fradium in Wildan's portfolio.
+  wordmark:
+    id: fradium-brand-wordmark
+    src: /media/projects/fradium/brand/wordmark.svg
+    width: 124
+    height: 36
+    suitableSurfaces:
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/fradiumofficial/fradium
+      revision: 370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e
+      sourcePath: src/frontend/public/assets/logo-fradium.svg
+      creator: Fradium team
+      rights: >-
+        First-party collaborative project wordmark reused only to identify
+        Fradium in Wildan's portfolio.
 problem: >-
   Crypto users often reach a send confirmation with little context about the
   destination address. Wallet balances, explorer history, risk signals, and
@@ -178,6 +218,62 @@ claims:
       Describes the reviewed hybrid implementation; it does not claim that every
       feature-extraction step happens fully on-chain.
 evidence:
+  - id: fradium-atlas-wallet-result
+    status: ready
+    slot: atlas-primary-surface
+    evidenceType: product
+    evidenceFunctions:
+      - product-reality
+    mediaKind: image
+    src: /media/projects/fradium/atlas/wallet-result.webp
+    width: 420
+    height: 720
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/fradium/atlas/wallet-result-mobile.webp
+      width: 320
+      height: 549
+      crop:
+        mode: intrinsic
+    alt: Fradium wallet result showing an address risk analysis before a user proceeds.
+    caption: An authentic wallet result anchors the Atlas risk-decision sequence.
+    provenance:
+      kind: owned
+      creator: Fradium team; portfolio derivative prepared with OpenAI Codex
+      rightsNote: >-
+        First-party product fragment from the collaborative Fradium interface,
+        cropped without redesign for Wildan's portfolio.
+      sourceRepository: https://github.com/fradiumofficial/fradium
+      revision: 370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e
+      sourcePath: docs/images/extension-analyze-result.png
+    claimIds:
+      - fradium-risk-flow
+  - id: fradium-atlas-send-verdict
+    status: ready
+    slot: atlas-supporting-fragment
+    evidenceType: product
+    evidenceFunctions:
+      - system-reasoning
+    mediaKind: image
+    src: /media/projects/fradium/atlas/send-verdict.webp
+    width: 480
+    height: 723
+    crop:
+      mode: intrinsic
+    alt: Fradium send flow presenting a risk verdict before the wallet decision.
+    caption: The send verdict keeps the final transaction choice with the user.
+    provenance:
+      kind: owned
+      creator: Fradium team; portfolio derivative prepared with OpenAI Codex
+      rightsNote: >-
+        First-party product fragment from the collaborative Fradium interface,
+        cropped without redesign for Wildan's portfolio.
+      sourceRepository: https://github.com/fradiumofficial/fradium
+      revision: 370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e
+      sourcePath: docs/images/analyze-address.png
+    claimIds:
+      - fradium-risk-flow
   - id: fradium-public-beta-surface
     status: ready
     slot: public-beta-surface

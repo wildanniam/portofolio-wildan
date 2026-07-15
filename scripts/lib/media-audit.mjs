@@ -30,6 +30,15 @@ export const DOCUMENTARY_MEDIA_BUDGETS = Object.freeze({
   mobileImage: 140 * 1024,
 });
 
+export const ATLAS_MEDIA_BUDGETS = Object.freeze({
+  ...DEFAULT_MEDIA_BUDGETS,
+  image: 90 * 1024,
+  mobileImage: 60 * 1024,
+  svg: 24 * 1024,
+});
+
+export const BRAND_MEDIA_BUDGET_BYTES = 12 * 1024;
+
 const RASTER_FORMATS = new Set(["avif", "gif", "jpeg", "png", "webp"]);
 const VISUAL_EXTENSION_FORMATS = new Map([
   [".avif", "avif"],

@@ -10,6 +10,7 @@ import type {
   FilePresenceAdapter,
   MediaAsset,
   MomentRecord,
+  ProjectBrandAsset,
   ProjectRecord,
   VerifiedClaim,
 } from "./types";
@@ -128,6 +129,14 @@ function isReadyAsset(asset: MediaAsset): asset is Extract<MediaAsset, { status:
   return asset.status === "ready";
 }
 
+function projectBrandAssets(project: ProjectRecord): ProjectBrandAsset[] {
+  if (!project.branding) return [];
+  return [
+    project.branding.mark,
+    ...(project.branding.wordmark ? [project.branding.wordmark] : []),
+  ];
+}
+
 function presenceCheck(adapter: FilePresenceAdapter, repositoryPath: string): boolean {
   if (typeof adapter === "function") return adapter(repositoryPath);
   if ("exists" in adapter) return adapter.exists(repositoryPath);
@@ -175,6 +184,7 @@ function checkReferencedId(
 type RecordIndexes = {
   allAssetIds: Set<string>;
   assetsById: Map<string, MediaAsset>;
+  brandAssetIds: Set<string>;
   readyDocumentIds: Set<string>;
   allCollaboratorIds: Set<string>;
   projectSlugs: Set<string>;
@@ -187,10 +197,19 @@ function buildIndexes(content: ContentBundle): RecordIndexes {
     ...content.projects.flatMap((project) => project.evidence),
     ...content.moments.flatMap((moment) => moment.assets),
   ];
+  const brandAssets = content.projects.flatMap((project) =>
+    project.branding
+      ? [
+          project.branding.mark,
+          ...(project.branding.wordmark ? [project.branding.wordmark] : []),
+        ]
+      : [],
+  );
 
   return {
     allAssetIds: new Set(assets.map((asset) => asset.id)),
     assetsById: new Map(assets.map((asset) => [asset.id, asset])),
+    brandAssetIds: new Set(brandAssets.map((asset) => asset.id)),
     readyDocumentIds: new Set(
       assets
         .filter((asset) => isReadyAsset(asset) && asset.mediaKind === "document")
@@ -330,6 +349,31 @@ function validateProjectReferences(
     "duplicate.project-evidence-id",
     "Project evidence ID",
   );
+  const brandAssets = projectBrandAssets(project);
+  if (
+    project.branding?.wordmark &&
+    project.branding.mark.id === project.branding.wordmark.id
+  ) {
+    addError(
+      diagnostics,
+      "duplicate.project-brand-asset-id",
+      `${path}.branding.wordmark.id`,
+      `Project brand asset ID "${project.branding.wordmark.id}" is duplicated`,
+    );
+  }
+  if (project.branding && project.links.source.status === "public") {
+    const sourceUrl = project.links.source.url;
+    brandAssets.forEach((asset, assetIndex) => {
+      if (asset.provenance.sourceRepository !== sourceUrl) {
+        addError(
+          diagnostics,
+          "reference.brand-source-repository",
+          `${path}.branding.${assetIndex === 0 ? "mark" : "wordmark"}.provenance.sourceRepository`,
+          `Brand source repository must match the project's public source URL "${sourceUrl}"`,
+        );
+      }
+    });
+  }
   if (project.collaborators) {
     reportDuplicates(
       diagnostics,
@@ -760,6 +804,47 @@ function validateGlobalUniqueness(content: ContentBundle, diagnostics: ContentDi
     }
   });
 
+  const allBrandAssets = content.projects.flatMap((project, projectIndex) =>
+    project.branding
+      ? [
+          {
+            id: project.branding.mark.id,
+            path: `$content.projects[${projectIndex}].branding.mark.id`,
+          },
+          ...(project.branding.wordmark
+            ? [
+                {
+                  id: project.branding.wordmark.id,
+                  path: `$content.projects[${projectIndex}].branding.wordmark.id`,
+                },
+              ]
+            : []),
+        ]
+      : [],
+  );
+  const duplicateBrandAssetIds = new Set(
+    [...duplicateIndexes(allBrandAssets.map((asset) => asset.id)).keys()],
+  );
+  const evidenceIds = new Set(allAssets.map((asset) => asset.id));
+  allBrandAssets.forEach((asset) => {
+    if (duplicateBrandAssetIds.has(asset.id)) {
+      addError(
+        diagnostics,
+        "duplicate.global-brand-asset-id",
+        asset.path,
+        `Brand asset ID "${asset.id}" must be globally unique`,
+      );
+    }
+    if (evidenceIds.has(asset.id)) {
+      addError(
+        diagnostics,
+        "duplicate.global-asset-id",
+        asset.path,
+        `Brand asset ID "${asset.id}" collides with an evidence asset ID`,
+      );
+    }
+  });
+
   const allClaims = [
     ...content.projects.flatMap((project, projectIndex) =>
       project.claims.map((claim, claimIndex) => ({
@@ -794,71 +879,153 @@ function validateSiteReferences(
   diagnostics: ContentDiagnostic[],
   indexes: RecordIndexes,
 ): void {
-  content.homepage.flagshipProjectSlugs.forEach((slug, index) => {
-    checkReferencedId(
-      diagnostics,
-      slug,
-      indexes.projectSlugs,
-      `$content.homepage.flagshipProjectSlugs[${index}]`,
-      "reference.homepage-project",
-      "Project",
+  content.homepage.projectStages.forEach((stage, stageIndex) => {
+    const stagePath = `$content.homepage.projectStages[${stageIndex}]`;
+    const project = content.projects.find(
+      (candidate) => candidate.slug === stage.projectSlug,
     );
-  });
 
-  const flagshipSlugs = new Set(content.homepage.flagshipProjectSlugs);
-  const highlightClaimEntries = Object.entries(
-    content.homepage.flagshipHighlightClaimIds,
-  );
-
-  content.homepage.flagshipProjectSlugs.forEach((slug) => {
-    if (!Object.hasOwn(content.homepage.flagshipHighlightClaimIds, slug)) {
-      addError(
-        diagnostics,
-        "reference.homepage-highlight-coverage",
-        `$content.homepage.flagshipHighlightClaimIds[${JSON.stringify(slug)}]`,
-        `Flagship project "${slug}" needs exactly one highlight claim reference`,
-      );
-    }
-  });
-
-  highlightClaimEntries.forEach(([slug, claimId]) => {
-    const path = `$content.homepage.flagshipHighlightClaimIds[${JSON.stringify(slug)}]`;
-
-    if (!flagshipSlugs.has(slug)) {
-      addError(
-        diagnostics,
-        "reference.homepage-highlight-coverage",
-        path,
-        `Highlight project "${slug}" is not in flagshipProjectSlugs`,
-      );
-    }
-
-    const project = content.projects.find((candidate) => candidate.slug === slug);
     if (!project) {
       addError(
         diagnostics,
-        "reference.homepage-highlight-project",
-        path,
-        `Project "${slug}" does not exist`,
+        "reference.homepage-project",
+        `${stagePath}.projectSlug`,
+        `Project "${stage.projectSlug}" does not exist`,
       );
       return;
     }
 
-    if (project.claims.some((claim) => claim.id === claimId)) return;
+    if (project.publication !== "published") {
+      addError(
+        diagnostics,
+        "publication.homepage-project",
+        `${stagePath}.projectSlug`,
+        "A homepage project stage must reference a published project",
+      );
+    }
 
-    const owningProject = content.projects.find((candidate) =>
-      candidate.claims.some((claim) => claim.id === claimId),
-    );
-    addError(
-      diagnostics,
-      owningProject
-        ? "reference.homepage-highlight-ownership"
-        : "reference.homepage-highlight-claim",
-      path,
-      owningProject
-        ? `Claim "${claimId}" belongs to project "${owningProject.slug}", not "${slug}"`
-        : `Project claim "${claimId}" does not exist`,
-    );
+    if (!project.branding) {
+      addError(
+        diagnostics,
+        "reference.homepage-project-branding",
+        `${stagePath}.projectSlug`,
+        `Homepage project "${project.slug}" needs typed branding`,
+      );
+    } else if (project.branding.mark.accessibility.mode !== "decorative") {
+      addError(
+        diagnostics,
+        "accessibility.homepage-project-mark",
+        `${stagePath}.projectSlug`,
+        "A project mark beside textual identity must be decorative",
+      );
+    }
+
+    if (
+      !project.claims.some((claim) => claim.id === stage.outcomeClaimId)
+    ) {
+      const owningProject = content.projects.find((candidate) =>
+        candidate.claims.some((claim) => claim.id === stage.outcomeClaimId),
+      );
+      addError(
+        diagnostics,
+        owningProject
+          ? "reference.homepage-outcome-ownership"
+          : "reference.homepage-outcome-claim",
+        `${stagePath}.outcomeClaimId`,
+        owningProject
+          ? `Claim "${stage.outcomeClaimId}" belongs to project "${owningProject.slug}", not "${project.slug}"`
+          : `Project claim "${stage.outcomeClaimId}" does not exist`,
+      );
+    }
+
+    stage.artifactAssetIds.forEach((assetId, assetIndex) => {
+      const artifactPath = `${stagePath}.artifactAssetIds[${assetIndex}]`;
+      const artifact = project.evidence.find((asset) => asset.id === assetId);
+      if (!artifact) {
+        const owningProject = content.projects.find((candidate) =>
+          candidate.evidence.some((asset) => asset.id === assetId),
+        );
+        addError(
+          diagnostics,
+          owningProject
+            ? "reference.homepage-artifact-ownership"
+            : indexes.brandAssetIds.has(assetId)
+              ? "reference.homepage-artifact-brand-asset"
+              : "reference.homepage-artifact",
+          artifactPath,
+          owningProject
+            ? `Artifact "${assetId}" belongs to project "${owningProject.slug}", not "${project.slug}"`
+            : indexes.brandAssetIds.has(assetId)
+              ? `Brand asset "${assetId}" cannot be used as a project artifact`
+              : `Project artifact "${assetId}" does not exist`,
+        );
+        return;
+      }
+      if (!isReadyAsset(artifact)) {
+        addError(
+          diagnostics,
+          "reference.homepage-artifact-readiness",
+          artifactPath,
+          `Homepage artifact "${assetId}" must be ready`,
+        );
+        return;
+      }
+
+      if (artifact.provenance.kind === "owned") {
+        const projectIndex = content.projects.indexOf(project);
+        const evidenceIndex = project.evidence.indexOf(artifact);
+        const provenancePath = `$content.projects[${projectIndex}].evidence[${evidenceIndex}].provenance`;
+        const sourceFields = [
+          ["sourceRepository", artifact.provenance.sourceRepository],
+          ["revision", artifact.provenance.revision],
+          ["sourcePath", artifact.provenance.sourcePath],
+        ] as const;
+        sourceFields.forEach(([field, value]) => {
+          if (!value) {
+            addError(
+              diagnostics,
+              "reference.homepage-artifact-source-provenance",
+              `${provenancePath}.${field}`,
+              `Homepage artifact "${assetId}" needs reproducible repository provenance`,
+            );
+          }
+        });
+        if (
+          project.links.source.status === "public" &&
+          artifact.provenance.sourceRepository &&
+          artifact.provenance.sourceRepository !== project.links.source.url
+        ) {
+          addError(
+            diagnostics,
+            "reference.homepage-artifact-source-repository",
+            `${provenancePath}.sourceRepository`,
+            `Artifact source repository must match the project's public source URL "${project.links.source.url}"`,
+          );
+        }
+      }
+    });
+  });
+
+  content.research.territories.forEach((territory, territoryIndex) => {
+    territory.projectSlugs.forEach((slug, slugIndex) => {
+      const path = `$content.research.territories[${territoryIndex}].projectSlugs[${slugIndex}]`;
+      const project = content.projects.find((candidate) => candidate.slug === slug);
+      if (!project) {
+        addError(
+          diagnostics,
+          "reference.research-project",
+          path,
+          `Project "${slug}" does not exist`,
+        );
+      } else if (project.publication !== "published") {
+        addError(
+          diagnostics,
+          "publication.research-project",
+          path,
+          "A public research territory must reference a published project",
+        );
+      }
+    });
   });
 
   content.homepage.featuredMomentIds.forEach((id, index) => {
@@ -870,6 +1037,15 @@ function validateSiteReferences(
       "reference.homepage-moment",
       "Moment",
     );
+    const moment = content.moments.find((candidate) => candidate.id === id);
+    if (moment && moment.publication !== "published") {
+      addError(
+        diagnostics,
+        "publication.homepage-moment",
+        `$content.homepage.featuredMomentIds[${index}]`,
+        "A homepage moment must be published",
+      );
+    }
   });
   content.homepage.currentlyBuildingIds.forEach((id, index) => {
     checkReferencedId(
@@ -1172,6 +1348,35 @@ function validateReadyAssetFiles(
         "Ready video poster",
       );
     }
+  });
+
+  content.projects.forEach((project, projectIndex) => {
+    if (!project.branding) return;
+    const brandLocations = [
+      {
+        asset: project.branding.mark,
+        path: `$content.projects[${projectIndex}].branding.mark`,
+      },
+      ...(project.branding.wordmark
+        ? [
+            {
+              asset: project.branding.wordmark,
+              path: `$content.projects[${projectIndex}].branding.wordmark`,
+            },
+          ]
+        : []),
+    ];
+
+    brandLocations.forEach(({ asset, path }) => {
+      checkFilePresence(
+        diagnostics,
+        filePresence,
+        `public${asset.src}`,
+        `${path}.src`,
+        "source.brand-asset-missing",
+        "Brand asset",
+      );
+    });
   });
 }
 

@@ -1,14 +1,14 @@
 # Portfolio content
 
-This directory is the canonical, repository-owned content source for Portfolio V1.
-Project facts live in YAML, while the long-form narrative lives beside each record
-in `case-study.mdx`. Presentation code must query these records rather than copy
-project facts into components.
+This directory is the canonical, repository-owned content source for Portfolio V4.
+Project facts live in YAML, while long-form narratives live beside each record in
+`case-study.mdx`. Presentation code must query these records rather than duplicate
+facts, roles, outcomes, branding, or Atlas composition in components.
 
 ## Authoring rules
 
 - Content is written in English.
-- `preview` records are visible only in the explicitly enabled V1 preview and are
+- `preview` records are visible only in an explicitly enabled preview and are
   never indexed or added to the production sitemap.
 - Claims use a typed `kind` and structured sources. Wildan's own account is valid
   provenance for his role and responsibilities; external awards, grants, metrics,
@@ -20,9 +20,17 @@ project facts into components.
 - Original photographs and private captures stay outside this repository. Only
   cropped, redacted, EXIF-stripped, optimized, rights-cleared derivatives may later
   become ready evidence.
-- `site/homepage.yaml` stores flagship order plus one project-owned highlight
-  claim ID per flagship. Claim text and every other project fact remain in the
-  corresponding `project.yaml` record.
+- `site/profile.yaml` owns Wildan's public identity, hero copy, discipline,
+  research direction, and operating rhythm.
+- `site/research.yaml` owns the four research territories and their project
+  relationships.
+- `site/homepage.yaml` owns exactly four typed Atlas stages. Each stage references
+  a published project, a project-owned outcome claim, and ready project-owned
+  artifact IDs; it never duplicates the claim or asset payload.
+- Flagship `project.yaml` records own their palette, official marks/wordmarks,
+  repository revision provenance, project role, claims, and Atlas derivatives.
+- Every imported Atlas derivative records its source repository, 40-character
+  revision, source path, creator, and rights boundary.
 - `socialImageAssetId` is an optional project-local pointer while authoring, but
   every published full case study must resolve it to ready raster image evidence.
 - Moments are intentionally withheld until their caption, date, place, credit,
@@ -30,9 +38,11 @@ project facts into components.
 
 ## Current publication state
 
-Fradium, Nova AI Wallet, PayGate, and Quorum are seeded as full preview records.
-AgentPay, SpecHeal, and Crucible are retained as lighter preview archive records,
-so the V1 migration does not discard existing project content. Their narrative
-and sourced claims are ready for development, but their media is still represented
-as planned evidence. Promotion to `published` happens only after the publication
-gates in `docs/portfolio-v1/content-asset-contract.md` pass.
+Fradium, Nova AI Wallet, PayGate, and Quorum are the four published full case
+studies and homepage Atlas stages. AgentPay, SpecHeal, and Crucible remain lighter
+preview archive records so the migration does not discard earlier work. Research,
+homepage, branding, evidence, and publication references are all rejected at build
+time when they are missing, cross-owned, unready, or unprovenanced.
+
+The frozen V4 asset inventory and derivative rules live in
+`docs/portfolio-v4/ASSET_REGISTER.md`.

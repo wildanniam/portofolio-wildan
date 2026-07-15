@@ -316,6 +316,21 @@ describe("public, preview, and draft route selectors", () => {
       "quorum",
     ]);
     expect(
+      publicHomepage.projectStages.map(({ stage, artifacts }) => ({
+        slug: stage.projectSlug,
+        artifacts: artifacts.map((asset) => asset.id),
+      })),
+    ).toEqual([
+      {
+        slug: publishedProject.slug,
+        artifacts: [
+          "fradium-atlas-wallet-result",
+          "fradium-atlas-send-verdict",
+        ],
+      },
+    ]);
+    expect(publicHomepage.research).toEqual(content.research);
+    expect(
       publicHomepage.flagshipHighlightClaims.map(({ projectSlug, claim }) => [
         projectSlug,
         claim.id,

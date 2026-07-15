@@ -5,6 +5,9 @@ import type {
   AssetLicenseManifestSchema,
   AssetProvenanceSchema,
   BriefProjectRecordSchema,
+  BrandAssetAccessibilitySchema,
+  BrandAssetProvenanceSchema,
+  BrandSurfaceSchema,
   CaseStudyStateSchema,
   ClaimKindSchema,
   ClaimSourceSchema,
@@ -19,6 +22,7 @@ import type {
   EvidenceTypeSchema,
   FullProjectRecordSchema,
   HomepageSchema,
+  HomepageProjectStageSchema,
   LinkStateSchema,
   MediaAssetSchema,
   MediaKindSchema,
@@ -32,17 +36,23 @@ import type {
   PlannedAssetSchema,
   PlannedAssetStatusSchema,
   ProfileSchema,
+  ProjectBrandAssetSchema,
+  ProjectBrandingSchema,
+  ProjectBrandPaletteSchema,
   ProjectLifecycleSchema,
   ProjectLinksSchema,
   ProjectOriginSchema,
   ProjectRecordSchema,
   ProjectRoleSchema,
+  ProjectStageVariantSchema,
   ProjectSourceMetadataSchema,
   PublicationStateSchema,
   ReadyAssetSchema,
   ReadyDocumentAssetSchema,
   ReadyImageAssetSchema,
   ReadyVideoAssetSchema,
+  ResearchSchema,
+  ResearchTerritorySchema,
   TeamContextSchema,
   ValidationKindSchema,
   VerifiedClaimSchema,
@@ -84,12 +94,28 @@ export type ProjectRecord = z.infer<typeof ProjectRecordSchema>;
 export type MomentContext = z.infer<typeof MomentContextSchema>;
 export type MomentCategory = z.infer<typeof MomentCategorySchema>;
 export type MomentShowcaseMode = z.infer<typeof MomentShowcaseModeSchema>;
+export type BrandSurface = z.infer<typeof BrandSurfaceSchema>;
+export type BrandAssetAccessibility = z.infer<
+  typeof BrandAssetAccessibilitySchema
+>;
+export type BrandAssetProvenance = z.infer<
+  typeof BrandAssetProvenanceSchema
+>;
+export type ProjectBrandAsset = z.infer<typeof ProjectBrandAssetSchema>;
+export type ProjectBrandPalette = z.infer<typeof ProjectBrandPaletteSchema>;
+export type ProjectBranding = z.infer<typeof ProjectBrandingSchema>;
+export type ProjectStageVariant = z.infer<typeof ProjectStageVariantSchema>;
 export type MomentRecord = z.infer<typeof MomentRecordSchema>;
 export type CurrentlyBuildingRecord = z.infer<typeof CurrentlyBuildingRecordSchema>;
 export type Profile = z.infer<typeof ProfileSchema>;
+export type ResearchTerritory = z.infer<typeof ResearchTerritorySchema>;
+export type Research = z.infer<typeof ResearchSchema>;
 export type NavigationItem = z.infer<typeof NavigationItemSchema>;
 export type Navigation = z.infer<typeof NavigationSchema>;
 export type Homepage = z.infer<typeof HomepageSchema>;
+export type HomepageProjectStage = z.infer<
+  typeof HomepageProjectStageSchema
+>;
 export type CurrentlyBuilding = z.infer<typeof CurrentlyBuildingSchema>;
 export type AssetLicenseEntry = z.infer<typeof AssetLicenseEntrySchema>;
 export type AssetLicenseManifest = z.infer<typeof AssetLicenseManifestSchema>;

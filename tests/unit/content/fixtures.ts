@@ -163,6 +163,9 @@ export function toBriefProject(
     lastUpdatedAt: project.lastUpdatedAt,
     lastVerifiedAt: project.lastVerifiedAt,
     oneLiner: project.oneLiner,
+    ...(project.branding
+      ? { branding: structuredClone(project.branding) }
+      : {}),
     role: structuredClone(project.role),
     ...(project.collaborators
       ? { collaborators: structuredClone(project.collaborators) }

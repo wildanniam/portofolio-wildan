@@ -4,6 +4,8 @@ const FULL_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 const PARTIAL_DATE_PATTERN = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?$/;
 const REPOSITORY_PATH_PATTERN = /^(?!\/)(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\/\/)[\w@.+/-]+$/;
 const PUBLIC_MEDIA_PATH_PATTERN = /^\/media\/(?!.*(?:^|\/)\.\.(?:\/|$))(?!.*\/\/)[\w@.+%/-]+$/;
+const GIT_REVISION_PATTERN = /^[a-f0-9]{40}$/;
+const HEX_COLOR_PATTERN = /^#[a-fA-F0-9]{6}$/;
 
 function isCalendarDate(value: string): boolean {
   const match = FULL_DATE_PATTERN.exec(value);
@@ -63,6 +65,14 @@ export const PublicMediaPathSchema = z
   .string()
   .trim()
   .regex(PUBLIC_MEDIA_PATH_PATTERN, "Ready media must use a path below /media/");
+export const GitRevisionSchema = z
+  .string()
+  .trim()
+  .regex(GIT_REVISION_PATTERN, "Use a complete 40-character Git revision");
+export const HexColorSchema = z
+  .string()
+  .trim()
+  .regex(HEX_COLOR_PATTERN, "Use a six-digit hexadecimal color");
 
 export const PublicationStateSchema = z.enum(["draft", "preview", "published"]);
 export const CaseStudyStateSchema = z.enum(["brief", "full"]);
@@ -132,6 +142,13 @@ export const MomentShowcaseModeSchema = z.enum([
   "portrait",
 ]);
 export const MomentCategorySchema = z.enum(["build", "win", "learn", "give"]);
+export const BrandSurfaceSchema = z.enum(["light", "dark"]);
+export const ProjectStageVariantSchema = z.enum([
+  "wide-left",
+  "narrow-right",
+  "narrow-left",
+  "wide-right",
+]);
 
 export const PublicLinkStateSchema = z
   .object({
@@ -218,6 +235,9 @@ export const OwnedAssetProvenanceSchema = z
     kind: z.literal("owned"),
     creator: NonEmptyStringSchema,
     rightsNote: NonEmptyStringSchema,
+    sourceRepository: HttpUrlSchema.optional(),
+    revision: GitRevisionSchema.optional(),
+    sourcePath: RepositoryPathSchema.optional(),
     capturedAt: VerificationDateSchema.optional(),
   })
   .strict();
@@ -390,6 +410,66 @@ export const ProjectLinksSchema = z
   })
   .strict();
 
+export const DecorativeBrandAssetAccessibilitySchema = z
+  .object({
+    mode: z.literal("decorative"),
+  })
+  .strict();
+
+export const InformativeBrandAssetAccessibilitySchema = z
+  .object({
+    mode: z.literal("informative"),
+    label: NonEmptyStringSchema,
+  })
+  .strict();
+
+export const BrandAssetAccessibilitySchema = z.discriminatedUnion("mode", [
+  DecorativeBrandAssetAccessibilitySchema,
+  InformativeBrandAssetAccessibilitySchema,
+]);
+
+export const BrandAssetProvenanceSchema = z
+  .object({
+    sourceRepository: HttpUrlSchema,
+    revision: GitRevisionSchema,
+    sourcePath: RepositoryPathSchema,
+    creator: NonEmptyStringSchema,
+    rights: NonEmptyStringSchema,
+  })
+  .strict();
+
+export const ProjectBrandAssetSchema = z
+  .object({
+    id: IdentifierSchema,
+    src: PublicMediaPathSchema,
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
+    suitableSurfaces: z
+      .array(BrandSurfaceSchema)
+      .min(1)
+      .refine(uniqueValues, "Suitable surfaces must be unique"),
+    accessibility: BrandAssetAccessibilitySchema,
+    provenance: BrandAssetProvenanceSchema,
+  })
+  .strict();
+
+export const ProjectBrandPaletteSchema = z
+  .object({
+    surface: HexColorSchema,
+    foreground: HexColorSchema,
+    accent: HexColorSchema,
+    secondaryAccent: HexColorSchema.optional(),
+  })
+  .strict();
+
+export const ProjectBrandingSchema = z
+  .object({
+    palette: ProjectBrandPaletteSchema,
+    mark: ProjectBrandAssetSchema,
+    wordmark: ProjectBrandAssetSchema.optional(),
+  })
+  .strict();
+
 const projectCommonShape = {
   slug: ProjectSlugSchema,
   title: NonEmptyStringSchema,
@@ -408,6 +488,7 @@ const projectCommonShape = {
   lastUpdatedAt: VerificationDateSchema,
   lastVerifiedAt: VerificationDateSchema,
   oneLiner: NonEmptyStringSchema,
+  branding: ProjectBrandingSchema.optional(),
   role: ProjectRoleSchema,
   collaborators: z.array(CollaboratorSchema).optional(),
   technologies: z.array(NonEmptyStringSchema).refine(uniqueValues, "Technologies must be unique"),
@@ -513,6 +594,21 @@ export const CurrentlyBuildingRecordSchema = z
 export const ProfileSchema = z
   .object({
     name: NonEmptyStringSchema,
+    identity: NonEmptyStringSchema,
+    discipline: NonEmptyStringSchema,
+    researchDirection: NonEmptyStringSchema,
+    headline: z
+      .object({
+        lead: NonEmptyStringSchema,
+        continuation: NonEmptyStringSchema,
+        supporting: NonEmptyStringSchema,
+      })
+      .strict(),
+    operatingRhythm: z.tuple([
+      z.literal("Researching"),
+      z.literal("Building"),
+      z.literal("Shipping"),
+    ]),
     positioning: NonEmptyStringSchema,
     thesis: NonEmptyStringSchema,
     location: NonEmptyStringSchema,
@@ -524,6 +620,32 @@ export const ProfileSchema = z
     resume: LinkStateSchema,
     portrait: ReadyImageAssetSchema.optional(),
     portraitAssetId: IdentifierSchema.optional(),
+  })
+  .strict();
+
+export const ResearchTerritorySchema = z
+  .object({
+    id: IdentifierSchema,
+    name: NonEmptyStringSchema,
+    summary: NonEmptyStringSchema,
+    projectSlugs: z
+      .array(ProjectSlugSchema)
+      .min(1)
+      .refine(uniqueValues, "Research project references must be unique"),
+  })
+  .strict();
+
+export const ResearchSchema = z
+  .object({
+    title: NonEmptyStringSchema,
+    intro: NonEmptyStringSchema,
+    territories: z
+      .array(ResearchTerritorySchema)
+      .min(1)
+      .refine(
+        (territories) => uniqueValues(territories.map((territory) => territory.id)),
+        "Research territory IDs must be unique",
+      ),
   })
   .strict();
 
@@ -560,15 +682,42 @@ export const NavigationSchema = z
   })
   .strict();
 
+export const HomepageProjectStageSchema = z
+  .object({
+    projectSlug: ProjectSlugSchema,
+    question: NonEmptyStringSchema,
+    answer: NonEmptyStringSchema,
+    outcomeClaimId: IdentifierSchema,
+    flowLabels: z
+      .array(NonEmptyStringSchema)
+      .min(4)
+      .max(5)
+      .refine(uniqueValues, "Project-stage flow labels must be unique"),
+    artifactAssetIds: z
+      .array(IdentifierSchema)
+      .min(1)
+      .max(3)
+      .refine(uniqueValues, "Project-stage artifact references must be unique"),
+    variant: ProjectStageVariantSchema,
+  })
+  .strict();
+
 export const HomepageSchema = z
   .object({
-    flagshipProjectSlugs: z
-      .array(ProjectSlugSchema)
-      .min(1)
-      .refine(uniqueValues, "Homepage project references must be unique"),
-    flagshipHighlightClaimIds: z.record(ProjectSlugSchema, IdentifierSchema),
+    projectStages: z
+      .array(HomepageProjectStageSchema)
+      .length(4)
+      .refine(
+        (stages) => uniqueValues(stages.map((stage) => stage.projectSlug)),
+        "Homepage project references must be unique",
+      )
+      .refine(
+        (stages) => uniqueValues(stages.map((stage) => stage.variant)),
+        "Homepage project-stage variants must be unique",
+      ),
     featuredMomentIds: z
       .array(IdentifierSchema)
+      .max(4)
       .refine(uniqueValues, "Homepage moment references must be unique"),
     currentlyBuildingIds: z
       .array(IdentifierSchema)
@@ -632,6 +781,7 @@ export const ContentBundleSchema = z
     projects: z.array(ProjectRecordSchema),
     moments: z.array(MomentRecordSchema),
     profile: ProfileSchema,
+    research: ResearchSchema,
     navigation: NavigationSchema,
     homepage: HomepageSchema,
     currentlyBuilding: CurrentlyBuildingSchema,

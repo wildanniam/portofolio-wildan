@@ -1,11 +1,14 @@
 import type {
   ContentBundle,
   CurrentlyBuildingRecord,
+  HomepageProjectStage,
   MomentRecord,
   Navigation,
   Profile,
   ProjectRecord,
+  ReadyAsset,
   ReadyImageAsset,
+  Research,
   VerifiedClaim,
 } from "./types";
 import {
@@ -24,7 +27,9 @@ export type HomepageSelectionOptions = ContentVisibility & {
 
 export type HomepageSelection = {
   profile: Profile;
+  research: Research;
   navigation: Navigation;
+  projectStages: HomepageProjectStageSelection[];
   projects: ProjectRecord[];
   flagshipHighlightClaims: Array<{
     projectSlug: string;
@@ -32,6 +37,13 @@ export type HomepageSelection = {
   }>;
   moments: MomentRecord[];
   currentlyBuilding: CurrentlyBuildingRecord[];
+};
+
+export type HomepageProjectStageSelection = {
+  stage: HomepageProjectStage;
+  project: ProjectRecord;
+  outcomeClaim: VerifiedClaim;
+  artifacts: ReadyAsset[];
 };
 
 export type SiteShellSelection = {
@@ -242,16 +254,32 @@ export function selectHomepage(
     content.currentlyBuilding.items.map((item) => [item.id, item]),
   );
 
-  const projects = content.homepage.flagshipProjectSlugs.flatMap((slug) => {
-    const project = visibleProjects.get(slug);
-    return project ? [project] : [];
-  });
-  const flagshipHighlightClaims = projects.flatMap((project) => {
-    const claimId = content.homepage.flagshipHighlightClaimIds[project.slug];
-    const claim = project.claims.find((candidate) => candidate.id === claimId);
+  const projectStages = content.homepage.projectStages.flatMap((stage) => {
+    const project = visibleProjects.get(stage.projectSlug);
+    if (!project) return [];
 
-    return claim ? [{ projectSlug: project.slug, claim }] : [];
+    const outcomeClaim = project.claims.find(
+      (claim) => claim.id === stage.outcomeClaimId,
+    );
+    if (!outcomeClaim) return [];
+
+    const artifacts = stage.artifactAssetIds.flatMap((assetId) => {
+      const asset = project.evidence.find(
+        (candidate): candidate is ReadyAsset =>
+          candidate.id === assetId && candidate.status === "ready",
+      );
+      return asset ? [asset] : [];
+    });
+
+    return [{ stage, project, outcomeClaim, artifacts }];
   });
+  const projects = projectStages.map(({ project }) => project);
+  const flagshipHighlightClaims = projectStages.map(
+    ({ project, outcomeClaim }) => ({
+      projectSlug: project.slug,
+      claim: outcomeClaim,
+    }),
+  );
   const moments = content.homepage.featuredMomentIds.flatMap((id) => {
     const moment = visibleMoments.get(id);
     return moment ? [moment] : [];
@@ -268,7 +296,9 @@ export function selectHomepage(
 
   return {
     profile: content.profile,
+    research: content.research,
     navigation: selectNavigation(content.navigation, visibleProjects),
+    projectStages,
     projects,
     flagshipHighlightClaims,
     moments,

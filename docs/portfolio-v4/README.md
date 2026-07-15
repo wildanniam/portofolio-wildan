@@ -34,6 +34,7 @@ V3 is technically sound but visually unsuccessful:
 - [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — ordered implementation and migration plan.
 - [QA_MATRIX.md](./QA_MATRIX.md) — merge blockers and required visual evidence.
 - [BASELINE.md](./BASELINE.md) — production V3 rollback, metrics, and failure patterns V4 must remove.
+- [ASSET_REGISTER.md](./ASSET_REGISTER.md) — frozen source revisions, derivative rules, ownership boundaries, and media budgets.
 
 ## Non-negotiable release rule
 

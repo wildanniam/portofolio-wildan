@@ -63,8 +63,8 @@ Eyebrow:
 
 Headline:
 
-> I research how AI agents reason—<br>
-> and build the software that lets them act.
+> I research how AI agents reason.<br>
+> I build software that lets them act.
 
 Supporting copy:
 
@@ -77,7 +77,7 @@ Operating line:
 Actions:
 
 - Primary: `Explore the work`
-- Secondary: `See my research direction`
+- Secondary: `Read the research`
 - Utility: `GitHub`
 
 ## Copy rules

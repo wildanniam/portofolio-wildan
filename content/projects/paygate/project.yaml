@@ -18,6 +18,30 @@ startedAt: "2026-04-24"
 lastUpdatedAt: "2026-06-28"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Turning ordinary APIs into machine-paid endpoints on Stellar testnet.
+branding:
+  palette:
+    surface: "#0C0B17"
+    foreground: "#F7F4FF"
+    accent: "#8C6BFF"
+    secondaryAccent: "#56D6FF"
+  mark:
+    id: paygate-brand-mark
+    src: /media/projects/paygate/brand/mark.svg
+    width: 512
+    height: 512
+    suitableSurfaces:
+      - light
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/wildanniam/paygate-stellar
+      revision: 69fe93085c5816e3943cb4e16846ab231c50f1da
+      sourcePath: frontend/public/brand/paygate-mark.svg
+      creator: Wildan Syukri Niam
+      rights: >-
+        First-party PayGate identity authored by Wildan and reused to identify
+        his product in this portfolio.
 problem: >-
   API billing usually assumes a human who creates an account, chooses a plan, and
   enters a card. AI agents need a machine-readable price challenge, a way to pay
@@ -181,6 +205,58 @@ claims:
       Active build and testnet operation; not a claim of mainnet readiness,
       production customer scale, revenue, or independent certification.
 evidence:
+  - id: paygate-atlas-receipt
+    status: ready
+    slot: atlas-primary-surface
+    evidenceType: product
+    evidenceFunctions:
+      - product-reality
+    mediaKind: image
+    src: /media/projects/paygate/atlas/request-receipt.webp
+    width: 720
+    height: 502
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/paygate/atlas/request-receipt-mobile.webp
+      width: 350
+      height: 244
+      crop:
+        mode: intrinsic
+    alt: PayGate request receipt showing payment verification and API delivery states.
+    caption: One receipt keeps the request, payment, verification, and delivery states together.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam; portfolio derivative prepared with OpenAI Codex
+      rightsNote: First-party PayGate product fragment cropped without redesign.
+      sourceRepository: https://github.com/wildanniam/paygate-stellar
+      revision: 69fe93085c5816e3943cb4e16846ab231c50f1da
+      sourcePath: output/scf-report/assets/03-product-request-receipt-final.png
+    claimIds:
+      - paygate-machine-payment-flow
+  - id: paygate-atlas-transform
+    status: ready
+    slot: atlas-supporting-fragment
+    evidenceType: architecture
+    evidenceFunctions:
+      - system-reasoning
+    mediaKind: image
+    src: /media/projects/paygate/atlas/transform-flow.webp
+    width: 720
+    height: 450
+    crop:
+      mode: intrinsic
+    alt: PayGate flow transforming an API request through HTTP 402 into verified delivery.
+    caption: The payment rail turns one unpaid request into a verified response.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam; portfolio derivative prepared with OpenAI Codex
+      rightsNote: First-party PayGate product fragment cropped without redesign.
+      sourceRepository: https://github.com/wildanniam/paygate-stellar
+      revision: 69fe93085c5816e3943cb4e16846ab231c50f1da
+      sourcePath: output/scf-report/assets/02-product-transform-flow-final.png
+    claimIds:
+      - paygate-machine-payment-flow
   - id: paygate-product-flow
     status: ready
     slot: hero-paid-request-loop
