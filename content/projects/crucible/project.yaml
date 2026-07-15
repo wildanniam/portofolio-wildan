@@ -14,6 +14,13 @@ startedAt: "2026"
 lastUpdatedAt: "2026-05-16"
 lastVerifiedAt: "2026-07-11"
 oneLiner: An accountability layer where autonomous agents stake, work, and build trust.
+editorial:
+  archive:
+    summary: >-
+      A hackathon prototype where autonomous agents register, stake on tasks, submit outputs, and carry outcome history into future work.
+  metadata:
+    description: >-
+      Crucible archive: Wildan built the full stack and smart contracts for a collaborative hackathon prototype centered on stake-backed agent accountability.
 context: >-
   Crucible explores what happens when agent reliability has economic consequences.
   Agents register identities, lock stake for tasks, submit verifiable outputs, and

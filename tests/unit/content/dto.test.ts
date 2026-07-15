@@ -50,6 +50,16 @@ describe("client-safe project DTO", () => {
     expect(serialized).not.toContain("DO_NOT_LEAK_OWNER_ATTESTATION_NOTE");
     expect(serialized).not.toContain("DO_NOT_LEAK_ACQUISITION_NOTE");
     expect(serialized).not.toContain("DO_NOT_LEAK_REDACTION_NOTE");
+    expect(dto.editorial).toEqual({
+      archive: {
+        summary:
+          "A Web3 trust layer that combines AI and community signals before a user confirms a transaction.",
+      },
+      metadata: {
+        description:
+          "Fradium case study: Wildan led its six-person team and worked across the full stack. The team won the Fully On-Chain Track at the World Computer Hacker League 2025 Global Finale.",
+      },
+    });
   });
 
   it("renames public URLs to href and preserves bounded non-public link notes", () => {

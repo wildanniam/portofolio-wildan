@@ -16,6 +16,17 @@ startedAt: "2026-06-08"
 lastUpdatedAt: "2026-07-11"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Making collaborative event settlement inspectable on Stellar testnet.
+editorial:
+  archive:
+    summary: >-
+      A Stellar testnet event platform linking wallet-bound passes, collaborator splits, check-in, and withdrawal.
+  metadata:
+    description: >-
+      Quorum case study: Wildan built the full-stack product and Soroban flows for event access and settlement in a collaborative Stellar testnet hackathon prototype.
+  caseOpening:
+    question: How can event collaborators share access and revenue without relying on manual reconciliation?
+    answer: >-
+      Quorum combines wallet-bound passes, on-chain splits, check-in, and withdrawal, while keeping cash-out as a separate tracked step.
 branding:
   palette:
     surface: "#080B0B"

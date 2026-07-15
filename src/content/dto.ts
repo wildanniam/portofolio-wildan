@@ -34,6 +34,14 @@ export type ProjectSummaryDto = {
   lastUpdatedAt: string;
   lastVerifiedAt: string;
   oneLiner: string;
+  editorial: {
+    archive: {
+      summary: string;
+    };
+    metadata: {
+      description: string;
+    };
+  };
   role: {
     label: string;
     scope: string[];
@@ -213,6 +221,14 @@ export function toProjectSummaryDto(
     lastUpdatedAt: project.lastUpdatedAt,
     lastVerifiedAt: project.lastVerifiedAt,
     oneLiner: project.oneLiner,
+    editorial: {
+      archive: {
+        summary: project.editorial.archive.summary,
+      },
+      metadata: {
+        description: project.editorial.metadata.description,
+      },
+    },
     role: {
       label: project.role.label,
       scope: [...project.role.scope],

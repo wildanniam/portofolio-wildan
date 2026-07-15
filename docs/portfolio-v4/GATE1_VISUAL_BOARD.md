@@ -1,6 +1,6 @@
 # Human Visual Gate 1 Board
 
-- Status: complete board assembled; Wildan approval pending
+- Status: approved and locked by Wildan on 15 July 2026
 - Primary direction: **Research Instrument / Field Journal**
 - Secondary reference: **Signal Cartography**, connector grammar only
 - Implementation rule: no final homepage/Atlas layout and no motion before this board is approved
@@ -130,6 +130,6 @@ The sequence does not pin, scrub, loop, or intercept scrolling. The no-JavaScrip
 - [x] concise `Signal → System` keyframe storyboard
 - [x] authentic source assets remain visible and undistorted
 - [x] exact grid, type, crop, and reduced-motion rules documented
-- [ ] Wildan approves the complete board
+- [x] Wildan approves the complete board
 
-Gate 1 closes only after Wildan approves this complete board. Final homepage/Atlas layout and production motion remain gated until that approval.
+Gate 1 closed when Wildan approved this complete board on 15 July 2026. The written implementation contracts remain authoritative throughout production and visual QA.

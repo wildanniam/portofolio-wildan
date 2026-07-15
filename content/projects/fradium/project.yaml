@@ -15,6 +15,17 @@ startedAt: "2025"
 lastUpdatedAt: "2025-12-24"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Making on-chain risk legible before money moves.
+editorial:
+  archive:
+    summary: >-
+      A Web3 trust layer that combines AI and community signals before a user confirms a transaction.
+  metadata:
+    description: >-
+      Fradium case study: Wildan led its six-person team and worked across the full stack. The team won the Fully On-Chain Track at the World Computer Hacker League 2025 Global Finale.
+  caseOpening:
+    question: How can a wallet surface meaningful risk before a user signs a transaction?
+    answer: >-
+      Fradium combines chain-specific analysis, AI inference, and community reports while keeping the final decision with the user.
 branding:
   palette:
     surface: "#08110A"

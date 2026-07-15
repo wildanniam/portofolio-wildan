@@ -20,6 +20,11 @@ import type {
   DecisionSchema,
   EvidenceFunctionSchema,
   EvidenceTypeSchema,
+  BriefProjectEditorialSchema,
+  FullProjectEditorialSchema,
+  ProjectArchiveEditorialSchema,
+  ProjectCaseOpeningSchema,
+  ProjectMetadataEditorialSchema,
   FullProjectRecordSchema,
   HomepageSchema,
   HomepageFeaturedMomentSchema,
@@ -86,6 +91,17 @@ export type ReadyAsset = z.infer<typeof ReadyAssetSchema>;
 export type PlannedAsset = z.infer<typeof PlannedAssetSchema>;
 export type MediaAsset = z.infer<typeof MediaAssetSchema>;
 export type ProjectRole = z.infer<typeof ProjectRoleSchema>;
+export type ProjectArchiveEditorial = z.infer<
+  typeof ProjectArchiveEditorialSchema
+>;
+export type ProjectMetadataEditorial = z.infer<
+  typeof ProjectMetadataEditorialSchema
+>;
+export type ProjectCaseOpening = z.infer<typeof ProjectCaseOpeningSchema>;
+export type BriefProjectEditorial = z.infer<
+  typeof BriefProjectEditorialSchema
+>;
+export type FullProjectEditorial = z.infer<typeof FullProjectEditorialSchema>;
 export type Collaborator = z.infer<typeof CollaboratorSchema>;
 export type Decision = z.infer<typeof DecisionSchema>;
 export type ProjectLinks = z.infer<typeof ProjectLinksSchema>;

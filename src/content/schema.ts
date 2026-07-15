@@ -470,6 +470,43 @@ export const ProjectBrandingSchema = z
   })
   .strict();
 
+export const ProjectArchiveEditorialSchema = z
+  .object({
+    summary: NonEmptyStringSchema.max(180),
+  })
+  .strict();
+
+export const ProjectMetadataEditorialSchema = z
+  .object({
+    description: NonEmptyStringSchema.max(180),
+  })
+  .strict();
+
+export const ProjectCaseOpeningSchema = z
+  .object({
+    question: NonEmptyStringSchema.max(140).refine(
+      (value) => value.endsWith("?"),
+      "Case-opening questions must end with a question mark",
+    ),
+    answer: NonEmptyStringSchema.max(200),
+  })
+  .strict();
+
+export const BriefProjectEditorialSchema = z
+  .object({
+    archive: ProjectArchiveEditorialSchema,
+    metadata: ProjectMetadataEditorialSchema,
+  })
+  .strict();
+
+export const FullProjectEditorialSchema = z
+  .object({
+    archive: ProjectArchiveEditorialSchema,
+    metadata: ProjectMetadataEditorialSchema,
+    caseOpening: ProjectCaseOpeningSchema,
+  })
+  .strict();
+
 const projectCommonShape = {
   slug: ProjectSlugSchema,
   title: NonEmptyStringSchema,
@@ -501,6 +538,7 @@ export const BriefProjectRecordSchema = z
   .object({
     ...projectCommonShape,
     caseStudyState: z.literal("brief"),
+    editorial: BriefProjectEditorialSchema,
     context: NonEmptyStringSchema,
     outcome: NonEmptyStringSchema,
   })
@@ -520,6 +558,7 @@ export const FullProjectRecordSchema = z
   .object({
     ...projectCommonShape,
     caseStudyState: z.literal("full"),
+    editorial: FullProjectEditorialSchema,
     caseStudyMomentId: IdentifierSchema.optional(),
     problem: NonEmptyStringSchema,
     intendedUsers: z.array(NonEmptyStringSchema).min(1),

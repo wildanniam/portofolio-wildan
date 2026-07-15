@@ -218,6 +218,10 @@ export function toBriefProject(
     lastUpdatedAt: project.lastUpdatedAt,
     lastVerifiedAt: project.lastVerifiedAt,
     oneLiner: project.oneLiner,
+    editorial: {
+      archive: structuredClone(project.editorial.archive),
+      metadata: structuredClone(project.editorial.metadata),
+    },
     ...(project.branding
       ? { branding: structuredClone(project.branding) }
       : {}),

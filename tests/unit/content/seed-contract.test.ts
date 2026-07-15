@@ -18,6 +18,76 @@ const expectedProjects = [
 ] as const;
 
 describe("canonical V4 content inventory", () => {
+  it("locks the approved context-specific editorial contract", () => {
+    const content = loadContentBundle({ repositoryRoot: REPOSITORY_ROOT });
+
+    expect(
+      Object.fromEntries(
+        content.projects.map((project) => [
+          project.slug,
+          {
+            archive: project.editorial.archive.summary,
+            metadata: project.editorial.metadata.description,
+            caseOpening:
+              project.caseStudyState === "full"
+                ? project.editorial.caseOpening
+                : undefined,
+          },
+        ]),
+      ),
+    ).toMatchInlineSnapshot(`
+      {
+        "agentpay": {
+          "archive": "A public Stellar testnet marketplace where software agents discover APIs and pay for each request.",
+          "caseOpening": undefined,
+          "metadata": "AgentPay archive: Wildan built the product and full stack for a public Stellar testnet marketplace where software agents discover and pay for APIs.",
+        },
+        "crucible": {
+          "archive": "A hackathon prototype where autonomous agents register, stake on tasks, submit outputs, and carry outcome history into future work.",
+          "caseOpening": undefined,
+          "metadata": "Crucible archive: Wildan built the full stack and smart contracts for a collaborative hackathon prototype centered on stake-backed agent accountability.",
+        },
+        "fradium": {
+          "archive": "A Web3 trust layer that combines AI and community signals before a user confirms a transaction.",
+          "caseOpening": {
+            "answer": "Fradium combines chain-specific analysis, AI inference, and community reports while keeping the final decision with the user.",
+            "question": "How can a wallet surface meaningful risk before a user signs a transaction?",
+          },
+          "metadata": "Fradium case study: Wildan led its six-person team and worked across the full stack. The team won the Fully On-Chain Track at the World Computer Hacker League 2025 Global Finale.",
+        },
+        "nova-ai": {
+          "archive": "An AI wallet that turns a user's prompt into on-chain context and a prepared transaction that they approve in their own wallet.",
+          "caseOpening": {
+            "answer": "Nova interprets intent, gathers wallet and market data, and prepares transactions for the user to approve in the connected wallet.",
+            "question": "Can an AI wallet translate a prompt into an on-chain action without taking custody?",
+          },
+          "metadata": "Nova AI Wallet case study: Wildan built the full stack and AI-agent flows for a collaborative hackathon prototype with user-controlled signing.",
+        },
+        "paygate": {
+          "archive": "A Stellar testnet gateway that lets API providers charge software agents for individual requests through HTTP 402.",
+          "caseOpening": {
+            "answer": "PayGate issues an HTTP 402 challenge, verifies the bound Stellar testnet payment, forwards the request to the protected API, and returns a receipt.",
+            "question": "How can an AI agent pay for one API request without a human checkout flow?",
+          },
+          "metadata": "PayGate case study: Wildan founded and built an active Stellar testnet product for per-request API payments that received a $5,000 SCF Instaward.",
+        },
+        "quorum": {
+          "archive": "A Stellar testnet event platform linking wallet-bound passes, collaborator splits, check-in, and withdrawal.",
+          "caseOpening": {
+            "answer": "Quorum combines wallet-bound passes, on-chain splits, check-in, and withdrawal, while keeping cash-out as a separate tracked step.",
+            "question": "How can event collaborators share access and revenue without relying on manual reconciliation?",
+          },
+          "metadata": "Quorum case study: Wildan built the full-stack product and Soroban flows for event access and settlement in a collaborative Stellar testnet hackathon prototype.",
+        },
+        "specheal": {
+          "archive": "A hackathon recovery cockpit that turns Playwright failures into controlled patch attempts, reruns, or a clear handoff for genuine product bugs.",
+          "caseOpening": undefined,
+          "metadata": "SpecHeal archive: Wildan built the product and full stack and led AI integration on the team that placed second at the Refactory Hackathon.",
+        },
+      }
+    `);
+  });
+
   it("retains four full flagships and three lighter archive projects with approved roles", () => {
     const content = loadContentBundle({ repositoryRoot: REPOSITORY_ROOT });
 

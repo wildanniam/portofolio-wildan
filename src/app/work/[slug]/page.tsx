@@ -18,11 +18,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const socialImage = selectProjectSocialImage(project);
   return {
     title: project.title,
-    description: project.oneLiner,
+    description: project.editorial.metadata.description,
     alternates: { canonical: `/work/${project.slug}` },
     openGraph: {
       title: `${project.title} | Wildan Syukri Niam`,
-      description: project.oneLiner,
+      description: project.editorial.metadata.description,
       type: "article",
       url: `/work/${project.slug}`,
       ...(socialImage ? { images: [{ alt: socialImage.alt, height: socialImage.height, url: socialImage.src, width: socialImage.width }] } : {}),

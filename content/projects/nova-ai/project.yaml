@@ -15,6 +15,17 @@ startedAt: "2025-12-21"
 lastUpdatedAt: "2026-05-04"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Turning wallet intent into inspectable actions without taking over the signature.
+editorial:
+  archive:
+    summary: >-
+      An AI wallet that turns a user's prompt into on-chain context and a prepared transaction that they approve in their own wallet.
+  metadata:
+    description: >-
+      Nova AI Wallet case study: Wildan built the full stack and AI-agent flows for a collaborative hackathon prototype with user-controlled signing.
+  caseOpening:
+    question: Can an AI wallet translate a prompt into an on-chain action without taking custody?
+    answer: >-
+      Nova interprets intent, gathers wallet and market data, and prepares transactions for the user to approve in the connected wallet.
 branding:
   palette:
     surface: "#120A2B"

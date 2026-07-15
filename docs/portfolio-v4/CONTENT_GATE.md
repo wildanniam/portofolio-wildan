@@ -1,11 +1,11 @@
 # Portfolio V4 — Editorial Content Gate
 
-- Status: proposed copy set; Wildan approval pending
+- Status: approved and locked by Wildan on 15 July 2026; canonical migration in progress
 - Scope: editorial contract plus project-level English copy for the Work archive, metadata, and full case-study openings
 - Source boundary: canonical project YAML, approved role labels, claims, system flows, and lifecycle notes as verified on 11 July 2026
 - Runtime effect: none; this document does not change schemas, content records, routes, or rendered UI
 
-This is the copy gate before layout implementation. Approval means the wording below may be migrated into canonical content in a later implementation step. Until that approval, the existing YAML remains the source used by the application.
+This copy gate was approved before layout implementation. The exact wording below is now authorized for migration into canonical content; the project YAML remains the runtime source of truth.
 
 ## Decision to lock
 
@@ -52,13 +52,13 @@ Mark a cell only after approving the exact quoted wording for that context.
 
 | Project | Archive summary | Metadata description | Case opening |
 | --- | --- | --- | --- |
-| Fradium | [ ] | [ ] | [ ] |
-| Nova AI Wallet | [ ] | [ ] | [ ] |
-| PayGate | [ ] | [ ] | [ ] |
-| Quorum | [ ] | [ ] | [ ] |
-| AgentPay | [ ] | [ ] | Not applicable — brief record |
-| Crucible | [ ] | [ ] | Not applicable — brief record |
-| SpecHeal | [ ] | [ ] | Not applicable — brief record |
+| Fradium | [x] | [x] | [x] |
+| Nova AI Wallet | [x] | [x] | [x] |
+| PayGate | [x] | [x] | [x] |
+| Quorum | [x] | [x] | [x] |
+| AgentPay | [x] | [x] | Not applicable — brief record |
+| Crucible | [x] | [x] | Not applicable — brief record |
+| SpecHeal | [x] | [x] | Not applicable — brief record |
 
 ## Full case studies
 
@@ -70,23 +70,23 @@ Mark a cell only after approving the exact quoted wording for that context.
 
 #### Archive summary — 95 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > A Web3 trust layer that combines AI and community signals before a user confirms a transaction.
 
 #### Metadata description — 178 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > Fradium case study: Wildan led its six-person team and worked across the full stack. The team won the Fully On-Chain Track at the World Computer Hacker League 2025 Global Finale.
 
 #### Case-study opening
 
-- [ ] Approve question — 75 / 140 characters
+- [x] Approve question — 75 / 140 characters
 
 > How can a wallet surface meaningful risk before a user signs a transaction?
 
-- [ ] Approve answer — 125 / 200 characters
+- [x] Approve answer — 125 / 200 characters
 
 > Fradium combines chain-specific analysis, AI inference, and community reports while keeping the final decision with the user.
 
@@ -100,23 +100,23 @@ Truth boundary: this says what the reviewed beta flow does. It does not claim th
 
 #### Archive summary — 127 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > An AI wallet that turns a user's prompt into on-chain context and a prepared transaction that they approve in their own wallet.
 
 #### Metadata description — 143 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > Nova AI Wallet case study: Wildan built the full stack and AI-agent flows for a collaborative hackathon prototype with user-controlled signing.
 
 #### Case-study opening
 
-- [ ] Approve question — 83 / 140 characters
+- [x] Approve question — 83 / 140 characters
 
 > Can an AI wallet translate a prompt into an on-chain action without taking custody?
 
-- [ ] Approve answer — 130 / 200 characters
+- [x] Approve answer — 130 / 200 characters
 
 > Nova interprets intent, gathers wallet and market data, and prepares transactions for the user to approve in the connected wallet.
 
@@ -130,23 +130,23 @@ Truth boundary: Nova is presented as an agent-assisted hackathon artifact. The c
 
 #### Archive summary — 114 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > A Stellar testnet gateway that lets API providers charge software agents for individual requests through HTTP 402.
 
 #### Metadata description — 145 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > PayGate case study: Wildan founded and built an active Stellar testnet product for per-request API payments that received a $5,000 SCF Instaward.
 
 #### Case-study opening
 
-- [ ] Approve question — 74 / 140 characters
+- [x] Approve question — 74 / 140 characters
 
 > How can an AI agent pay for one API request without a human checkout flow?
 
-- [ ] Approve answer — 147 / 200 characters
+- [x] Approve answer — 147 / 200 characters
 
 > PayGate issues an HTTP 402 challenge, verifies the bound Stellar testnet payment, forwards the request to the protected API, and returns a receipt.
 
@@ -160,23 +160,23 @@ Truth boundary: `active` refers to the verified testnet product state. The copy 
 
 #### Archive summary — 108 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > A Stellar testnet event platform linking wallet-bound passes, collaborator splits, check-in, and withdrawal.
 
 #### Metadata description — 160 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > Quorum case study: Wildan built the full-stack product and Soroban flows for event access and settlement in a collaborative Stellar testnet hackathon prototype.
 
 #### Case-study opening
 
-- [ ] Approve question — 94 / 140 characters
+- [x] Approve question — 94 / 140 characters
 
 > How can event collaborators share access and revenue without relying on manual reconciliation?
 
-- [ ] Approve answer — 130 / 200 characters
+- [x] Approve answer — 130 / 200 characters
 
 > Quorum combines wallet-bound passes, on-chain splits, check-in, and withdrawal, while keeping cash-out as a separate tracked step.
 
@@ -192,13 +192,13 @@ Truth boundary: the signed flows are testnet-scoped. The separate cash-out conti
 
 #### Archive summary — 98 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > A public Stellar testnet marketplace where software agents discover APIs and pay for each request.
 
 #### Metadata description — 147 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > AgentPay archive: Wildan built the product and full stack for a public Stellar testnet marketplace where software agents discover and pay for APIs.
 
@@ -212,13 +212,13 @@ Truth boundary: this is a public testnet prototype, not a mainnet marketplace, r
 
 #### Archive summary — 131 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > A hackathon prototype where autonomous agents register, stake on tasks, submit outputs, and carry outcome history into future work.
 
 #### Metadata description — 152 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > Crucible archive: Wildan built the full stack and smart contracts for a collaborative hackathon prototype centered on stake-backed agent accountability.
 
@@ -232,13 +232,13 @@ Truth boundary: this describes implemented hackathon and testnet behavior, not a
 
 #### Archive summary — 144 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > A hackathon recovery cockpit that turns Playwright failures into controlled patch attempts, reruns, or a clear handoff for genuine product bugs.
 
 #### Metadata description — 139 / 180 characters
 
-- [ ] Approve exact wording
+- [x] Approve exact wording
 
 > SpecHeal archive: Wildan built the product and full stack and led AI integration on the team that placed second at the Refactory Hackathon.
 
@@ -248,19 +248,19 @@ Truth boundary: the recovery loop and team placement are documented hackathon ou
 
 The content gate is ready to migrate only when all applicable items are checked:
 
-- [ ] All seven archive summaries are approved exactly as written or revised and recounted.
-- [ ] All seven metadata descriptions are approved exactly as written or revised and recounted.
-- [ ] All four case-opening questions are approved and end with a question mark.
-- [ ] All four case-opening answers are approved and remain mechanism-focused.
-- [ ] Fradium, Nova, PayGate, and Quorum role labels match their canonical records exactly.
-- [ ] AgentPay, Crucible, and SpecHeal role labels match their canonical records exactly.
-- [ ] Hackathon and testnet qualifiers remain visible wherever removing them could imply greater maturity.
-- [ ] No line introduces production scale, adoption, revenue, partnership, certification, security-audit, autonomous-custody, or published-research claims.
-- [ ] No proposed public-facing line uses `inspect`, `inspectable`, or `inspection`.
-- [ ] Collaboration credit remains present in project metadata and detailed case content after migration.
-- [ ] The existing Homepage Atlas question/answer set remains unchanged unless a separate homepage-copy gate is opened.
-- [ ] Approval is recorded before canonical YAML, schema, DTO, query, route, or component migration begins.
+- [x] All seven archive summaries are approved exactly as written or revised and recounted.
+- [x] All seven metadata descriptions are approved exactly as written or revised and recounted.
+- [x] All four case-opening questions are approved and end with a question mark.
+- [x] All four case-opening answers are approved and remain mechanism-focused.
+- [x] Fradium, Nova, PayGate, and Quorum role labels match their canonical records exactly.
+- [x] AgentPay, Crucible, and SpecHeal role labels match their canonical records exactly.
+- [x] Hackathon and testnet qualifiers remain visible wherever removing them could imply greater maturity.
+- [x] No line introduces production scale, adoption, revenue, partnership, certification, security-audit, autonomous-custody, or published-research claims.
+- [x] No proposed public-facing line uses `inspect`, `inspectable`, or `inspection`.
+- [x] Collaboration credit remains present in project metadata and detailed case content after migration.
+- [x] The existing Homepage Atlas question/answer set remains unchanged unless a separate homepage-copy gate is opened.
+- [x] Approval is recorded before canonical YAML, schema, DTO, query, route, or component migration begins.
 
 ## Post-approval migration boundary
 
-After approval, implementation may add the explicit editorial fields, update selectors and DTOs, migrate the seven project records, and remove runtime dependence on `oneLiner`. That later change must include validation, query, DTO, metadata, route, and browser tests. This document alone does not authorize or perform any of those changes.
+The approved implementation adds explicit editorial fields, updates selectors and DTOs, migrates all seven project records, and removes V4 runtime dependence on `oneLiner`. Validation, query, DTO, metadata, route, and browser tests remain required before release.

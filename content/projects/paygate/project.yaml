@@ -18,6 +18,17 @@ startedAt: "2026-04-24"
 lastUpdatedAt: "2026-06-28"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Turning ordinary APIs into machine-paid endpoints on Stellar testnet.
+editorial:
+  archive:
+    summary: >-
+      A Stellar testnet gateway that lets API providers charge software agents for individual requests through HTTP 402.
+  metadata:
+    description: >-
+      PayGate case study: Wildan founded and built an active Stellar testnet product for per-request API payments that received a $5,000 SCF Instaward.
+  caseOpening:
+    question: How can an AI agent pay for one API request without a human checkout flow?
+    answer: >-
+      PayGate issues an HTTP 402 challenge, verifies the bound Stellar testnet payment, forwards the request to the protected API, and returns a receipt.
 branding:
   palette:
     surface: "#0C0B17"

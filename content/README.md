@@ -31,6 +31,11 @@ facts, roles, outcomes, branding, or Atlas composition in components.
   plus three supporting roles; neither contract duplicates claim or asset payloads.
 - Flagship `project.yaml` records own their palette, official marks/wordmarks,
   repository revision provenance, project role, claims, and Atlas derivatives.
+- Every project owns context-specific editorial copy. `editorial.archive.summary`
+  is the Work archive sentence, `editorial.metadata.description` is the standalone
+  search/social description, and full case studies additionally own
+  `editorial.caseOpening.question` plus `.answer`. V4 presentation must not derive
+  one context from the legacy `oneLiner` field.
 - Every imported Atlas derivative records its source repository, 40-character
   revision, source path, creator, and rights boundary.
 - `socialImageAssetId` is an optional project-local pointer while authoring, but
