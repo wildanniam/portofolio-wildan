@@ -1,8 +1,10 @@
 @import "tailwindcss";
-@import "../styles/pfn.css";
 @import "../styles/portfolio/tokens.css";
 @import "../styles/portfolio/base.css";
 @import "../styles/portfolio/shell.css";
 @import "../styles/portfolio/home.css";
 @import "../styles/portfolio/atlas.css";
 @import "../styles/portfolio/motion.css";
+@import "../styles/portfolio/routes.css";
+@import "../styles/portfolio/project.css";
+@import "../styles/portfolio/moments.css";

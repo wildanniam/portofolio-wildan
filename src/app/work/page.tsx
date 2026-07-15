@@ -1,13 +1,13 @@
-import { PersonalFieldNotesWork } from "@/components/pfn/pfn-routes";
+import { WorkArchive } from "@/components/portfolio/routes/work-archive";
 import { getSiteShell, getWorkProjectSummaries } from "@/content/queries.server";
 import { createPublicPageMetadata } from "@/lib/site-config";
 
 export const metadata = createPublicPageMetadata({
   title: "Work",
-  description: "Selected AI, Web3, and full-stack systems by Wildan Syukri Niam.",
+  description: "Case studies across AI agents, Web3 infrastructure, and machine-native payments by Wildan Syukri Niam.",
   pathname: "/work",
 });
 
 export default function WorkPage() {
-  return <PersonalFieldNotesWork basePath="" projects={getWorkProjectSummaries()} shell={getSiteShell()} />;
+  return <WorkArchive basePath="" projects={getWorkProjectSummaries()} shell={getSiteShell()} />;
 }

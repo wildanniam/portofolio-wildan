@@ -51,8 +51,8 @@ assets:
       focalPoint: { x: 0.55, y: 0.34 }
     mobile:
       src: /media/moments/learning-in-public/mobile.webp
-      width: 720
-      height: 480
+      width: 600
+      height: 400
       crop:
         mode: focal
         aspectRatio: "3:2"

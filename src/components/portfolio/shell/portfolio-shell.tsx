@@ -23,7 +23,7 @@ export function PortfolioShell({
   profile,
 }: PortfolioShellProps) {
   return (
-    <div className="portfolio-shell" data-portfolio-v3="true" data-portfolio-v4="true">
+    <div className="portfolio-shell" data-portfolio-v4="true">
       <a className="portfolio-skip-link" href={`#${mainId}`}>
         Skip to main content
       </a>

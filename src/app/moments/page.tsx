@@ -1,4 +1,4 @@
-import { PersonalFieldNotesMoments } from "@/components/pfn/pfn-moments-route";
+import { MomentsRoute } from "@/components/portfolio/routes/moments-route";
 import { getPublishedMoments, getSiteShell } from "@/content/queries.server";
 import { createPublicPageMetadata } from "@/lib/site-config";
 
@@ -9,5 +9,5 @@ export const metadata = createPublicPageMetadata({
 });
 
 export default function MomentsPage() {
-  return <PersonalFieldNotesMoments basePath="" moments={getPublishedMoments()} shell={getSiteShell()} />;
+  return <MomentsRoute basePath="" moments={getPublishedMoments()} shell={getSiteShell()} />;
 }

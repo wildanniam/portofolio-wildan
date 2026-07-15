@@ -42,6 +42,7 @@ export type ProjectSummaryDto = {
       description: string;
     };
   };
+  branding: ProjectRecord["branding"];
   role: {
     label: string;
     scope: string[];
@@ -229,6 +230,7 @@ export function toProjectSummaryDto(
         description: project.editorial.metadata.description,
       },
     },
+    branding: project.branding,
     role: {
       label: project.role.label,
       scope: [...project.role.scope],

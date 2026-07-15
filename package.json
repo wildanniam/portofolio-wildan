@@ -37,6 +37,7 @@
     "review:release": "node scripts/create-release-contact-sheets.mjs",
     "review:moments": "node scripts/prepare-moment-review.mjs",
     "prepare:v4-assets": "node scripts/prepare-v4-atlas-assets.mjs",
+    "optimize:v4-moments": "node scripts/optimize-v4-moment-mobile.mjs",
     "lighthouse": "npm ci --prefix tools/lighthouse && npm audit --prefix tools/lighthouse --audit-level=high && node scripts/run-lighthouse.mjs",
     "quality:static": "npm run lint && npm run typecheck && npm run test:run && npm run audit:v4:presentation",
     "shadcn": "shadcn"

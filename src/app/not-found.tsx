@@ -7,10 +7,11 @@ export default function NotFound() {
   const shell = getSiteShell();
   return (
     <PortfolioShell currentPath="/404" mainId="portfolio-main" {...shell}>
-      <main className="pfn-contact pfn-not-found" id="portfolio-main" tabIndex={-1}>
-        <p>404 / Page unavailable</p>
+      <main className="v4-not-found portfolio-container" id="portfolio-main" tabIndex={-1}>
+        <p className="v4-route-hero__index"><span aria-hidden="true" className="v4-origin-mark" />404 / Page unavailable</p>
         <h1>This page could not be found.</h1>
-        <Link className="pfn-button pfn-button--primary" href="/" prefetch={false}>Return to the portfolio</Link>
+        <p>The atlas has no record at this address.</p>
+        <Link className="v4-button v4-button--primary" href="/" prefetch={false}>Return to the portfolio</Link>
       </main>
     </PortfolioShell>
   );

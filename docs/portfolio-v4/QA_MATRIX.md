@@ -83,7 +83,7 @@ P2 cosmetic notes may be documented only when they do not affect hierarchy, asso
 | Homepage Moments preview is curated; full gallery retains the broader documentary story | P1 | Content and route review |
 | Similar photos are grouped instead of repeated as separate homepage tiles | P1 | Visual review |
 | Every selected photo has an intentional focal point and useful caption/context | P0 | Asset/contact-sheet review |
-| Gallery filter states, result announcement, zero result, and image error fallback exist | P1 | State test |
+| Gallery exposes only filters with results, announces the result count, and retains an image-error fallback | P1 | State test |
 | Lightbox supports title, description, previous, next, Escape, focus trap, and focus return | P0 | A11y/E2E review |
 | About and Contact reinforce the identity without repeating the hero verbatim | P1 | Copy review |
 | Contact actions wrap safely and remain usable at 320px and 200% zoom | P0 | Responsive review |

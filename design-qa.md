@@ -1,7 +1,7 @@
 # Portfolio V4 Design QA
 
 - Review date: 15 July 2026
-- Scope: homepage golden slice and bounded Signal → System motion
+- Scope: complete V4 public surface, bounded Signal → System motion, and route interactions
 - Reference contract: `docs/portfolio-v4/GATE1_VISUAL_BOARD.md`
 - Reference frames: Research Instrument desktop/mobile and Atlas desktop/mobile
 - Runtime captures: `artifacts/design-qa/` (local, intentionally git-ignored)
@@ -22,6 +22,8 @@ scale differs from production.
 | P1 | Project marks disappeared at the 390px reference viewport. | Restored authentic project marks at 390px while retaining a bounded 36px identity slot. |
 | P1 | The narrow Nova stage forced an oversized three-line project title. | Added a narrow-stage display scale without weakening the shared heading hierarchy. |
 | P2 | Artifact captions competed with the compact Atlas scene. | Kept complete captions in the accessibility tree and visually hid them inside the scene; the stage retains one concise accessible summary. |
+| P1 | The first mobile Moments pass allowed a generic card selector to split the featured record into two columns. | Gave the featured record an explicit full-width mobile contract and verified its image and copy both resolve to the 350px content width. |
+| P1 | Legacy PFN presentation CSS and components remained reachable after the V4 route cutover. | Removed the V3 shell marker, PFN stylesheet import, unused PFN components, and moved the fixed MDX runtime map into the V4 project system. |
 
 ## Passed checks
 
@@ -55,6 +57,29 @@ scale differs from production.
   GSAP/ScrollTrigger runtime remains a separate on-demand chunk.
 - Reduced-motion and no-JavaScript paths retain the complete static Atlas and do
   not mount the motion controller.
+- Work archive review passed at 1440×1000 and 390×844: four records remain in
+  Fradium → Nova → PayGate → Quorum order, every mark is visible, product media
+  uses `contain`, and no record intersects a neighbor.
+- PayGate case-study review passed at desktop and mobile openings, long-form
+  narrative, and the six-item evidence atlas. The question, answer, authorship,
+  facts, authentic media, and public actions remain associated and bounded.
+- Moments review passed at desktop and 390px: one Refactory lead record, six
+  supporting documentary records, no overlap, no horizontal overflow, and one
+  contextual lightbox with close focus, Escape behavior, body scroll lock, and
+  trigger focus return.
+- About and Contact review passed at 1440×1000 and 390×844. Their identity copy
+  is distinct from the homepage, portrait and contact action remain legible, and
+  the email address wraps without clipping.
+- The custom 404 now uses the V4 route system and no public route depends on PFN
+  presentation classes or the V3 shell marker.
+- Mobile Moments derivatives were re-encoded from their approved main crops for
+  thumbnail use; the lightbox requests the higher-fidelity main image only after
+  intent. Cold mobile media fell from 353.84 KiB to 189.47 KiB while the largest
+  image fell to 25.98 KiB and the visible 390px composition remained unchanged.
+- `npm run quality:static` passes: zero lint warnings, successful typecheck, 191
+  unit tests, and the V4 presentation policy audit across 33 source files.
+- `npm run build` passes all content/media gates and statically generates all 14
+  route outputs.
 
 ## Open findings
 

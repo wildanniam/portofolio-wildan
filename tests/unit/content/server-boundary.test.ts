@@ -5,7 +5,7 @@ import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { pfnMdxComponents } from "../../../src/components/pfn/mdx-components";
+import { portfolioMdxComponents } from "../../../src/components/portfolio/project/mdx-components";
 import { ALLOWED_CASE_STUDY_COMPONENTS } from "../../../src/content/mdx-policy";
 import { REPOSITORY_ROOT } from "./fixtures";
 
@@ -71,13 +71,13 @@ describe("static server/client content boundaries", () => {
 
   it("keeps the validated MDX component allowlist aligned with the fixed runtime map", () => {
     expect(
-      Object.keys(pfnMdxComponents)
+      Object.keys(portfolioMdxComponents)
         .filter((name) => name !== "a")
         .sort(),
     ).toEqual([...ALLOWED_CASE_STUDY_COMPONENTS].sort());
 
     const providerSource = source("src/mdx-components.tsx");
-    expect(providerSource.indexOf("...pfnMdxComponents")).toBeGreaterThan(
+    expect(providerSource.indexOf("...portfolioMdxComponents")).toBeGreaterThan(
       providerSource.indexOf("...components"),
     );
   });
@@ -85,7 +85,7 @@ describe("static server/client content boundaries", () => {
   it("renders every allowed SourceLink field through the fixed runtime component", () => {
     const markup = renderToStaticMarkup(
       createElement(
-        pfnMdxComponents.SourceLink,
+        portfolioMdxComponents.SourceLink,
         {
           href: "https://example.com/evidence",
           title: "External evidence",
