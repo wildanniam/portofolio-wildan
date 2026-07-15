@@ -30,6 +30,7 @@
     "analyze:bundle": "npm run build && node scripts/analyze-bundle-matrix.mjs",
     "audit:media": "node --import tsx/esm scripts/audit-public-media.mjs",
     "audit:links": "node scripts/audit-external-links.mjs --strict",
+    "audit:v4:presentation": "node scripts/audit-v4-presentation.mjs",
     "audit:release-routes": "node scripts/run-release-route-audit.mjs",
     "audit:release-routes:server": "node scripts/audit-release-routes.mjs",
     "generate:social-image": "node scripts/generate-site-social-image.mjs",
@@ -37,7 +38,7 @@
     "review:moments": "node scripts/prepare-moment-review.mjs",
     "prepare:v4-assets": "node scripts/prepare-v4-atlas-assets.mjs",
     "lighthouse": "npm ci --prefix tools/lighthouse && npm audit --prefix tools/lighthouse --audit-level=high && node scripts/run-lighthouse.mjs",
-    "quality:static": "npm run lint && npm run typecheck && npm run test:run",
+    "quality:static": "npm run lint && npm run typecheck && npm run test:run && npm run audit:v4:presentation",
     "shadcn": "shadcn"
   },
   "allowScripts": {

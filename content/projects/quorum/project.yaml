@@ -32,7 +32,7 @@ branding:
       mode: decorative
     provenance:
       sourceRepository: https://github.com/wildanniam/Quorum
-      revision: f434ac7dc385f5617c073b71fe3eaef8f8d799f0
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
       sourcePath: public/figma/landing/quorum-mark.svg
       creator: Wildan Syukri Niam
       rights: >-
@@ -49,7 +49,7 @@ branding:
       mode: decorative
     provenance:
       sourceRepository: https://github.com/wildanniam/Quorum
-      revision: f434ac7dc385f5617c073b71fe3eaef8f8d799f0
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
       sourcePath: public/figma/landing/quorum-logo.svg
       creator: Wildan Syukri Niam
       rights: >-
@@ -265,7 +265,7 @@ evidence:
       creator: Wildan Syukri Niam; portfolio derivative prepared with OpenAI Codex
       rightsNote: First-party Quorum product fragment cropped without redesign.
       sourceRepository: https://github.com/wildanniam/Quorum
-      revision: f434ac7dc385f5617c073b71fe3eaef8f8d799f0
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
       sourcePath: output/playwright/product-ui-audit-current/pass-receipt-desktop.png
     claimIds:
       - quorum-live-testnet
@@ -288,10 +288,33 @@ evidence:
       creator: Wildan Syukri Niam; portfolio derivative prepared with OpenAI Codex
       rightsNote: First-party Quorum product fragment cropped without redesign.
       sourceRepository: https://github.com/wildanniam/Quorum
-      revision: f434ac7dc385f5617c073b71fe3eaef8f8d799f0
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
       sourcePath: output/playwright/product-ui-audit-current/collaborator-ledger-desktop.png
     claimIds:
       - quorum-settlement-boundary
+  - id: quorum-atlas-rail
+    status: ready
+    slot: atlas-decoration
+    evidenceType: architecture
+    evidenceFunctions:
+      - system-reasoning
+    mediaKind: svg
+    src: /media/projects/quorum/atlas/settlement-rail.svg
+    width: 588
+    height: 271
+    crop:
+      mode: intrinsic
+    alt: ""
+    caption: A decorative settlement rail connects the Quorum scene without replacing product evidence.
+    provenance:
+      kind: owned
+      creator: Quorum team
+      rightsNote: >-
+        First-party Quorum interface decoration copied without redesign and used
+        only inside the project-owned Atlas scene.
+      sourceRepository: https://github.com/wildanniam/Quorum
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
+      sourcePath: public/figma/landing/feature-split-rail.svg
   - id: quorum-product-flow
     status: ready
     slot: hero-event-flow

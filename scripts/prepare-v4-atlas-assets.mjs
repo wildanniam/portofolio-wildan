@@ -26,7 +26,7 @@ const repositories = {
   },
   quorum: {
     root: resolve(projectsRoot, "Quorum"),
-    revision: "f434ac7dc385f5617c073b71fe3eaef8f8d799f0",
+    revision: "c0b81665368381dd3f7ae323ef88b221f05ff2fe",
   },
 };
 
@@ -61,8 +61,17 @@ async function ensureParent(path) {
   await mkdir(dirname(path), { recursive: true });
 }
 
-async function writeSvg({ from, to }) {
-  const input = await readFile(from, "utf8");
+async function writeSvg({ from, to, stripFigmaBackdrop = false }) {
+  let input = await readFile(from, "utf8");
+  if (stripFigmaBackdrop) {
+    const foreignObjects = input.match(/<foreignObject\b[\s\S]*?<\/foreignObject>/gi) ?? [];
+    if (foreignObjects.length !== 1) {
+      throw new Error(
+        `Expected exactly one Figma backdrop foreignObject in ${from}, received ${foreignObjects.length}.`,
+      );
+    }
+    input = input.replace(foreignObjects[0], "");
+  }
   if (/\b(?:href|src)=["']https?:\/\//i.test(input)) {
     throw new Error(`External SVG resource is not allowed: ${from}`);
   }
@@ -134,6 +143,7 @@ const jobs = [
     type: "svg",
     from: source("quorum", "public/figma/landing/feature-split-rail.svg"),
     to: destination("media/projects/quorum/atlas/settlement-rail.svg"),
+    stripFigmaBackdrop: true,
   },
   {
     type: "raster",

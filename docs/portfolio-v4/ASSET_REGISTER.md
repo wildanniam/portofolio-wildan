@@ -16,7 +16,9 @@ Regeneration is valid only when each local source repository is at the pinned re
 | Fradium | `/Users/wildanniam/Development/project/fradium` | `https://github.com/fradiumofficial/fradium.git` | `370cd9724f501d440fc9618cf9c9f4b6b9c6cc9e` |
 | Nova AI | `/Users/wildanniam/Development/project/nova-wallet` | `https://github.com/OfficialNovaAI/nova-wallet.git` | `38b03a80c9c4d85c767013188df2b77f0eda20b8` |
 | PayGate | `/Users/wildanniam/Development/project/paygate` | `https://github.com/wildanniam/paygate-stellar.git` | `69fe93085c5816e3943cb4e16846ab231c50f1da` |
-| Quorum | `/Users/wildanniam/Development/project/Quorum` | `https://github.com/wildanniam/Quorum.git` | `f434ac7dc385f5617c073b71fe3eaef8f8d799f0` |
+| Quorum | `/Users/wildanniam/Development/project/Quorum` | `https://github.com/wildanniam/Quorum.git` | `c0b81665368381dd3f7ae323ef88b221f05ff2fe` |
+
+Quorum's freeze was advanced on 15 July 2026 after comparing all five registered source paths with the previous revision. None of those inputs changed; regeneration reproduced every raster/brand output, while the settlement rail received the documented safe `foreignObject` removal below.
 
 ## Brand assets
 
@@ -49,12 +51,12 @@ These are not generic thumbnails. They are evidence fragments placed inside each
 | PayGate primary — request receipt | `output/scf-report/assets/03-product-request-receipt-final.png` · JPEG bitstream despite `.png` suffix · 1440×900 · 96,656 B | `public/media/projects/paygate/atlas/request-receipt.webp` · WebP · 720×502 · 22,182 B | Extract `{ left: 520, top: 150, width: 860, height: 600 }`, then resize to 720 px, quality 82. Retains the request → 402 → MPP → 200 receipt sequence and removes unused canvas. |
 | PayGate primary — mobile | same source and crop | `public/media/projects/paygate/atlas/request-receipt-mobile.webp` · WebP · 350×244 · 7,920 B | 350 px derivative of the exact approved crop. |
 | PayGate support — transform flow | `output/scf-report/assets/02-product-transform-flow-final.png` · JPEG bitstream despite `.png` suffix · 1440×900 · 112,265 B | `public/media/projects/paygate/atlas/transform-flow.webp` · WebP · 720×450 · 24,428 B | Proportional resize to 720 px, quality 82, no crop. Provides the wider system flow behind the receipt. |
-| Quorum decoration — settlement rail | `public/figma/landing/feature-split-rail.svg` · SVG · 588×271 · 19,189 B | `public/media/projects/quorum/atlas/settlement-rail.svg` · SVG · 588×271 · 19,189 B | Exact copy. Decorative connector inside Quorum's dark scene; never presented as standalone evidence. |
+| Quorum decoration — settlement rail | `public/figma/landing/feature-split-rail.svg` · SVG · 588×271 · 19,189 B | `public/media/projects/quorum/atlas/settlement-rail.svg` · SVG · 588×271 · 18,968 B | Deterministic safe derivative: removes one Figma-only XHTML `foreignObject` backdrop while preserving the vector scene geometry. Decorative connector inside Quorum's dark scene; never standalone evidence. |
 | Quorum primary — pass receipt | `output/playwright/product-ui-audit-current/pass-receipt-desktop.png` · PNG · 1280×1996 · 769,977 B | `public/media/projects/quorum/atlas/pass-receipt.webp` · WebP · 390×1150 · 27,492 B | Extract `{ left: 31, top: 180, width: 390, height: 1150 }`, retain at 390 px, quality 82. Isolates the signed pass/QR receipt from the tall browser capture. |
 | Quorum primary — mobile | same source and crop | `public/media/projects/quorum/atlas/pass-receipt-mobile.webp` · WebP · 320×944 · 24,704 B | 320 px derivative of the exact approved crop. |
 | Quorum support — settlement flow | `output/playwright/product-ui-audit-current/collaborator-ledger-desktop.png` · PNG · 1280×3283 · 444,721 B | `public/media/projects/quorum/atlas/settlement-flow.webp` · WebP · 720×569 · 23,446 B | Extract `{ left: 20, top: 110, width: 1240, height: 980 }`, then resize to 720 px, quality 82. Captures the collaborator settlement ledger while removing unrelated page length. |
 
-Generated on-disk totals are 66,481 B for Fradium, 97,182 B for Nova AI, 56,916 B for PayGate, and 103,032 B for Quorum. Totals include both desktop and mobile derivatives, so they are not the bytes loaded in one scene.
+Generated on-disk totals are 66,481 B for Fradium, 97,182 B for Nova AI, 56,916 B for PayGate, and 102,811 B for Quorum. Totals include both desktop and mobile derivatives, so they are not the bytes loaded in one scene.
 
 ## Permitted use and ownership boundary
 

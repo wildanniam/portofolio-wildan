@@ -31,6 +31,8 @@ These generated boards are visual art direction built from authentic source asse
 
 Where an image-generation composition differs from a numeric rule below, the written implementation contract wins. In particular, the Atlas desktop board communicates rhythm and hierarchy, while production code must enforce `7/12 + 5/12` for Fradium/Nova and `5/12 + 7/12` for PayGate/Quorum. Newsreader remains restricted to authored phrases even where a generated board uses broader editorial italics.
 
+Generated microcopy, dates, timestamps, receipt values, and reconstructed UI details are never production data. The canonical YAML and registered public assets own every visible fact. The hero portrait remains the approved 4:5 desktop/mobile derivative; a generated frame may not authorize a new runtime crop. Moments preserve their registered focal crop and canonical date/place metadata even when the board uses a looser editorial placeholder composition.
+
 ## Locked visual foundation
 
 - Canvas `#F2F0E8`

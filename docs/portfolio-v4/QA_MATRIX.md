@@ -122,6 +122,7 @@ P2 cosmetic notes may be documented only when they do not affect hierarchy, asso
 | --- | --- | --- |
 | Content validation passes | P0 | `npm run validate:content` |
 | Media audit passes | P0 | `npm run audit:media` |
+| V4 source avoids legacy imports, destructive artifact crops, prohibited motion, canvas/3D, custom cursors, negative order, and remote visuals | P0 | `npm run audit:v4:presentation` |
 | Lint passes with zero warnings | P0 | `npm run lint` |
 | Typecheck passes | P0 | `npm run typecheck` |
 | Unit tests pass | P0 | `npm run test:run` |

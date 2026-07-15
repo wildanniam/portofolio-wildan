@@ -58,6 +58,7 @@ projectStages:
     artifactAssetIds:
       - quorum-atlas-pass
       - quorum-atlas-settlement
+      - quorum-atlas-rail
     variant: wide-right
 featuredMomentIds:
   - refactory-build-room
