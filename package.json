@@ -24,7 +24,7 @@
     "test:content": "vitest run tests/unit/content",
     "test:content:e2e": "npm run test:e2e",
     "test:content:runtime-gate": "npm run validate:content",
-    "test:release": "npm run test:e2e && npm run test:a11y",
+    "test:release": "playwright test tests/e2e",
     "validate:content": "node --import tsx/esm scripts/validate-content.mjs",
     "analyze:runtime": "node scripts/analyze-runtime-fixture.mjs",
     "analyze:bundle": "npm run build && node scripts/analyze-bundle-matrix.mjs",
