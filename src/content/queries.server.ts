@@ -7,6 +7,7 @@ import {
   selectHomepage,
   selectMomentsNarrative,
   selectProjectBySlug,
+  selectProjectCaseStudyMoment,
   selectProjectParams,
   selectPublishedMoments,
   selectPublishedProjects,
@@ -90,6 +91,17 @@ export function getProjectBySlug(
     slug,
     visibilityFor(options),
   );
+}
+
+export function getProjectCaseStudyMoment(
+  slug: string,
+  options: PreviewQueryOptions = {},
+) {
+  const content = getContentBundle();
+  const visibility = visibilityFor(options);
+  const project = selectProjectBySlug(content, slug, visibility);
+  if (!project) return undefined;
+  return selectProjectCaseStudyMoment(content, project);
 }
 
 export function getProjectParams(options: PreviewQueryOptions = {}) {

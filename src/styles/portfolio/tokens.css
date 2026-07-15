@@ -1,0 +1,60 @@
+:root {
+  /* Research / Build Atlas foundation */
+  --portfolio-canvas: #f2f0e8;
+  --portfolio-paper: #faf8f1;
+  --portfolio-ink: #151713;
+  --portfolio-ink-secondary: #5e615a;
+  --portfolio-cobalt: #2e4bff;
+  --portfolio-cobalt-soft: #dfe4ff;
+  --portfolio-line: rgb(21 23 19 / 18%);
+  --portfolio-line-strong: rgb(21 23 19 / 64%);
+
+  --portfolio-font-sans: var(--font-archivo), Arial, sans-serif;
+  --portfolio-font-authored: var(--font-newsreader), Georgia, serif;
+  --portfolio-font-authored-italic: var(--font-newsreader-italic), Georgia, serif;
+  --portfolio-font-mono: var(--font-geist-mono), "SFMono-Regular", Consolas, monospace;
+  /* Temporary compatibility while V3 route modules migrate to semantic aliases. */
+  --font-bodoni-moda: var(--font-newsreader);
+
+  --portfolio-shell-max: 90rem;
+  --portfolio-gutter: clamp(1.25rem, 3.35vw, 3rem);
+  --portfolio-section-space: clamp(5.5rem, 10vw, 9rem);
+  --portfolio-grid-gap: 1rem;
+
+  --portfolio-space-1: 0.25rem;
+  --portfolio-space-2: 0.5rem;
+  --portfolio-space-3: 0.75rem;
+  --portfolio-space-4: 1rem;
+  --portfolio-space-5: 1.25rem;
+  --portfolio-space-6: 1.5rem;
+  --portfolio-space-8: 2rem;
+  --portfolio-space-10: 2.5rem;
+  --portfolio-space-12: 3rem;
+  --portfolio-space-16: 4rem;
+  --portfolio-space-24: 6rem;
+
+  --portfolio-radius-structural: 0.125rem;
+  --portfolio-control-min: 2.75rem;
+  --portfolio-focus-width: 0.1875rem;
+  --portfolio-header-height: 5.5rem;
+
+  --portfolio-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --portfolio-ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --portfolio-duration-fast: 160ms;
+  --portfolio-duration-base: 220ms;
+  --portfolio-duration-slow: 420ms;
+
+  --portfolio-z-header: 40;
+  --portfolio-z-overlay: 70;
+  --portfolio-z-dialog: 80;
+  --portfolio-z-skip: 100;
+}
+
+@media (max-width: 47.999rem) {
+  :root {
+    --portfolio-gutter: 1.25rem;
+    --portfolio-section-space: 5.5rem;
+    --portfolio-grid-gap: 0.75rem;
+    --portfolio-header-height: 4rem;
+  }
+}

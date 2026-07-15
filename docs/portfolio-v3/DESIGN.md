@@ -1,5 +1,10 @@
 # Portfolio V3 Design Lock
 
+> [!WARNING]
+> Historical presentation direction. It has been superseded by
+> [Portfolio V4 — Research / Build Atlas](../portfolio-v4/README.md).
+> Preserve this document only as implementation history.
+
 Status: locked for implementation on Issue #25  
 Owner: Wildan Syukri Niam  
 Implementation branch: `codex/25-portfolio-v3-integration`
@@ -220,4 +225,3 @@ Rules:
 - No full-screen media preview during project-list scrolling.
 - No content claim changes unless separately approved.
 - No production merge without visual evidence and the quality gates in `QA_MATRIX.md`.
-

@@ -1,20 +1,77 @@
-flagshipProjectSlugs:
-  - fradium
-  - nova-ai
-  - paygate
-  - quorum
-flagshipHighlightClaimIds:
-  fradium: fradium-wchl-2025
-  nova-ai: nova-lisk-recognition
-  paygate: paygate-instaward-2026
-  quorum: quorum-six-testnet-flows
-featuredMomentIds:
-  - refactory-build-room
-  - learning-in-public
-  - fradium-wchl-team
-  - self-healing-research
-  - nova-lisk-team
-  - specheal-refactory-team
-  - serambi-bank-indonesia
+projectStages:
+  - projectSlug: fradium
+    question: How can people see wallet risk before they sign?
+    answer: >-
+      A Web3 trust layer that brings AI and community signals into the transaction
+      decision.
+    outcomeClaimId: fradium-wchl-2025
+    flowLabels:
+      - address
+      - signals
+      - risk verdict
+      - user decision
+    artifactAssetIds:
+      - fradium-atlas-wallet-result
+      - fradium-atlas-send-verdict
+    variant: wide-left
+  - projectSlug: nova-ai
+    question: Can a prompt become an on-chain action without giving up user control?
+    answer: >-
+      An AI wallet that prepares the action while the user keeps the final signature.
+    outcomeClaimId: nova-lisk-recognition
+    flowLabels:
+      - prompt
+      - interpreted intent
+      - proposed action
+      - approval
+    artifactAssetIds:
+      - nova-atlas-workspace
+      - nova-atlas-intent
+    variant: narrow-right
+  - projectSlug: paygate
+    question: How should an AI agent pay for a single API call?
+    answer: >-
+      Agent-native API payments on Stellar, from HTTP 402 to verified delivery.
+    outcomeClaimId: paygate-instaward-2026
+    flowLabels:
+      - request
+      - "402"
+      - payment
+      - verification
+      - 200 response
+    artifactAssetIds:
+      - paygate-atlas-receipt
+      - paygate-atlas-transform
+    variant: narrow-left
+  - projectSlug: quorum
+    question: >-
+      How can collaborators share event access and revenue without reconciliation
+      chaos?
+    answer: Wallet passes, on-chain splits, and settlement in one event flow.
+    outcomeClaimId: quorum-six-testnet-flows
+    flowLabels:
+      - event
+      - pass
+      - check-in
+      - split
+      - settlement proof
+    artifactAssetIds:
+      - quorum-atlas-pass
+      - quorum-atlas-settlement
+      - quorum-atlas-rail
+    variant: wide-right
+featuredMoments:
+  - momentId: refactory-build-room
+    assetId: refactory-build-room-photo
+    role: lead
+  - momentId: fradium-wchl-team
+    assetId: fradium-wchl-team-photo
+    role: supporting
+  - momentId: self-healing-research
+    assetId: self-healing-research-photo
+    role: supporting
+  - momentId: learning-in-public
+    assetId: learning-in-public-photo
+    role: supporting
 currentlyBuildingIds:
   - paygate-active-2026

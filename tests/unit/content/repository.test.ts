@@ -77,6 +77,26 @@ describe("filesystem content repository", () => {
     ]);
   });
 
+  it("treats the research contract as a required site record", () => {
+    const repository = createTemporaryRepository();
+
+    try {
+      rmSync(resolve(repository.root, "content/site/research.yaml"));
+
+      const diagnostics = sourceDiagnostics(() =>
+        loadContentRepository({ repositoryRoot: repository.root }),
+      );
+      expect(diagnostics).toContainEqual(
+        expect.objectContaining({
+          code: "source.file-unreadable",
+          path: "content/site/research.yaml",
+        }),
+      );
+    } finally {
+      repository.cleanup();
+    }
+  });
+
   it("rejects a folder slug that disagrees with its project record", () => {
     const repository = createTemporaryRepository();
 

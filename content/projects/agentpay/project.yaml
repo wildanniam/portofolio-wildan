@@ -12,6 +12,13 @@ startedAt: "2026"
 lastUpdatedAt: "2026-05-01"
 lastVerifiedAt: "2026-07-11"
 oneLiner: A marketplace where software agents can discover and pay for APIs per request.
+editorial:
+  archive:
+    summary: >-
+      A public Stellar testnet marketplace where software agents discover APIs and pay for each request.
+  metadata:
+    description: >-
+      AgentPay archive: Wildan built the product and full stack for a public Stellar testnet marketplace where software agents discover and pay for APIs.
 context: >-
   AgentPay explores an agent-native alternative to human subscription checkout:
   machine-readable tool discovery, HTTP 402 payment negotiation, Stellar testnet

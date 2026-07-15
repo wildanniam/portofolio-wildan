@@ -3,6 +3,7 @@ title: Nova AI Wallet
 publication: published
 socialImageAssetId: nova-agent-flow
 caseStudyState: full
+caseStudyMomentId: nova-lisk-team
 lifecycle: prototype
 origin:
   - hackathon
@@ -14,6 +15,57 @@ startedAt: "2025-12-21"
 lastUpdatedAt: "2026-05-04"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Turning wallet intent into inspectable actions without taking over the signature.
+editorial:
+  archive:
+    summary: >-
+      An AI wallet that turns a user's prompt into on-chain context and a prepared transaction that they approve in their own wallet.
+  metadata:
+    description: >-
+      Nova AI Wallet case study: Wildan built the full stack and AI-agent flows for a collaborative hackathon prototype with user-controlled signing.
+  caseOpening:
+    question: Can an AI wallet translate a prompt into an on-chain action without taking custody?
+    answer: >-
+      Nova interprets intent, gathers wallet and market data, and prepares transactions for the user to approve in the connected wallet.
+branding:
+  palette:
+    surface: "#120A2B"
+    foreground: "#F6F1FF"
+    accent: "#9B7BFF"
+  mark:
+    id: nova-brand-mark
+    src: /media/projects/nova-ai/brand/mark.png
+    width: 64
+    height: 64
+    suitableSurfaces:
+      - light
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/OfficialNovaAI/nova-wallet
+      revision: 38b03a80c9c4d85c767013188df2b77f0eda20b8
+      sourcePath: public/navbar/navbar-icon.png
+      creator: Nova AI Wallet team
+      rights: >-
+        First-party collaborative project mark reused at its intrinsic display
+        size only to identify Nova in Wildan's portfolio.
+  wordmark:
+    id: nova-brand-wordmark
+    src: /media/projects/nova-ai/brand/wordmark.webp
+    width: 320
+    height: 141
+    suitableSurfaces:
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/OfficialNovaAI/nova-wallet
+      revision: 38b03a80c9c4d85c767013188df2b77f0eda20b8
+      sourcePath: public/nova-logo.webp
+      creator: Nova AI Wallet team
+      rights: >-
+        First-party collaborative project wordmark reused only to identify Nova
+        in Wildan's portfolio.
 problem: >-
   Crypto workflows spread one user intention across wallet menus, raw addresses,
   explorers, market tools, and payment interfaces. Nova explored whether a
@@ -181,6 +233,62 @@ claims:
       The historical chat runtime was degraded at verification time; the claim does
       not present Nova as an actively operated production wallet.
 evidence:
+  - id: nova-atlas-workspace
+    status: ready
+    slot: atlas-primary-surface
+    evidenceType: product
+    evidenceFunctions:
+      - product-reality
+    mediaKind: image
+    src: /media/projects/nova-ai/atlas/workspace.webp
+    width: 720
+    height: 493
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/nova-ai/atlas/workspace-mobile.webp
+      width: 350
+      height: 240
+      crop:
+        mode: intrinsic
+    alt: Nova AI Wallet workspace with conversational wallet tools and review surfaces.
+    caption: The Nova workspace makes agent output visible before any wallet action.
+    provenance:
+      kind: owned
+      creator: Nova AI Wallet team; portfolio derivative prepared with OpenAI Codex
+      rightsNote: >-
+        First-party collaborative product fragment cropped without redesign for
+        Wildan's portfolio.
+      sourceRepository: https://github.com/OfficialNovaAI/nova-wallet
+      revision: 38b03a80c9c4d85c767013188df2b77f0eda20b8
+      sourcePath: public/landing-page/let-nova-handle-the-complexity.png
+    claimIds:
+      - nova-user-signing-boundary
+  - id: nova-atlas-intent
+    status: ready
+    slot: atlas-supporting-fragment
+    evidenceType: agent-trace
+    evidenceFunctions:
+      - system-reasoning
+    mediaKind: image
+    src: /media/projects/nova-ai/atlas/intent.webp
+    width: 354
+    height: 279
+    crop:
+      mode: intrinsic
+    alt: Nova prompt and interpreted wallet intent shown as a bounded proposal.
+    caption: A prompt becomes an interpreted proposal and stops before user approval.
+    provenance:
+      kind: owned
+      creator: Nova AI Wallet team; portfolio derivative prepared with OpenAI Codex
+      rightsNote: >-
+        First-party collaborative product fragment cropped without redesign for
+        Wildan's portfolio.
+      sourceRepository: https://github.com/OfficialNovaAI/nova-wallet
+      revision: 38b03a80c9c4d85c767013188df2b77f0eda20b8
+      sourcePath: public/card-assets/one-intent-multiple-actions.png
+    claimIds:
+      - nova-user-signing-boundary
   - id: nova-agent-flow
     status: ready
     slot: hero-agent-loop
@@ -278,41 +386,6 @@ evidence:
       across the CopilotKit runtime, action registry, transaction and prediction
       cards, Paylink, Prisma, Redis rate limits, deployment fixes, and documentation.
       It preserves collaborator credit and makes no adoption claim.
-  - id: nova-award-outcome
-    status: ready
-    slot: team-outcome
-    evidenceType: moment
-    evidenceFunctions:
-      - verification
-    src: /media/projects/nova-ai/award-team.webp
-    width: 1200
-    height: 900
-    crop:
-      mode: intrinsic
-    mobile:
-      src: /media/projects/nova-ai/award-team-mobile.webp
-      width: 800
-      height: 600
-      crop:
-        mode: intrinsic
-    caption: >-
-      Nova's team at the Lisk Builders Challenge 3 outcome: 1st Notable Mention and
-      1st Social Media Challenge. The exact recognition is also documented by
-      Telkom University's institutional report.
-    provenance:
-      kind: owned
-      creator: Nova AI team archive
-      rightsNote: >-
-        High-resolution team photograph supplied and explicitly selected by Wildan
-        for his portfolio showcase on 2026-07-11. Final photographer credit, the
-        fourth visible person's identity, and the remaining visible-person release
-        record remain publication metadata checkpoints.
-    claimIds:
-      - nova-lisk-recognition
-    mediaKind: image
-    alt: >-
-      Four Nova AI teammates at the Lisk Builders Challenge holding 1st Notable
-      Mention and Social Media Challenge award boards.
 limitations:
   - Nova is a hackathon artifact, not a production or custodial wallet.
   - The public chat runtime was degraded during the 2026-07-11 audit.

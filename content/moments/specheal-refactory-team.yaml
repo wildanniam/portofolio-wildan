@@ -52,8 +52,8 @@ assets:
       focalPoint: { x: 0.5, y: 0.68 }
     mobile:
       src: /media/moments/specheal-refactory-team/mobile.webp
-      width: 720
-      height: 900
+      width: 500
+      height: 625
       crop:
         mode: focal
         aspectRatio: "4:5"

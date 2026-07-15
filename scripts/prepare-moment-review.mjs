@@ -263,7 +263,7 @@ async function prepareMoment(moment, temporaryRoot, derivativeRoot) {
     redacted,
     join(momentRoot, "review.webp"),
     moment.desktopWidth,
-    200 * 1024,
+    180 * 1024,
   );
   const mobile = await boundedWebp(
     redacted,

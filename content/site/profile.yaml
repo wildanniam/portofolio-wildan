@@ -1,8 +1,23 @@
 name: Wildan Syukri Niam
-positioning: Software Engineer building AI agents and Web3 systems.
+identity: AI Researcher & Web3 Builder
+discipline: Software Engineering
+researchDirection: Trustworthy autonomous systems
+headline:
+  lead: I research how AI agents reason.
+  continuation: I build software that lets them act.
+  supporting: >-
+    My work sits at the intersection of AI agents, software engineering, and
+    blockchain infrastructure—turning research questions into working prototypes
+    and products.
+operatingRhythm:
+  - Researching
+  - Building
+  - Shipping
+positioning: AI Researcher & Web3 Builder
 thesis: >-
-  I build inspectable software systems that turn ambitious AI and Web3 ideas into
-  working product flows, then document the decisions and evidence behind them.
+  My work sits at the intersection of AI agents, software engineering, and
+  blockchain infrastructure—turning research questions into working prototypes
+  and products.
 location: Bandung, Indonesia
 education: Software Engineering, Telkom University
 availability: >-

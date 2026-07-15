@@ -12,6 +12,13 @@ startedAt: "2026"
 lastUpdatedAt: "2026-05-13"
 lastVerifiedAt: "2026-07-11"
 oneLiner: A recovery cockpit that separates safe test healing from real product bugs.
+editorial:
+  archive:
+    summary: >-
+      A hackathon recovery cockpit that turns Playwright failures into controlled patch attempts, reruns, or a clear handoff for genuine product bugs.
+  metadata:
+    description: >-
+      SpecHeal archive: Wildan built the product and full stack and led AI integration on the team that placed second at the Refactory Hackathon.
 context: >-
   SpecHeal was built during the Refactory Hackathon around a hard engineering
   productivity problem: recovering Playwright failures without converting genuine

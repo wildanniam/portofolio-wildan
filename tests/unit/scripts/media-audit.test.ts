@@ -6,10 +6,12 @@ import sharp from "sharp";
 import { afterEach, describe, expect, it } from "vitest";
 
 import {
+  ATLAS_MEDIA_BUDGETS,
   auditDocumentFile,
   auditReadyAssetFiles,
   auditVideoFile,
   auditVisualFile,
+  BRAND_MEDIA_BUDGET_BYTES,
   DOCUMENTARY_MEDIA_BUDGETS,
   scanSvg,
   sniffFileFormat,
@@ -101,8 +103,15 @@ describe("SVG security scan", () => {
 });
 
 describe("visual media audit", () => {
+  it("keeps Atlas fragments and identity assets inside the V4 budgets", () => {
+    expect(ATLAS_MEDIA_BUDGETS.image).toBe(90 * 1024);
+    expect(ATLAS_MEDIA_BUDGETS.mobileImage).toBe(60 * 1024);
+    expect(ATLAS_MEDIA_BUDGETS.svg).toBe(24 * 1024);
+    expect(BRAND_MEDIA_BUDGET_BYTES).toBe(12 * 1024);
+  });
+
   it("keeps documentary desktop and mobile images inside the release budgets", () => {
-    expect(DOCUMENTARY_MEDIA_BUDGETS.image).toBe(200 * 1024);
+    expect(DOCUMENTARY_MEDIA_BUDGETS.image).toBe(180 * 1024);
     expect(DOCUMENTARY_MEDIA_BUDGETS.mobileImage).toBe(140 * 1024);
   });
 

@@ -4,10 +4,6 @@ export const siteConfig = {
   url: "https://portofolio-wildan-zeta.vercel.app",
   name: "Wildan Syukri Niam",
   shortName: "Wildan",
-  role: "Software Engineer",
-  positioning: "Software Engineer building AI agents and Web3 systems.",
-  description:
-    "Evidence-backed case studies from Wildan Syukri Niam, a software engineer building AI agents and Web3 systems.",
   socialImage: {
     alt: "Wildan Syukri Niam working with teammates during a hackathon.",
     height: 630,

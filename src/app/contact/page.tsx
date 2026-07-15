@@ -1,13 +1,13 @@
-import { PersonalFieldNotesContact } from "@/components/pfn/pfn-routes";
-import { getContactProfile } from "@/content/queries.server";
+import { ContactRoute } from "@/components/portfolio/routes/contact-route";
+import { getSiteShell } from "@/content/queries.server";
 import { createPublicPageMetadata } from "@/lib/site-config";
 
 export const metadata = createPublicPageMetadata({
   title: "Contact",
-  description: "Contact Wildan Syukri Niam for software engineering and product collaboration.",
+  description: "Collaborate with Wildan Syukri Niam on AI agents, software engineering, and Web3 products.",
   pathname: "/contact",
 });
 
 export default function ContactPage() {
-  return <PersonalFieldNotesContact basePath="" profile={getContactProfile()} />;
+  return <ContactRoute basePath="" shell={getSiteShell()} />;
 }

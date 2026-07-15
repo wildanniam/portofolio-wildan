@@ -51,8 +51,8 @@ assets:
       focalPoint: { x: 0.42, y: 0.56 }
     mobile:
       src: /media/moments/refactory-build-room/mobile.webp
-      width: 800
-      height: 533
+      width: 720
+      height: 480
       crop:
         mode: focal
         aspectRatio: "3:2"

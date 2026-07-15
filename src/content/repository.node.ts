@@ -30,6 +30,7 @@ const SITE_RECORDS = {
   homepage: "homepage.yaml",
   navigation: "navigation.yaml",
   profile: "profile.yaml",
+  research: "research.yaml",
 } as const;
 
 export type ContentRepositoryOptions = {
@@ -417,6 +418,10 @@ export function loadContentRepository(
     moments: momentPaths.map((path) => readYamlFile(path, repositoryRoot)),
     profile: readYamlFile(
       resolve(siteDirectory, SITE_RECORDS.profile),
+      repositoryRoot,
+    ),
+    research: readYamlFile(
+      resolve(siteDirectory, SITE_RECORDS.research),
       repositoryRoot,
     ),
     navigation: readYamlFile(

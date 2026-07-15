@@ -1,0 +1,37 @@
+title: Research coordinates
+intro: >-
+  I follow the questions that appear when intelligent software has to understand
+  intent, act across real systems, and remain accountable for what happens next.
+territories:
+  - id: ai-agents
+    name: AI Agents
+    summary: >-
+      I study how agents turn language into bounded actions people can understand
+      and approve.
+    projectSlugs:
+      - nova-ai
+      - paygate
+  - id: trustworthy-autonomous-systems
+    name: Trustworthy Autonomous Systems
+    summary: >-
+      I design the checks, decision points, and recovery paths that keep autonomous
+      behavior accountable.
+    projectSlugs:
+      - fradium
+      - nova-ai
+  - id: on-chain-intelligence
+    name: On-chain Intelligence
+    summary: >-
+      I use blockchain state and transaction context to make risk and coordination
+      easier to reason about.
+    projectSlugs:
+      - fradium
+      - quorum
+  - id: agentic-payments
+    name: Agentic Payments
+    summary: >-
+      I build payment rails that let software request, verify, and settle value for
+      a specific action.
+    projectSlugs:
+      - paygate
+      - quorum

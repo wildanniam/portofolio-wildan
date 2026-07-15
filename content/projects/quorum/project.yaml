@@ -16,6 +16,56 @@ startedAt: "2026-06-08"
 lastUpdatedAt: "2026-07-11"
 lastVerifiedAt: "2026-07-11"
 oneLiner: Making collaborative event settlement inspectable on Stellar testnet.
+editorial:
+  archive:
+    summary: >-
+      A Stellar testnet event platform linking wallet-bound passes, collaborator splits, check-in, and withdrawal.
+  metadata:
+    description: >-
+      Quorum case study: Wildan built the full-stack product and Soroban flows for event access and settlement in a collaborative Stellar testnet hackathon prototype.
+  caseOpening:
+    question: How can event collaborators share access and revenue without relying on manual reconciliation?
+    answer: >-
+      Quorum combines wallet-bound passes, on-chain splits, check-in, and withdrawal, while keeping cash-out as a separate tracked step.
+branding:
+  palette:
+    surface: "#080B0B"
+    foreground: "#F2F8F7"
+    accent: "#62D2D0"
+  mark:
+    id: quorum-brand-mark
+    src: /media/projects/quorum/brand/mark.svg
+    width: 58
+    height: 58
+    suitableSurfaces:
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/wildanniam/Quorum
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
+      sourcePath: public/figma/landing/quorum-mark.svg
+      creator: Wildan Syukri Niam
+      rights: >-
+        First-party Quorum identity authored for the product and reused only to
+        identify it in Wildan's portfolio.
+  wordmark:
+    id: quorum-brand-wordmark
+    src: /media/projects/quorum/brand/wordmark.svg
+    width: 161
+    height: 40
+    suitableSurfaces:
+      - dark
+    accessibility:
+      mode: decorative
+    provenance:
+      sourceRepository: https://github.com/wildanniam/Quorum
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
+      sourcePath: public/figma/landing/quorum-logo.svg
+      creator: Wildan Syukri Niam
+      rights: >-
+        First-party Quorum wordmark authored for the product and reused only to
+        identify it in Wildan's portfolio.
 problem: >-
   Collaborative events often collect ticket revenue through one organizer and
   reconcile speaker, venue, community, and partner shares through spreadsheets,
@@ -201,6 +251,81 @@ claims:
       Hosted prototype with live testnet contracts; not a claim of mainnet,
       independently audited custody, production use, or automatic fiat payout.
 evidence:
+  - id: quorum-atlas-pass
+    status: ready
+    slot: atlas-primary-surface
+    evidenceType: product
+    evidenceFunctions:
+      - product-reality
+    mediaKind: image
+    src: /media/projects/quorum/atlas/pass-receipt.webp
+    width: 390
+    height: 1150
+    crop:
+      mode: intrinsic
+    mobile:
+      src: /media/projects/quorum/atlas/pass-receipt-mobile.webp
+      width: 320
+      height: 944
+      crop:
+        mode: intrinsic
+    alt: Quorum wallet pass receipt for event access and check-in.
+    caption: A wallet pass carries event access into the check-in and settlement flow.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam; portfolio derivative prepared with OpenAI Codex
+      rightsNote: First-party Quorum product fragment cropped without redesign.
+      sourceRepository: https://github.com/wildanniam/Quorum
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
+      sourcePath: output/playwright/product-ui-audit-current/pass-receipt-desktop.png
+    claimIds:
+      - quorum-live-testnet
+  - id: quorum-atlas-settlement
+    status: ready
+    slot: atlas-supporting-fragment
+    evidenceType: architecture
+    evidenceFunctions:
+      - system-reasoning
+    mediaKind: image
+    src: /media/projects/quorum/atlas/settlement-flow.webp
+    width: 720
+    height: 569
+    crop:
+      mode: intrinsic
+    alt: Quorum settlement flow connecting event revenue, collaborator splits, and proof.
+    caption: Event access and collaborator revenue resolve into one explicit settlement record.
+    provenance:
+      kind: owned
+      creator: Wildan Syukri Niam; portfolio derivative prepared with OpenAI Codex
+      rightsNote: First-party Quorum product fragment cropped without redesign.
+      sourceRepository: https://github.com/wildanniam/Quorum
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
+      sourcePath: output/playwright/product-ui-audit-current/collaborator-ledger-desktop.png
+    claimIds:
+      - quorum-settlement-boundary
+  - id: quorum-atlas-rail
+    status: ready
+    slot: atlas-decoration
+    evidenceType: architecture
+    evidenceFunctions:
+      - system-reasoning
+    mediaKind: svg
+    src: /media/projects/quorum/atlas/settlement-rail.svg
+    width: 588
+    height: 271
+    crop:
+      mode: intrinsic
+    alt: ""
+    caption: A decorative settlement rail connects the Quorum scene without replacing product evidence.
+    provenance:
+      kind: owned
+      creator: Quorum team
+      rightsNote: >-
+        First-party Quorum interface decoration copied without redesign and used
+        only inside the project-owned Atlas scene.
+      sourceRepository: https://github.com/wildanniam/Quorum
+      revision: c0b81665368381dd3f7ae323ef88b221f05ff2fe
+      sourcePath: public/figma/landing/feature-split-rail.svg
   - id: quorum-product-flow
     status: ready
     slot: hero-event-flow

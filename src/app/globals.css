@@ -1,22 +1,10 @@
 @import "tailwindcss";
-@import "../styles/pfn.css";
-
-:root {
-  background: #f2f0e8;
-  color: #11120f;
-}
-
-html {
-  background: #f2f0e8;
-}
-
-body {
-  margin: 0;
-  min-height: 100svh;
-  text-rendering: geometricPrecision;
-}
-
-::selection {
-  background: #3047ff;
-  color: #fff;
-}
+@import "../styles/portfolio/tokens.css";
+@import "../styles/portfolio/base.css";
+@import "../styles/portfolio/shell.css";
+@import "../styles/portfolio/home.css";
+@import "../styles/portfolio/atlas.css";
+@import "../styles/portfolio/motion.css";
+@import "../styles/portfolio/routes.css";
+@import "../styles/portfolio/project.css";
+@import "../styles/portfolio/moments.css";

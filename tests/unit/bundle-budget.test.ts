@@ -148,6 +148,14 @@ describe("committed Personal Field Notes V2 viewport budgets", () => {
       largestImageTransferBytes: 140_000,
     });
   });
+
+  it("keeps every sampled route below the locked initial font ceiling", () => {
+    for (const route of Object.values(budgetConfig.profiles.v2.routes) as Array<{
+      limits: { initialFontTransferBytes?: number };
+    }>) {
+      expect(route.limits.initialFontTransferBytes).toBe(114_688);
+    }
+  });
 });
 
 describe("network failure policy", () => {

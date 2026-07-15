@@ -1,0 +1,16 @@
+[data-atlas-motion-state="loading"] .v4-stage__artifact,
+[data-atlas-motion-state="ready"] .v4-stage__artifact,
+[data-atlas-motion-state="loading"] .v4-stage__flow li,
+[data-atlas-motion-state="ready"] .v4-stage__flow li {
+  backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-atlas-motion-state] .v4-stage__artifact,
+  [data-atlas-motion-state] .v4-stage__flow li {
+    opacity: 1 !important;
+    transform: none !important;
+    visibility: visible !important;
+    will-change: auto !important;
+  }
+}
