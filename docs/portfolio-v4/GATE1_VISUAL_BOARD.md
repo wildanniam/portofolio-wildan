@@ -1,6 +1,6 @@
 # Human Visual Gate 1 Board
 
-- Status: visual system selected; explicit approval of this checked-in board is still required
+- Status: complete board assembled; Wildan approval pending
 - Primary direction: **Research Instrument / Field Journal**
 - Secondary reference: **Signal Cartography**, connector grammar only
 - Implementation rule: no final homepage/Atlas layout and no motion before this board is approved
@@ -15,6 +15,21 @@
 | Mobile connector reference | `visual-targets/gate1-signal-cartography-mobile-reference.png` | Reference only for the visual continuity of the signal language |
 
 The connector references are not alternate layouts. The primary Research Instrument frames own the composition.
+
+## Authoritative companion frames
+
+| Frame | File | Implementation authority |
+| --- | --- | --- |
+| Atlas desktop states | `visual-targets/gate1-atlas-desktop-states.png` | Art direction for the paired-stage rhythm, authentic artifacts, restrained focus state, and non-overlapping project narratives |
+| Atlas mobile 390 validation | `visual-targets/gate1-atlas-mobile-390-validation.png` | Four viewport-stage captures of one 390px page; validates strict single-column project composition and readable artifacts |
+| PayGate case opening | `visual-targets/gate1-case-opening-paygate-desktop.png` | Authoritative case-study opening hierarchy, product mark placement, artifact scale, metadata rail, and chapter transition |
+| Moments desktop | `visual-targets/gate1-moments-desktop.png` | Authoritative asymmetric documentary contact-sheet rhythm using real event photography |
+| Moments mobile 390 | `visual-targets/gate1-moments-mobile-390.png` | Authoritative mobile lead-photo plus compact editorial-row composition |
+| PayGate `Signal → System` storyboard | `visual-targets/gate1-paygate-signal-system-storyboard.png` | Authoritative five-keyframe reveal sequence and its no-motion fallback |
+
+These generated boards are visual art direction built from authentic source assets. They do not replace, redraw, or alter the real product screenshots, logos, receipts, and photographs. Source assets remain immutable; implementation composes them with intrinsic sizing and bounded masks.
+
+Where an image-generation composition differs from a numeric rule below, the written implementation contract wins. In particular, the Atlas desktop board communicates rhythm and hierarchy, while production code must enforce `7/12 + 5/12` for Fradium/Nova and `5/12 + 7/12` for PayGate/Quorum. Newsreader remains restricted to authored phrases even where a generated board uses broader editorial italics.
 
 ## Locked visual foundation
 
@@ -88,13 +103,31 @@ The checked-in Atlas assets already define the authentic visual vocabulary. The 
 
 Shared stage DOM remains `header → figure → footer`. Every stage owns its logo, question, answer, role, flow, authentic artifacts, outcome, and case-study action. Product UI is intrinsic/contained, upright, and never rendered through a destructive `cover` crop.
 
-## Required companion frames before Gate 1 closes
+The mobile validation board shows four scroll-position viewports from one 390px page. Production DOM order is always `Fradium → Nova → PayGate → Quorum`; stages never become a horizontal carousel and no project is hidden behind an interaction.
 
-- Project Atlas desktop idle state
-- one Atlas stage hover/focus state
-- Project Atlas at 390px
-- one flagship case-study opening
-- Moments preview desktop and 390px
-- concise `Signal → System` keyframe storyboard
+## Motion contract
 
-The primary and connector frames above lock the visual language. Gate 1 becomes approved only after the companion frames are checked in and Wildan approves the complete board.
+The `Signal → System` sequence is a bounded enhancement inside the active project stage:
+
+1. empty artifact slots and a quiet signal origin;
+2. the signal rail resolves toward the primary artifact;
+3. the primary artifact appears without scale pop or layout movement;
+4. the support artifact appears with no more than 8px of transform travel;
+5. the static final composition and case-study action remain available.
+
+The sequence does not pin, scrub, loop, or intercept scrolling. The no-JavaScript and `prefers-reduced-motion: reduce` experience renders keyframe five immediately with zero layout shift and no missing content.
+
+## Approval checklist
+
+- [x] Research Instrument desktop and mobile direction
+- [x] restrained Signal Cartography connector grammar
+- [x] Atlas desktop idle/focus art direction
+- [x] Atlas 390px single-column validation
+- [x] PayGate flagship case-study opening
+- [x] Moments desktop and 390px compositions
+- [x] concise `Signal → System` keyframe storyboard
+- [x] authentic source assets remain visible and undistorted
+- [x] exact grid, type, crop, and reduced-motion rules documented
+- [ ] Wildan approves the complete board
+
+Gate 1 closes only after Wildan approves this complete board. Final homepage/Atlas layout and production motion remain gated until that approval.

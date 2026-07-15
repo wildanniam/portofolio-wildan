@@ -1,6 +1,6 @@
 # Portfolio V4 Design Lock
 
-- Status: direction locked; high-fidelity visual frames still require Human Visual Gate 1 approval
+- Status: direction and high-fidelity frame set locked; Human Visual Gate 1 approval pending
 - Register: high-expression brand UI
 - Working concept: **Research / Build Atlas**
 - Language: English
