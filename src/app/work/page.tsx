@@ -1,5 +1,5 @@
 import { PersonalFieldNotesWork } from "@/components/pfn/pfn-routes";
-import { getWorkProjectSummaries } from "@/content/queries.server";
+import { getSiteShell, getWorkProjectSummaries } from "@/content/queries.server";
 import { createPublicPageMetadata } from "@/lib/site-config";
 
 export const metadata = createPublicPageMetadata({
@@ -9,5 +9,5 @@ export const metadata = createPublicPageMetadata({
 });
 
 export default function WorkPage() {
-  return <PersonalFieldNotesWork basePath="" projects={getWorkProjectSummaries()} />;
+  return <PersonalFieldNotesWork basePath="" projects={getWorkProjectSummaries()} shell={getSiteShell()} />;
 }

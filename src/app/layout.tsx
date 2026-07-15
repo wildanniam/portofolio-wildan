@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import { Archivo, Bodoni_Moda, Geist_Mono } from "next/font/google";
+import { Archivo, Geist_Mono, Newsreader } from "next/font/google";
 
+import { getSiteShell } from "@/content/queries.server";
 import { absoluteSiteUrl, siteConfig } from "@/lib/site-config";
 
 import "./globals.css";
@@ -9,14 +10,17 @@ const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: "variable",
+  axes: ["wdth"],
 });
 
-const bodoniModa = Bodoni_Moda({
-  variable: "--font-bodoni-moda",
+const newsreader = Newsreader({
+  variable: "--font-newsreader",
   subsets: ["latin"],
   display: "swap",
-  weight: ["500", "600"],
+  style: ["normal", "italic"],
+  weight: "variable",
+  axes: ["opsz"],
 });
 
 const geistMono = Geist_Mono({
@@ -26,23 +30,25 @@ const geistMono = Geist_Mono({
   preload: false,
 });
 
+const profile = getSiteShell().profile;
+const rootTitle = `${profile.name} | ${profile.identity}`;
+const rootDescription = profile.headline.supporting;
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Wildan Syukri Niam | Software Engineer",
-    template: "%s | Wildan Syukri Niam",
+    default: rootTitle,
+    template: `%s | ${profile.name}`,
   },
-  description:
-    "Personal field notes from Wildan Syukri Niam: AI, Web3, and full-stack systems built to be inspected.",
+  description: rootDescription,
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     url: siteConfig.url,
-    title: "Wildan Syukri Niam | Software Engineer",
-    description:
-      "Personal field notes from a student builder working across AI, Web3, and full-stack systems.",
+    title: rootTitle,
+    description: rootDescription,
     images: [
       {
         url: absoluteSiteUrl(siteConfig.socialImage.pathname),
@@ -54,9 +60,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wildan Syukri Niam | Software Engineer",
-    description:
-      "Personal field notes from a student builder working across AI, Web3, and full-stack systems.",
+    title: rootTitle,
+    description: rootDescription,
     images: [absoluteSiteUrl(siteConfig.socialImage.pathname)],
   },
 };
@@ -67,8 +72,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${archivo.variable} ${bodoniModa.variable} ${geistMono.variable} antialiased`}>
+    <html
+      className={`${archivo.variable} ${newsreader.variable} ${geistMono.variable}`}
+      lang="en"
+      suppressHydrationWarning
+    >
+      <body className="antialiased">
         {children}
       </body>
     </html>

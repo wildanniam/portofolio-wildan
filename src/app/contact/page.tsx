@@ -1,5 +1,5 @@
 import { PersonalFieldNotesContact } from "@/components/pfn/pfn-routes";
-import { getContactProfile } from "@/content/queries.server";
+import { getSiteShell } from "@/content/queries.server";
 import { createPublicPageMetadata } from "@/lib/site-config";
 
 export const metadata = createPublicPageMetadata({
@@ -9,5 +9,5 @@ export const metadata = createPublicPageMetadata({
 });
 
 export default function ContactPage() {
-  return <PersonalFieldNotesContact basePath="" profile={getContactProfile()} />;
+  return <PersonalFieldNotesContact basePath="" shell={getSiteShell()} />;
 }

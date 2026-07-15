@@ -1,18 +1,17 @@
 import Link from "next/link";
 
-import { PfnFooter } from "@/components/pfn/pfn-footer";
-import { PfnHeader } from "@/components/pfn/pfn-shell";
+import { PortfolioShell } from "@/components/portfolio/shell/portfolio-shell";
+import { getSiteShell } from "@/content/queries.server";
 
 export default function NotFound() {
+  const shell = getSiteShell();
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <PfnHeader currentPath="/404" />
-      <main className="pfn-contact pfn-not-found">
+    <PortfolioShell currentPath="/404" mainId="portfolio-main" {...shell}>
+      <main className="pfn-contact pfn-not-found" id="portfolio-main" tabIndex={-1}>
         <p>404 / Page unavailable</p>
         <h1>This page could not be found.</h1>
         <Link className="pfn-button pfn-button--primary" href="/" prefetch={false}>Return to the portfolio</Link>
       </main>
-      <PfnFooter />
-    </div>
+    </PortfolioShell>
   );
 }

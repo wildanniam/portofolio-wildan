@@ -31,6 +31,9 @@ export function cloneSeedBundle(): ContentBundle {
   // that fixture deterministic even as the real editorial intake grows.
   content.moments = [];
   content.homepage.featuredMomentIds = [];
+  content.navigation.primary = content.navigation.primary.filter(
+    (item) => item.href !== "/moments",
+  );
   return content;
 }
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PersonalFieldNotesProject } from "@/components/pfn/pfn-routes";
-import { getProjectBySlug, getPublishedMoments, getWorkProjectSummaries } from "@/content/queries.server";
+import { getProjectBySlug, getPublishedMoments, getSiteShell, getWorkProjectSummaries } from "@/content/queries.server";
 import { selectProjectSocialImage } from "@/content/queries";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -43,6 +43,7 @@ export default async function WorkProjectPage({ params }: PageProps) {
       moments={getPublishedMoments()}
       nextProject={next ? getProjectBySlug(next.slug) : undefined}
       project={project}
+      shell={getSiteShell()}
     />
   );
 }

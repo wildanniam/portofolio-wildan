@@ -9,5 +9,5 @@ export const metadata = createPublicPageMetadata({
 });
 
 export default function AboutPage() {
-  return <PersonalFieldNotesAbout basePath="" profile={getSiteShell().profile} />;
+  return <PersonalFieldNotesAbout basePath="" shell={getSiteShell()} />;
 }

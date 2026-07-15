@@ -1,20 +1,21 @@
 import { PfnMomentsGallery } from "@/components/pfn/pfn-moments-gallery";
-import { PfnRouteFooter, PfnRouteHeader } from "@/components/pfn/pfn-routes";
+import { PortfolioShell } from "@/components/portfolio/shell/portfolio-shell";
 import { orderMomentsForDisplay } from "@/components/pfn/pfn-models";
+import type { SiteShellSelection } from "@/content/queries";
 import type { MomentRecord } from "@/content/types";
 
 export function PersonalFieldNotesMoments({
   basePath,
   moments,
+  shell,
 }: {
   basePath: string;
   moments: MomentRecord[];
+  shell: SiteShellSelection;
 }) {
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} currentPath="/moments" />
-      <main className="pfn-route" id="pfn-main">
+    <PortfolioShell basePath={basePath} currentPath="/moments" mainId="pfn-main" {...shell}>
+      <main className="pfn-route" id="pfn-main" tabIndex={-1}>
         <header className="pfn-route-hero pfn-moments-hero">
           <p>Moments</p>
           <h1>The work around the work.</h1>
@@ -25,7 +26,6 @@ export function PersonalFieldNotesMoments({
         </header>
         <PfnMomentsGallery moments={orderMomentsForDisplay(moments)} />
       </main>
-      <PfnRouteFooter />
-    </div>
+    </PortfolioShell>
   );
 }

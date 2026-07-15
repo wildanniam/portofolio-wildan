@@ -3,8 +3,8 @@ import Link from "next/link";
 
 import type { HomepageSelection } from "@/content/queries";
 import type { MomentRecord, ProjectRecord, VerifiedClaim } from "@/content/types";
+import { PortfolioShell } from "@/components/portfolio/shell/portfolio-shell";
 
-import { PfnFooter } from "./pfn-footer";
 import { PfnMedia } from "./pfn-media";
 import {
   momentPrimaryImage,
@@ -13,7 +13,6 @@ import {
   projectOutcome,
   projectPrimaryImage,
 } from "./pfn-models";
-import { PfnHeader } from "./pfn-shell";
 
 type PersonalFieldNotesHomeProps = {
   selection: HomepageSelection;
@@ -118,11 +117,14 @@ export function PersonalFieldNotesHome({
   const orderedMoments = orderMomentsForDisplay(moments);
 
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnHeader basePath={basePath} currentPath="/" />
-
-      <main id="pfn-main">
+    <PortfolioShell
+      basePath={basePath}
+      currentPath="/"
+      mainId="pfn-main"
+      navigation={selection.navigation}
+      profile={profile}
+    >
+      <main id="pfn-main" tabIndex={-1}>
         <section aria-labelledby="pfn-hero-title" className="pfn-hero">
           <div className="pfn-hero__identity">
             <span>Wildan Syukri Niam</span>
@@ -256,8 +258,6 @@ export function PersonalFieldNotesHome({
           </div>
         </section>
       </main>
-
-      <PfnFooter />
-    </div>
+    </PortfolioShell>
   );
 }

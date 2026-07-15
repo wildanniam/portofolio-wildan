@@ -1,16 +1,16 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
+import { PortfolioShell } from "@/components/portfolio/shell/portfolio-shell";
 import type { ProjectSummaryDto } from "@/content/dto";
+import type { SiteShellSelection } from "@/content/queries";
 import type {
   FullProjectRecord,
   MomentRecord,
-  Profile,
   ProjectRecord,
   ReadyImageAsset,
 } from "@/content/types";
 
-import { PfnFooter } from "./pfn-footer";
 import { PfnMedia } from "./pfn-media";
 import {
   momentForProject,
@@ -20,18 +20,9 @@ import {
   projectPrimaryImage,
   readyImages,
 } from "./pfn-models";
-import { PfnHeader } from "./pfn-shell";
 
 function route(basePath: string, pathname: string) {
   return `${basePath}${pathname}` || "/";
-}
-
-export function PfnRouteHeader({ basePath, currentPath }: { basePath: string; currentPath: string }) {
-  return <PfnHeader basePath={basePath} currentPath={currentPath} />;
-}
-
-export function PfnRouteFooter() {
-  return <PfnFooter />;
 }
 
 function summaryImage(project: ProjectSummaryDto): ReadyImageAsset | undefined {
@@ -56,17 +47,17 @@ function orderArchive(projects: ProjectSummaryDto[]) {
 export function PersonalFieldNotesWork({
   basePath,
   projects,
+  shell,
 }: {
   basePath: string;
   projects: ProjectSummaryDto[];
+  shell: SiteShellSelection;
 }) {
   const orderedProjects = orderArchive(projects);
 
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} currentPath="/work" />
-      <main className="pfn-route" id="pfn-main">
+    <PortfolioShell basePath={basePath} currentPath="/work" mainId="pfn-main" {...shell}>
+      <main className="pfn-route" id="pfn-main" tabIndex={-1}>
         <header className="pfn-route-hero">
           <p>Work archive</p>
           <h1>Systems with a trail behind them.</h1>
@@ -112,8 +103,7 @@ export function PersonalFieldNotesWork({
           </ol>
         </section>
       </main>
-      <PfnRouteFooter />
-    </div>
+    </PortfolioShell>
   );
 }
 
@@ -143,11 +133,13 @@ export function PersonalFieldNotesProject({
   moments,
   nextProject,
   project,
+  shell,
 }: {
   basePath: string;
   moments: MomentRecord[];
   nextProject?: ProjectRecord;
   project: FullProjectRecord;
+  shell: SiteShellSelection;
 }) {
   const primaryImage = projectPrimaryImage(project);
   const outcome = projectOutcome(project);
@@ -157,10 +149,13 @@ export function PersonalFieldNotesProject({
   const documentaryImage = documentaryMoment ? momentPrimaryImage(documentaryMoment) : undefined;
 
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} currentPath={`/work/${project.slug}`} />
-      <main className="pfn-case" id="pfn-main">
+    <PortfolioShell
+      basePath={basePath}
+      currentPath={`/work/${project.slug}`}
+      mainId="pfn-main"
+      {...shell}
+    >
+      <main className="pfn-case" id="pfn-main" tabIndex={-1}>
         <header className="pfn-case-hero">
           <Link className="pfn-back-link" href={route(basePath, "/work")} prefetch={false}>
             <ArrowLeft aria-hidden="true" size={17} />
@@ -319,17 +314,15 @@ export function PersonalFieldNotesProject({
           </Link>
         )}
       </main>
-      <PfnRouteFooter />
-    </div>
+    </PortfolioShell>
   );
 }
 
-export function PersonalFieldNotesAbout({ basePath, profile }: { basePath: string; profile: Profile }) {
+export function PersonalFieldNotesAbout({ basePath, shell }: { basePath: string; shell: SiteShellSelection }) {
+  const { profile } = shell;
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} currentPath="/about" />
-      <main className="pfn-route" id="pfn-main">
+    <PortfolioShell basePath={basePath} currentPath="/about" mainId="pfn-main" {...shell}>
+      <main className="pfn-route" id="pfn-main" tabIndex={-1}>
         <header className="pfn-route-hero pfn-about-hero">
           <p>About</p>
           <h1>I make ambitious systems easier to see.</h1>
@@ -366,17 +359,15 @@ export function PersonalFieldNotesAbout({ basePath, profile }: { basePath: strin
           </ol>
         </section>
       </main>
-      <PfnRouteFooter />
-    </div>
+    </PortfolioShell>
   );
 }
 
-export function PersonalFieldNotesContact({ basePath, profile }: { basePath: string; profile: Profile }) {
+export function PersonalFieldNotesContact({ basePath, shell }: { basePath: string; shell: SiteShellSelection }) {
+  const { profile } = shell;
   return (
-    <div className="pfn-shell" data-portfolio-v3>
-      <a className="pfn-skip-link" href="#pfn-main">Skip to content</a>
-      <PfnRouteHeader basePath={basePath} currentPath="/contact" />
-      <main className="pfn-contact" id="pfn-main">
+    <PortfolioShell basePath={basePath} currentPath="/contact" mainId="pfn-main" {...shell}>
+      <main className="pfn-contact" id="pfn-main" tabIndex={-1}>
         <p>Contact</p>
         <h1>Let&apos;s build something worth inspecting.</h1>
         <div className="pfn-contact__copy">
@@ -395,7 +386,6 @@ export function PersonalFieldNotesContact({ basePath, profile }: { basePath: str
         ) : null}
         <p className="pfn-contact__location">{profile.location}</p>
       </main>
-      <PfnRouteFooter />
-    </div>
+    </PortfolioShell>
   );
 }
