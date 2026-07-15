@@ -31,6 +31,7 @@ V3 is technically sound but visually unsuccessful:
 ## Canonical documents
 
 - [DESIGN.md](./DESIGN.md) — visual, narrative, component, responsive, and motion lock.
+- [GATE1_VISUAL_BOARD.md](./GATE1_VISUAL_BOARD.md) — checked-in targets, selected direction, connector rules, and open approval evidence.
 - [DEVELOPMENT_PLAN.md](./DEVELOPMENT_PLAN.md) — ordered implementation and migration plan.
 - [QA_MATRIX.md](./QA_MATRIX.md) — merge blockers and required visual evidence.
 - [BASELINE.md](./BASELINE.md) — production V3 rollback, metrics, and failure patterns V4 must remove.
