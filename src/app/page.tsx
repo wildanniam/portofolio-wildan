@@ -1,6 +1,6 @@
-import { PersonalFieldNotesHome } from "@/components/pfn/pfn-home";
+import { ResearchBuildHome } from "@/components/portfolio/home/research-build-home";
 import { getHomepage } from "@/content/queries.server";
 
 export default function HomePage() {
-  return <PersonalFieldNotesHome selection={getHomepage()} />;
+  return <ResearchBuildHome selection={getHomepage()} />;
 }
