@@ -61,7 +61,12 @@ test("skip navigation reaches and focuses the route main landmark", async ({
 
 test("desktop navigation is canonical, route-aware, and external-link safe", async ({
   page,
-}) => {
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name === "mobile-chromium",
+    "The desktop navigation is intentionally removed from the mobile accessibility tree.",
+  );
+
   await page.goto("/work/paygate");
 
   const primaryNavigation = page.getByRole("navigation", {
@@ -99,9 +104,11 @@ test("mobile navigation is modal, route-aware, and restores focus", async ({
   await trigger.click();
 
   const dialog = page.locator("dialog[open]");
+  const closeButton = dialog.getByRole("button", { name: "Close navigation" });
   await expect(dialog).toBeVisible();
   await expect(trigger).toHaveAttribute("aria-expanded", "true");
   await expect(dialog.getByRole("navigation")).toHaveCount(1);
+  await expect(closeButton).toBeFocused();
   await expect(dialog.locator('[aria-current="page"]')).toHaveAttribute(
     "href",
     "/work",
@@ -119,7 +126,7 @@ test("mobile navigation is modal, route-aware, and restores focus", async ({
     .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
     .toBe("hidden");
 
-  await dialog.getByRole("button", { name: "Close navigation" }).click();
+  await closeButton.click();
   await expect(page.locator("dialog[open]")).toHaveCount(0);
   await expect(trigger).toBeFocused();
 
@@ -135,17 +142,18 @@ test("mobile navigation is modal, route-aware, and restores focus", async ({
   await expect(trigger).toBeFocused();
 
   await trigger.click();
-  await expect(page.locator("dialog[open]")).toBeVisible();
+  const focusTrapDialog = page.locator("dialog[open]");
+  const focusTrapClose = focusTrapDialog.getByRole("button", {
+    name: "Close navigation",
+  });
+  const lastDialogLink = focusTrapDialog.getByRole("link").last();
+  await expect(focusTrapDialog).toBeVisible();
+  await expect(focusTrapClose).toBeFocused();
 
-  for (let index = 0; index < 8; index += 1) {
-    await page.keyboard.press("Tab");
-    const focusStayedInside = await page.evaluate(() => {
-      const active = document.activeElement;
-      const openDialog = document.querySelector("dialog[open]");
-      return Boolean(active && openDialog?.contains(active));
-    });
-    expect(focusStayedInside).toBe(true);
-  }
+  await page.keyboard.press("Shift+Tab");
+  await expect(lastDialogLink).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(focusTrapClose).toBeFocused();
 
   await page.keyboard.press("Escape");
   await expect(page.locator("dialog[open]")).toHaveCount(0);
@@ -154,6 +162,28 @@ test("mobile navigation is modal, route-aware, and restores focus", async ({
   await expect
     .poll(() => page.evaluate(() => getComputedStyle(document.body).overflow))
     .not.toBe("hidden");
+});
+
+test("mobile navigation restores focus across a responsive breakpoint", async ({
+  page,
+}, testInfo) => {
+  test.skip(
+    testInfo.project.name !== "desktop-chromium",
+    "One browser engine is sufficient for the responsive focus fallback contract.",
+  );
+
+  await page.setViewportSize({ width: 390, height: 568 });
+  await page.goto("/");
+
+  const trigger = page.locator('button[aria-haspopup="dialog"]');
+  await trigger.click();
+  await expect(page.locator("dialog[open]")).toBeVisible();
+
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.keyboard.press("Escape");
+
+  await expect(page.locator("dialog[open]")).toHaveCount(0);
+  await expect(page.locator(".portfolio-wordmark")).toBeFocused();
 });
 
 test("the V4 shell introduces no horizontal overflow at supported widths", async ({

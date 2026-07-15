@@ -126,6 +126,8 @@ body:has(.portfolio-mobile-nav[open]) {
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 1.25rem;
 }
 

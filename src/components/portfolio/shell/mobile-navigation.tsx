@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import type { KeyboardEvent } from "react";
 
 import { ArrowRight, ArrowUpRight, Menu, X } from "lucide-react";
 import Link from "next/link";
@@ -13,6 +14,15 @@ type MobileNavigationProps = {
   navigation: Navigation;
   profile: Pick<Profile, "identity" | "researchDirection">;
 };
+
+const FOCUSABLE_SELECTOR = [
+  'a[href]',
+  'button:not([disabled])',
+  'input:not([disabled]):not([type="hidden"])',
+  'select:not([disabled])',
+  'textarea:not([disabled])',
+  '[tabindex]:not([tabindex="-1"])',
+].join(",");
 
 function isHttpHref(href: string) {
   return /^https?:\/\//i.test(href);
@@ -31,6 +41,57 @@ function resolveHref(href: string, basePath: string) {
   return href === "/" ? `${normalizedBasePath}/` : `${normalizedBasePath}${href}`;
 }
 
+function trapDialogFocus(event: KeyboardEvent<HTMLDialogElement>) {
+  if (event.key !== "Tab") return;
+
+  const dialog = event.currentTarget;
+  const focusableElements = Array.from(
+    dialog.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+  ).filter((element) => {
+    const style = window.getComputedStyle(element);
+
+    return (
+      element.getClientRects().length > 0 &&
+      style.display !== "none" &&
+      style.visibility !== "hidden"
+    );
+  });
+  const firstFocusable = focusableElements[0];
+
+  if (!firstFocusable) {
+    event.preventDefault();
+    dialog.focus({ preventScroll: true });
+    return;
+  }
+
+  const activeIndex = focusableElements.indexOf(
+    document.activeElement as HTMLElement,
+  );
+  const nextIndex =
+    activeIndex < 0
+      ? event.shiftKey
+        ? focusableElements.length - 1
+        : 0
+      : (activeIndex + (event.shiftKey ? -1 : 1) + focusableElements.length) %
+        focusableElements.length;
+
+  event.preventDefault();
+  focusableElements[nextIndex]?.focus({ preventScroll: true });
+}
+
+function canRestoreFocus(element: HTMLElement | null) {
+  if (!element?.isConnected || element.matches('[disabled], [aria-disabled="true"]')) {
+    return false;
+  }
+
+  const style = window.getComputedStyle(element);
+  return (
+    element.getClientRects().length > 0 &&
+    style.display !== "none" &&
+    style.visibility !== "hidden"
+  );
+}
+
 export function MobileNavigation({
   basePath = "",
   currentPath,
@@ -38,20 +99,28 @@ export function MobileNavigation({
   profile,
 }: MobileNavigationProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const shouldRestoreFocusRef = useRef(true);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const [isOpen, setIsOpen] = useState(false);
   const dialogId = useId();
   const titleId = useId();
   const items = [...navigation.primary, ...(navigation.secondary ?? [])];
 
-  const close = () => {
+  const close = ({ restoreFocus = true } = {}) => {
+    shouldRestoreFocusRef.current = restoreFocus;
     dialogRef.current?.close();
     setIsOpen(false);
   };
 
   const open = () => {
-    dialogRef.current?.showModal();
+    const dialog = dialogRef.current;
+    if (!dialog || dialog.open) return;
+
+    shouldRestoreFocusRef.current = true;
+    dialog.showModal();
     setIsOpen(true);
+    closeButtonRef.current?.focus({ preventScroll: true });
   };
 
   return (
@@ -81,16 +150,27 @@ export function MobileNavigation({
           if (event.currentTarget === event.target) close();
         }}
         onKeyDown={(event) => {
-          if (event.key !== "Escape") return;
-
-          event.preventDefault();
-          close();
+          trapDialogFocus(event);
         }}
         onClose={() => {
           setIsOpen(false);
-          triggerRef.current?.focus();
+
+          if (shouldRestoreFocusRef.current) {
+            const trigger = triggerRef.current;
+            const fallback = dialogRef.current
+              ?.closest("header")
+              ?.querySelector<HTMLElement>(".portfolio-wordmark") ?? null;
+            const focusTarget = canRestoreFocus(trigger) ? trigger : fallback;
+
+            if (canRestoreFocus(focusTarget)) {
+              focusTarget?.focus({ preventScroll: true });
+            }
+          }
+
+          shouldRestoreFocusRef.current = true;
         }}
         ref={dialogRef}
+        tabIndex={-1}
       >
         <div className="portfolio-mobile-nav__surface">
           <div className="portfolio-mobile-nav__topline">
@@ -98,7 +178,8 @@ export function MobileNavigation({
             <button
               aria-label="Close navigation"
               className="portfolio-menu-close"
-              onClick={close}
+              onClick={() => close()}
+              ref={closeButtonRef}
               type="button"
             >
               <X aria-hidden="true" size={22} strokeWidth={1.6} />
@@ -125,7 +206,7 @@ export function MobileNavigation({
                   aria-current={current ? "page" : undefined}
                   href={href}
                   key={item.id}
-                  onClick={close}
+                  onClick={() => close({ restoreFocus: false })}
                   prefetch={false}
                 >
                   {content}
@@ -134,7 +215,7 @@ export function MobileNavigation({
                 <a
                   href={href}
                   key={item.id}
-                  onClick={close}
+                  onClick={() => close()}
                   rel={isHttpHref(item.href) ? "noreferrer" : undefined}
                   target={isHttpHref(item.href) ? "_blank" : undefined}
                 >
