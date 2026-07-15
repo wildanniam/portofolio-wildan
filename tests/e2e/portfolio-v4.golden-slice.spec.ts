@@ -113,6 +113,15 @@ test("mobile golden slice preserves strict reading order, visible logos, and bou
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
 
+  const brandAssets = page.locator(
+    "[data-project-atlas] [data-atlas-stage] [data-brand-asset]",
+  );
+  await expect(brandAssets).toHaveCount(stageOrder.length);
+  for (const brandAsset of await brandAssets.all()) {
+    await brandAsset.scrollIntoViewIfNeeded();
+    await expect(brandAsset).toBeVisible();
+  }
+
   const result = await page.locator("[data-project-atlas]").evaluate((atlas) => {
     const stages = Array.from(atlas.querySelectorAll("[data-atlas-stage]"));
     return {
