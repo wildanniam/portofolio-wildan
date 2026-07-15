@@ -24,15 +24,21 @@ facts, roles, outcomes, branding, or Atlas composition in components.
   research direction, and operating rhythm.
 - `site/research.yaml` owns the four research territories and their project
   relationships.
-- `site/homepage.yaml` owns exactly four typed Atlas stages. Each stage references
-  a published project, a project-owned outcome claim, and ready project-owned
-  artifact IDs; it never duplicates the claim or asset payload.
+- `site/homepage.yaml` owns exactly four typed Atlas stages and four curated
+  documentary Moment references. Each Atlas stage references a published project,
+  a project-owned outcome claim, and ready project-owned artifact IDs. Each Moment
+  entry references one published Moment-owned asset and declares exactly one lead
+  plus three supporting roles; neither contract duplicates claim or asset payloads.
 - Flagship `project.yaml` records own their palette, official marks/wordmarks,
   repository revision provenance, project role, claims, and Atlas derivatives.
 - Every imported Atlas derivative records its source repository, 40-character
   revision, source path, creator, and rights boundary.
 - `socialImageAssetId` is an optional project-local pointer while authoring, but
   every published full case study must resolve it to ready raster image evidence.
+- A full project may reference one documentary story through
+  `caseStudyMomentId`. The Moment remains canonical and must be published, include
+  that project in its context, and own a ready documentary photograph. Project
+  evidence must not duplicate a Moment photograph.
 - Moments are intentionally withheld until their caption, date, place, credit,
   rights, consent, crop, and public derivative are approved.
 

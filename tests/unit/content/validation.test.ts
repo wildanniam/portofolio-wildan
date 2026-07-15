@@ -12,6 +12,7 @@ import {
   makeReadyImage,
   makeReadyVideo,
   projectBySlug,
+  replaceMomentsForValidation,
   toBriefProject,
   validationDiagnostics,
 } from "./fixtures";
@@ -417,10 +418,97 @@ describe("homepage project-stage references", () => {
   });
 });
 
+describe("explicit documentary moment ownership", () => {
+  it("accepts a published project-owned documentary moment", () => {
+    const content = cloneSeedBundle();
+    const nova = projectBySlug(content, "nova-ai");
+    if (nova.caseStudyState !== "full") throw new Error("Expected full project.");
+    const moment = makeMoment({
+      id: "nova-case-moment",
+      mode: "evidence",
+      publication: "published",
+      context: { kind: "project", projectSlugs: [nova.slug] },
+      assets: [makeDocumentaryPhoto("nova-case-photo")],
+    });
+    replaceMomentsForValidation(content, [moment]);
+    nova.caseStudyMomentId = moment.id;
+
+    expect(() => validateContentBundle(content, () => true)).not.toThrow();
+  });
+
+  it("rejects a missing, unpublished, cross-project, or non-documentary case moment", () => {
+    const content = cloneSeedBundle();
+    const nova = projectBySlug(content, "nova-ai");
+    if (nova.caseStudyState !== "full") throw new Error("Expected full project.");
+    const moment = makeMoment({
+      id: "invalid-nova-case-moment",
+      mode: "evidence",
+      publication: "preview",
+      context: { kind: "project", projectSlugs: ["fradium"] },
+      assets: [makeReadyImage({ id: "non-documentary-case-photo" })],
+    });
+    replaceMomentsForValidation(content, [moment]);
+    nova.caseStudyMomentId = moment.id;
+
+    expect(diagnosticCodes(content)).toEqual(expect.arrayContaining([
+      "publication.project-case-study-moment",
+      "reference.project-case-study-moment-context",
+      "publication.project-case-study-moment-media",
+    ]));
+
+    nova.caseStudyMomentId = "missing-case-moment";
+    expect(diagnosticCodes(content)).toContain("reference.project-case-study-moment");
+  });
+
+  it("keeps documentary moments out of project evidence", () => {
+    const content = cloneSeedBundle();
+    projectBySlug(content, "nova-ai").evidence.push(
+      makeReadyImage({ id: "duplicated-project-moment", evidenceType: "moment" }),
+    );
+
+    expect(diagnosticCodes(content)).toContain("ownership.project-moment-evidence");
+  });
+});
+
+describe("homepage featured moment references", () => {
+  it("enforces asset ownership, publication, documentary provenance, and mobile media", () => {
+    const content = cloneSeedBundle();
+    const first = content.homepage.featuredMoments[0];
+    const foreignMoment = makeMoment({
+      id: "foreign-homepage-moment",
+      mode: "portrait",
+      publication: "published",
+      assets: [makeDocumentaryPhoto("foreign-homepage-photo")],
+    });
+    content.moments.push(foreignMoment);
+    first.assetId = foreignMoment.assets[0].id;
+    expect(diagnosticCodes(content)).toContain("reference.homepage-moment-asset-ownership");
+
+    first.assetId = content.moments[0].assets[0].id;
+    content.moments[0].publication = "preview";
+    const selected = content.moments[0].assets[0];
+    if (selected.status !== "ready" || selected.mediaKind !== "image") {
+      throw new Error("Expected ready image fixture.");
+    }
+    selected.provenance = {
+      kind: "owned",
+      creator: "Fixture owner",
+      rightsNote: "Fixture rights",
+    };
+    delete selected.mobile;
+
+    expect(diagnosticCodes(content)).toEqual(expect.arrayContaining([
+      "publication.homepage-moment",
+      "publication.homepage-moment-asset-provenance",
+      "publication.homepage-moment-asset-mobile",
+    ]));
+  });
+});
+
 describe("moment publication gates", () => {
   it("blocks a published moment that only has planned media", () => {
     const content = cloneSeedBundle();
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         publication: "published",
         assets: [
@@ -435,7 +523,7 @@ describe("moment publication gates", () => {
           },
         ],
       }),
-    ];
+    ]);
 
     expect(diagnosticCodes(content)).toEqual(
       expect.arrayContaining([
@@ -447,12 +535,12 @@ describe("moment publication gates", () => {
 
   it("requires documentary-photo provenance for published moment imagery", () => {
     const content = cloneSeedBundle();
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         publication: "published",
         assets: [makeReadyImage({ id: "owned-moment-photo" })],
       }),
-    ];
+    ]);
 
     expect(diagnosticCodes(content)).toContain(
       "publication.moment-photo-provenance",
@@ -464,12 +552,12 @@ describe("moment publication gates", () => {
     const documentaryPhoto = makeDocumentaryPhoto(
       "documentary-moment-photo",
     );
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         publication: "published",
         assets: [documentaryPhoto],
       }),
-    ];
+    ]);
 
     expect(() => validateContentBundle(content, () => true)).not.toThrow();
   });
@@ -482,7 +570,7 @@ describe("moment publication gates", () => {
     const decorative = makeDocumentaryPhoto("decorative-moment-photo", {
       alt: "   ",
     });
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         id: "vector-moment",
         mode: "portrait",
@@ -495,7 +583,7 @@ describe("moment publication gates", () => {
         publication: "published",
         assets: [decorative],
       }),
-    ];
+    ]);
 
     expect(diagnosticCodes(content)).toEqual(
       expect.arrayContaining([
@@ -507,7 +595,7 @@ describe("moment publication gates", () => {
 
   it("enforces mode-specific photo cardinality", () => {
     const content = cloneSeedBundle();
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         id: "small-contact-sheet",
         mode: "contact-sheet",
@@ -531,7 +619,7 @@ describe("moment publication gates", () => {
           makeDocumentaryPhoto("portrait-photo-two"),
         ],
       }),
-    ];
+    ]);
 
     const codes = diagnosticCodes(content);
     expect(
@@ -544,7 +632,7 @@ describe("moment publication gates", () => {
 
   it("requires an intentional mobile derivative for a lead photograph", () => {
     const content = cloneSeedBundle();
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         mode: "lead",
         publication: "published",
@@ -554,7 +642,7 @@ describe("moment publication gates", () => {
           }),
         ],
       }),
-    ];
+    ]);
 
     expect(diagnosticCodes(content)).toContain(
       "publication.moment-lead-mobile-required",
@@ -563,13 +651,13 @@ describe("moment publication gates", () => {
 
   it("requires evidence-mode moments to reference a project", () => {
     const content = cloneSeedBundle();
-    content.moments = [
+    replaceMomentsForValidation(content, [
       makeMoment({
         mode: "evidence",
         publication: "published",
         assets: [makeDocumentaryPhoto("journey-evidence-photo")],
       }),
-    ];
+    ]);
 
     expect(diagnosticCodes(content)).toContain(
       "publication.moment-evidence-project-context",
@@ -590,7 +678,7 @@ describe("moment publication gates", () => {
       publication: "preview",
       assets: [photo],
     });
-    content.moments = [moment];
+    replaceMomentsForValidation(content, [moment]);
     content.profile.portraitAssetId = photo.id;
 
     expect(diagnosticCodes(content)).toContain(
@@ -628,30 +716,29 @@ describe("moment publication gates", () => {
       label: "Moments",
       href: "/moments",
     });
-    content.moments = [
-      makeMoment({
-        id: "first-route-moment",
-        mode: "portrait",
-        publication: "published",
-        assets: [makeDocumentaryPhoto("first-route-photo")],
-      }),
-      makeMoment({
-        id: "normalized-duplicate-route-moment",
-        mode: "portrait",
-        event: " TEST   EVENT ",
-        place: " BANDUNG,   INDONESIA ",
-        publication: "published",
-        assets: [makeDocumentaryPhoto("second-route-photo")],
-      }),
-    ];
+    const duplicate = makeMoment({
+      id: "normalized-duplicate-route-moment",
+      mode: "portrait",
+      event: " TEST   EVENT ",
+      place: " BANDUNG,   INDONESIA ",
+      publication: "published",
+      assets: [makeDocumentaryPhoto("duplicate-route-photo")],
+    });
+    replaceMomentsForValidation(content, [duplicate]);
+    for (const moment of content.moments) {
+      moment.date = duplicate.date;
+      moment.event = "test event";
+      moment.place = "Bandung, Indonesia";
+    }
 
     expect(diagnosticCodes(content)).toContain(
       "publication.moments-route-gate",
     );
 
-    content.moments[1].place = "Jakarta, Indonesia";
+    content.moments[0].place = "Jakarta, Indonesia";
     expect(() => validateContentBundle(content, () => true)).not.toThrow();
   });
+
 });
 
 describe("ready media file presence", () => {
@@ -739,7 +826,7 @@ describe("schema and referential acceptance matrix", () => {
       (content: ReturnType<typeof cloneSeedBundle>) => {
         const moment = makeMoment();
         delete (moment as Partial<typeof moment>).mode;
-        content.moments = [moment];
+        replaceMomentsForValidation(content, [moment]);
       },
       "$content.moments",
     ],

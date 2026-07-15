@@ -22,6 +22,8 @@ import type {
   EvidenceTypeSchema,
   FullProjectRecordSchema,
   HomepageSchema,
+  HomepageFeaturedMomentSchema,
+  HomepageMomentRoleSchema,
   HomepageProjectStageSchema,
   LinkStateSchema,
   MediaAssetSchema,
@@ -113,6 +115,10 @@ export type Research = z.infer<typeof ResearchSchema>;
 export type NavigationItem = z.infer<typeof NavigationItemSchema>;
 export type Navigation = z.infer<typeof NavigationSchema>;
 export type Homepage = z.infer<typeof HomepageSchema>;
+export type HomepageFeaturedMoment = z.infer<
+  typeof HomepageFeaturedMomentSchema
+>;
+export type HomepageMomentRole = z.infer<typeof HomepageMomentRoleSchema>;
 export type HomepageProjectStage = z.infer<
   typeof HomepageProjectStageSchema
 >;

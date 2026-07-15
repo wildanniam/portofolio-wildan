@@ -61,15 +61,30 @@ describe("canonical V4 content inventory", () => {
         variant: "wide-right",
       },
     ]);
-    expect(content.homepage.featuredMomentIds).toEqual([
-      "refactory-build-room",
-      "fradium-wchl-team",
-      "self-healing-research",
-      "learning-in-public",
+    expect(content.homepage.featuredMoments).toEqual([
+      { momentId: "refactory-build-room", assetId: "refactory-build-room-photo", role: "lead" },
+      { momentId: "fradium-wchl-team", assetId: "fradium-wchl-team-photo", role: "supporting" },
+      { momentId: "self-healing-research", assetId: "self-healing-research-photo", role: "supporting" },
+      { momentId: "learning-in-public", assetId: "learning-in-public-photo", role: "supporting" },
     ]);
     expect(content.homepage.currentlyBuildingIds).toEqual([
       "paygate-active-2026",
     ]);
+    expect(
+      content.projects
+        .filter((project) => project.caseStudyState === "full")
+        .map((project) => [project.slug, project.caseStudyMomentId]),
+    ).toEqual([
+      ["fradium", "fradium-wchl-team"],
+      ["nova-ai", "nova-lisk-team"],
+      ["paygate", undefined],
+      ["quorum", undefined],
+    ]);
+    expect(
+      content.projects
+        .find((project) => project.slug === "nova-ai")
+        ?.evidence.some((asset) => asset.id === "nova-award-outcome"),
+    ).toBe(false);
 
     for (const project of content.projects) {
       const source = content.sources.projects.find(

@@ -26,7 +26,7 @@ export const DEFAULT_MEDIA_BUDGETS = Object.freeze({
 
 export const DOCUMENTARY_MEDIA_BUDGETS = Object.freeze({
   ...DEFAULT_MEDIA_BUDGETS,
-  image: 200 * 1024,
+  image: 180 * 1024,
   mobileImage: 140 * 1024,
 });
 

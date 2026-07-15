@@ -520,6 +520,7 @@ export const FullProjectRecordSchema = z
   .object({
     ...projectCommonShape,
     caseStudyState: z.literal("full"),
+    caseStudyMomentId: IdentifierSchema.optional(),
     problem: NonEmptyStringSchema,
     intendedUsers: z.array(NonEmptyStringSchema).min(1),
     teamContext: TeamContextSchema,
@@ -702,6 +703,16 @@ export const HomepageProjectStageSchema = z
   })
   .strict();
 
+export const HomepageMomentRoleSchema = z.enum(["lead", "supporting"]);
+
+export const HomepageFeaturedMomentSchema = z
+  .object({
+    momentId: IdentifierSchema,
+    assetId: IdentifierSchema,
+    role: HomepageMomentRoleSchema,
+  })
+  .strict();
+
 export const HomepageSchema = z
   .object({
     projectStages: z
@@ -715,10 +726,25 @@ export const HomepageSchema = z
         (stages) => uniqueValues(stages.map((stage) => stage.variant)),
         "Homepage project-stage variants must be unique",
       ),
-    featuredMomentIds: z
-      .array(IdentifierSchema)
-      .max(4)
-      .refine(uniqueValues, "Homepage moment references must be unique"),
+    featuredMoments: z
+      .array(HomepageFeaturedMomentSchema)
+      .length(4)
+      .refine(
+        (moments) => uniqueValues(moments.map((moment) => moment.momentId)),
+        "Homepage moment references must be unique",
+      )
+      .refine(
+        (moments) => uniqueValues(moments.map((moment) => moment.assetId)),
+        "Homepage moment asset references must be unique",
+      )
+      .refine(
+        (moments) => moments.filter((moment) => moment.role === "lead").length === 1,
+        "Homepage moments need exactly one lead",
+      )
+      .refine(
+        (moments) => moments.filter((moment) => moment.role === "supporting").length === 3,
+        "Homepage moments need exactly three supporting entries",
+      ),
     currentlyBuildingIds: z
       .array(IdentifierSchema)
       .refine(uniqueValues, "Currently-building references must be unique"),

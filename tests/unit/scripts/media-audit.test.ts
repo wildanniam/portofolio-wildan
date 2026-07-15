@@ -111,7 +111,7 @@ describe("visual media audit", () => {
   });
 
   it("keeps documentary desktop and mobile images inside the release budgets", () => {
-    expect(DOCUMENTARY_MEDIA_BUDGETS.image).toBe(200 * 1024);
+    expect(DOCUMENTARY_MEDIA_BUDGETS.image).toBe(180 * 1024);
     expect(DOCUMENTARY_MEDIA_BUDGETS.mobileImage).toBe(140 * 1024);
   });
 

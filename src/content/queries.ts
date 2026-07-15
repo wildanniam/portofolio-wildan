@@ -1,6 +1,7 @@
 import type {
   ContentBundle,
   CurrentlyBuildingRecord,
+  HomepageFeaturedMoment,
   HomepageProjectStage,
   MomentRecord,
   Navigation,
@@ -35,8 +36,16 @@ export type HomepageSelection = {
     projectSlug: string;
     claim: VerifiedClaim;
   }>;
+  featuredMoments: HomepageFeaturedMomentSelection[];
+  /** Legacy V3 projection. V4 consumers should use `featuredMoments`. */
   moments: MomentRecord[];
   currentlyBuilding: CurrentlyBuildingRecord[];
+};
+
+export type HomepageFeaturedMomentSelection = {
+  featured: HomepageFeaturedMoment;
+  moment: MomentRecord;
+  asset: ReadyImageAsset;
 };
 
 export type HomepageProjectStageSelection = {
@@ -161,6 +170,22 @@ export function selectProjectBySlug(
   );
 }
 
+export function selectProjectCaseStudyMoment(
+  content: ContentBundle,
+  project: ProjectRecord,
+): MomentRecord | undefined {
+  if (
+    project.caseStudyState !== "full" ||
+    !project.caseStudyMomentId
+  ) {
+    return undefined;
+  }
+
+  return selectPublishedMoments(content).find(
+    (moment) => moment.id === project.caseStudyMomentId,
+  );
+}
+
 export function selectProjectSocialImage(
   project: ProjectRecord,
 ): ReadyImageAsset | undefined {
@@ -280,10 +305,18 @@ export function selectHomepage(
       claim: outcomeClaim,
     }),
   );
-  const moments = content.homepage.featuredMomentIds.flatMap((id) => {
-    const moment = visibleMoments.get(id);
-    return moment ? [moment] : [];
+  const featuredMoments = content.homepage.featuredMoments.flatMap((featured) => {
+    const moment = visibleMoments.get(featured.momentId);
+    if (!moment) return [];
+    const asset = moment.assets.find(
+      (candidate): candidate is ReadyImageAsset =>
+        candidate.id === featured.assetId &&
+        candidate.status === "ready" &&
+        candidate.mediaKind === "image",
+    );
+    return asset ? [{ featured, moment, asset }] : [];
   });
+  const moments = featuredMoments.map(({ moment }) => moment);
   const currentlyBuilding = content.homepage.currentlyBuildingIds.flatMap(
     (id) => {
       const item = buildingById.get(id);
@@ -301,6 +334,7 @@ export function selectHomepage(
     projectStages,
     projects,
     flagshipHighlightClaims,
+    featuredMoments,
     moments,
     currentlyBuilding,
   };

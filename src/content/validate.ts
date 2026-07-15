@@ -189,6 +189,7 @@ type RecordIndexes = {
   allCollaboratorIds: Set<string>;
   projectSlugs: Set<string>;
   momentIds: Set<string>;
+  momentsById: Map<string, MomentRecord>;
   currentlyBuildingIds: Set<string>;
 };
 
@@ -220,6 +221,7 @@ function buildIndexes(content: ContentBundle): RecordIndexes {
     ),
     projectSlugs: new Set(content.projects.map((project) => project.slug)),
     momentIds: new Set(content.moments.map((moment) => moment.id)),
+    momentsById: new Map(content.moments.map((moment) => [moment.id, moment])),
     currentlyBuildingIds: new Set(content.currentlyBuilding.items.map((item) => item.id)),
   };
 }
@@ -454,6 +456,17 @@ function validateProjectReferences(
   );
   validateAssetClaimReferences(project.evidence, localClaimIds, `${path}.evidence`, diagnostics);
 
+  project.evidence.forEach((asset, assetIndex) => {
+    if (isReadyAsset(asset) && asset.evidenceType === "moment") {
+      addError(
+        diagnostics,
+        "ownership.project-moment-evidence",
+        `${path}.evidence[${assetIndex}]`,
+        "Documentary moments belong to a Moment record and must be referenced by ID instead of duplicated as project evidence",
+      );
+    }
+  });
+
   if (project.socialImageAssetId) {
     const socialImage = project.evidence.find(
       (asset) => asset.id === project.socialImageAssetId,
@@ -488,6 +501,53 @@ function validateProjectReferences(
   }
 
   if (project.caseStudyState === "full") {
+    if (project.caseStudyMomentId) {
+      const momentPath = `${path}.caseStudyMomentId`;
+      const moment = indexes.momentsById.get(project.caseStudyMomentId);
+      if (!moment) {
+        addError(
+          diagnostics,
+          "reference.project-case-study-moment",
+          momentPath,
+          `Moment "${project.caseStudyMomentId}" does not exist`,
+        );
+      } else {
+        if (moment.publication !== "published") {
+          addError(
+            diagnostics,
+            "publication.project-case-study-moment",
+            momentPath,
+            "A case-study moment must be published",
+          );
+        }
+        if (
+          moment.context.kind !== "project" ||
+          !moment.context.projectSlugs.includes(project.slug)
+        ) {
+          addError(
+            diagnostics,
+            "reference.project-case-study-moment-context",
+            momentPath,
+            `Case-study moment "${moment.id}" must reference project "${project.slug}"`,
+          );
+        }
+        const documentaryImage = moment.assets.find(
+          (asset) =>
+            isReadyAsset(asset) &&
+            asset.mediaKind === "image" &&
+            asset.provenance.kind === "documentary-photo",
+        );
+        if (!documentaryImage) {
+          addError(
+            diagnostics,
+            "publication.project-case-study-moment-media",
+            momentPath,
+            "A case-study moment needs a ready documentary image",
+          );
+        }
+      }
+    }
+
     project.teamContext.collaboratorIds.forEach((collaboratorId, index) => {
       checkReferencedId(
         diagnostics,
@@ -1028,22 +1088,76 @@ function validateSiteReferences(
     });
   });
 
-  content.homepage.featuredMomentIds.forEach((id, index) => {
+  content.homepage.featuredMoments.forEach((featured, index) => {
+    const featuredPath = `$content.homepage.featuredMoments[${index}]`;
     checkReferencedId(
       diagnostics,
-      id,
+      featured.momentId,
       indexes.momentIds,
-      `$content.homepage.featuredMomentIds[${index}]`,
+      `${featuredPath}.momentId`,
       "reference.homepage-moment",
       "Moment",
     );
-    const moment = content.moments.find((candidate) => candidate.id === id);
+    const moment = indexes.momentsById.get(featured.momentId);
     if (moment && moment.publication !== "published") {
       addError(
         diagnostics,
         "publication.homepage-moment",
-        `$content.homepage.featuredMomentIds[${index}]`,
+        `${featuredPath}.momentId`,
         "A homepage moment must be published",
+      );
+    }
+    if (!moment) return;
+
+    const asset = moment.assets.find((candidate) => candidate.id === featured.assetId);
+    if (!asset) {
+      const owningMoment = content.moments.find((candidate) =>
+        candidate.assets.some((candidateAsset) => candidateAsset.id === featured.assetId),
+      );
+      addError(
+        diagnostics,
+        owningMoment
+          ? "reference.homepage-moment-asset-ownership"
+          : "reference.homepage-moment-asset",
+        `${featuredPath}.assetId`,
+        owningMoment
+          ? `Asset "${featured.assetId}" belongs to moment "${owningMoment.id}", not "${moment.id}"`
+          : `Moment asset "${featured.assetId}" does not exist`,
+      );
+      return;
+    }
+    if (!isReadyAsset(asset)) {
+      addError(
+        diagnostics,
+        "publication.homepage-moment-asset-readiness",
+        `${featuredPath}.assetId`,
+        "A homepage moment asset must be ready",
+      );
+      return;
+    }
+    if (asset.mediaKind !== "image") {
+      addError(
+        diagnostics,
+        "publication.homepage-moment-asset-kind",
+        `${featuredPath}.assetId`,
+        "A homepage moment asset must be a raster image",
+      );
+      return;
+    }
+    if (asset.provenance.kind !== "documentary-photo") {
+      addError(
+        diagnostics,
+        "publication.homepage-moment-asset-provenance",
+        `${featuredPath}.assetId`,
+        "A homepage moment asset needs documentary-photo provenance",
+      );
+    }
+    if (!asset.mobile) {
+      addError(
+        diagnostics,
+        "publication.homepage-moment-asset-mobile",
+        `${featuredPath}.assetId`,
+        "A homepage moment asset needs an intentional mobile derivative",
       );
     }
   });

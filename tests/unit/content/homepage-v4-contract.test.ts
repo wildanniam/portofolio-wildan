@@ -96,4 +96,26 @@ describe("Portfolio V4 homepage selection contract", () => {
       });
     }
   });
+
+  it("resolves one lead and three supporting documentary Moments without fallback", () => {
+    const content = loadContentBundle({ repositoryRoot: REPOSITORY_ROOT });
+    const selection = selectHomepage(content, { asOf: "2026-07-15" });
+
+    expect(selection.featuredMoments).toHaveLength(
+      content.homepage.featuredMoments.length,
+    );
+    expect(
+      selection.featuredMoments.map(({ featured }) => featured.role),
+    ).toEqual(["lead", "supporting", "supporting", "supporting"]);
+
+    for (const { asset, featured, moment } of selection.featuredMoments) {
+      expect(moment.id).toBe(featured.momentId);
+      expect(moment.publication).toBe("published");
+      expect(moment.assets).toContain(asset);
+      expect(asset.id).toBe(featured.assetId);
+      expect(asset.mediaKind).toBe("image");
+      expect(asset.provenance.kind).toBe("documentary-photo");
+      expect(asset.mobile).toBeDefined();
+    }
+  });
 });

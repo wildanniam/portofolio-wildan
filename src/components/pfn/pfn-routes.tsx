@@ -13,7 +13,6 @@ import type {
 
 import { PfnMedia } from "./pfn-media";
 import {
-  momentForProject,
   momentPrimaryImage,
   projectOutcome,
   projectPeriod,
@@ -130,13 +129,13 @@ function ProjectFigure({
 
 export function PersonalFieldNotesProject({
   basePath,
-  moments,
+  documentaryMoment,
   nextProject,
   project,
   shell,
 }: {
   basePath: string;
-  moments: MomentRecord[];
+  documentaryMoment?: MomentRecord;
   nextProject?: ProjectRecord;
   project: FullProjectRecord;
   shell: SiteShellSelection;
@@ -145,7 +144,6 @@ export function PersonalFieldNotesProject({
   const outcome = projectOutcome(project);
   const outcomeSources = outcome?.sources.filter((source) => source.kind === "url") ?? [];
   const projectImages = readyImages(project.evidence).filter((asset) => asset.id !== primaryImage?.id);
-  const documentaryMoment = momentForProject(moments, project.slug);
   const documentaryImage = documentaryMoment ? momentPrimaryImage(documentaryMoment) : undefined;
 
   return (

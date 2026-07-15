@@ -3,6 +3,7 @@ title: Nova AI Wallet
 publication: published
 socialImageAssetId: nova-agent-flow
 caseStudyState: full
+caseStudyMomentId: nova-lisk-team
 lifecycle: prototype
 origin:
   - hackathon
@@ -374,41 +375,6 @@ evidence:
       across the CopilotKit runtime, action registry, transaction and prediction
       cards, Paylink, Prisma, Redis rate limits, deployment fixes, and documentation.
       It preserves collaborator credit and makes no adoption claim.
-  - id: nova-award-outcome
-    status: ready
-    slot: team-outcome
-    evidenceType: moment
-    evidenceFunctions:
-      - verification
-    src: /media/projects/nova-ai/award-team.webp
-    width: 1200
-    height: 900
-    crop:
-      mode: intrinsic
-    mobile:
-      src: /media/projects/nova-ai/award-team-mobile.webp
-      width: 800
-      height: 600
-      crop:
-        mode: intrinsic
-    caption: >-
-      Nova's team at the Lisk Builders Challenge 3 outcome: 1st Notable Mention and
-      1st Social Media Challenge. The exact recognition is also documented by
-      Telkom University's institutional report.
-    provenance:
-      kind: owned
-      creator: Nova AI team archive
-      rightsNote: >-
-        High-resolution team photograph supplied and explicitly selected by Wildan
-        for his portfolio showcase on 2026-07-11. Final photographer credit, the
-        fourth visible person's identity, and the remaining visible-person release
-        record remain publication metadata checkpoints.
-    claimIds:
-      - nova-lisk-recognition
-    mediaKind: image
-    alt: >-
-      Four Nova AI teammates at the Lisk Builders Challenge holding 1st Notable
-      Mention and Social Media Challenge award boards.
 limitations:
   - Nova is a hackathon artifact, not a production or custodial wallet.
   - The public chat runtime was degraded during the 2026-07-11 audit.

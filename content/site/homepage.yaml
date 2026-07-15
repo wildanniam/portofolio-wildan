@@ -60,10 +60,18 @@ projectStages:
       - quorum-atlas-settlement
       - quorum-atlas-rail
     variant: wide-right
-featuredMomentIds:
-  - refactory-build-room
-  - fradium-wchl-team
-  - self-healing-research
-  - learning-in-public
+featuredMoments:
+  - momentId: refactory-build-room
+    assetId: refactory-build-room-photo
+    role: lead
+  - momentId: fradium-wchl-team
+    assetId: fradium-wchl-team-photo
+    role: supporting
+  - momentId: self-healing-research
+    assetId: self-healing-research-photo
+    role: supporting
+  - momentId: learning-in-public
+    assetId: learning-in-public-photo
+    role: supporting
 currentlyBuildingIds:
   - paygate-active-2026

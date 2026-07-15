@@ -74,18 +74,6 @@ export function momentPrimaryImage(moment: MomentRecord): ReadyImageAsset | unde
   return readyImages(moment.assets)[0];
 }
 
-export function momentForProject(
-  moments: MomentRecord[],
-  projectSlug: string,
-): MomentRecord | undefined {
-  return orderMomentsForDisplay(moments).find(
-    (moment) =>
-      moment.context.kind === "project" &&
-      moment.context.projectSlugs.includes(projectSlug) &&
-      Boolean(momentPrimaryImage(moment)),
-  );
-}
-
 export function projectPeriod(project: ProjectRecord) {
   return project.endedAt
     ? `${project.startedAt} to ${project.endedAt}`

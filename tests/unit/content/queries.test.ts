@@ -8,6 +8,7 @@ import {
   selectHomepage,
   selectMomentsNarrative,
   selectProjectBySlug,
+  selectProjectCaseStudyMoment,
   selectProjectParams,
   selectProjectSocialImage,
   selectPublishedMoments,
@@ -41,14 +42,17 @@ function createVisibilityMatrix() {
   const publishedMoment = makeMoment({
     id: "published-moment",
     publication: "published",
+    assets: [makeReadyImage({ id: "published-moment-photo" })],
   });
   const previewMoment = makeMoment({
     id: "preview-moment",
     publication: "preview",
+    assets: [makeReadyImage({ id: "preview-moment-photo" })],
   });
   const draftMoment = makeMoment({
     id: "draft-moment",
     publication: "draft",
+    assets: [makeReadyImage({ id: "draft-moment-photo" })],
   });
   content.moments = [publishedMoment, previewMoment, draftMoment];
 
@@ -274,10 +278,11 @@ describe("public, preview, and draft route selectors", () => {
   it("preserves homepage order while filtering projects, moments, navigation, and building items", () => {
     const { content, publishedProject, previewProject, draftProject } =
       createVisibilityMatrix();
-    content.homepage.featuredMomentIds = [
-      "published-moment",
-      "preview-moment",
-      "draft-moment",
+    content.homepage.featuredMoments = [
+      { momentId: "published-moment", assetId: "published-moment-photo", role: "lead" },
+      { momentId: "preview-moment", assetId: "preview-moment-photo", role: "supporting" },
+      { momentId: "draft-moment", assetId: "draft-moment-photo", role: "supporting" },
+      { momentId: "missing-moment", assetId: "missing-moment-photo", role: "supporting" },
     ];
     content.navigation.primary.push(
       {
@@ -352,6 +357,9 @@ describe("public, preview, and draft route selectors", () => {
       "published-moment",
       "preview-moment",
     ]);
+    expect(publicHomepage.featuredMoments.map(({ featured, asset }) => [featured.momentId, asset.id])).toEqual([
+      ["published-moment", "published-moment-photo"],
+    ]);
     expect(publicHomepage.currentlyBuilding).toEqual([]);
     expect(previewHomepage.currentlyBuilding).toHaveLength(1);
     expect(
@@ -406,5 +414,23 @@ describe("project social image selector", () => {
 
     project.socialImageAssetId = first.id;
     expect(selectProjectSocialImage(project)).toBe(first);
+  });
+});
+
+describe("project case-study moment selector", () => {
+  it("resolves only the explicitly configured moment", () => {
+    const { content, publishedProject, publishedMoment, previewMoment } =
+      createVisibilityMatrix();
+    if (publishedProject.caseStudyState !== "full") {
+      throw new Error("Expected full project.");
+    }
+    publishedProject.caseStudyMomentId = publishedMoment.id;
+
+    expect(selectProjectCaseStudyMoment(content, publishedProject)).toBe(
+      publishedMoment,
+    );
+
+    publishedProject.caseStudyMomentId = previewMoment.id;
+    expect(selectProjectCaseStudyMoment(content, publishedProject)).toBeUndefined();
   });
 });

@@ -27,10 +27,8 @@ export function cloneSeedBundle(): ContentBundle {
   const content = structuredClone(
     loadContentBundle({ repositoryRoot: REPOSITORY_ROOT }),
   );
-  // Moment tests construct their own small visibility/publication matrices. Keep
-  // that fixture deterministic even as the real editorial intake grows.
-  content.moments = [];
-  content.homepage.featuredMomentIds = [];
+  // Keep homepage validation deterministic even as the real editorial intake grows.
+  replaceMomentsForValidation(content, []);
   content.navigation.primary = content.navigation.primary.filter(
     (item) => item.href !== "/moments",
   );
@@ -144,6 +142,60 @@ export function makeMoment(
     publication: "preview",
     ...overrides,
   };
+}
+
+export function replaceMomentsForValidation(
+  content: ContentBundle,
+  moments: MomentRecord[],
+): void {
+  for (const project of content.projects) {
+    if (project.caseStudyState === "full") delete project.caseStudyMomentId;
+  }
+  const featuredMoments = Array.from({ length: 4 }, (_, index) => {
+    const number = index + 1;
+    const assetId = `homepage-fixture-photo-${number}`;
+    return makeMoment({
+      id: `homepage-fixture-moment-${number}`,
+      mode: "portrait",
+      title: `Homepage fixture moment ${number}`,
+      event: `Homepage fixture event ${number}`,
+      date: `2026-07-${String(number).padStart(2, "0")}`,
+      place: `Fixture place ${number}, Indonesia`,
+      publication: "published",
+      assets: [
+        makeReadyImage({
+          id: assetId,
+          evidenceType: "moment",
+          evidenceFunctions: ["verification"],
+          src: `/media/tests/homepage-fixture-desktop-${number}.webp`,
+          mobile: {
+            src: `/media/tests/homepage-fixture-mobile-${number}.webp`,
+            width: 900,
+            height: 1200,
+            crop: {
+              mode: "focal",
+              aspectRatio: "3:4",
+              focalPoint: { x: 0.5, y: 0.4 },
+            },
+          },
+          provenance: {
+            kind: "documentary-photo",
+            source: "Test fixture source",
+            credit: "Test fixture credit",
+            rights: "owned",
+            consent: "confirmed",
+          },
+        }),
+      ],
+    });
+  });
+
+  content.moments = [...moments, ...featuredMoments];
+  content.homepage.featuredMoments = featuredMoments.map((moment, index) => ({
+    momentId: moment.id,
+    assetId: moment.assets[0].id,
+    role: index === 0 ? "lead" : "supporting",
+  }));
 }
 
 export function toBriefProject(
